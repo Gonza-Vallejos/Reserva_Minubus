@@ -16,7 +16,7 @@ module.exports = {
         createdAt: new Date(),
         updatedAt: new Date()
       }
-      // Agrega más perfiles si es necesario
+      
     ], {});
   },
 

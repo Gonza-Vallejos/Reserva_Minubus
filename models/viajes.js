@@ -11,14 +11,14 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       // define association here
-      Viajes.belongsTo(models.medio_transporte,{
+      Viajes.belongsTo(models.Medio_Transporte,{
         foreignKey: 'medio_transporte_id',
         target_Key: 'id'
       })
-      Viajes.hasMany(models.ventas,{
+      Viajes.hasMany(models.Ventas,{
         foreignKey: 'viajes_id'
       })
-      Viajes.hasMany(models.reserva,{
+      Viajes.hasMany(models.Reserva,{
         foreignKey: 'viajes_id'
       })
     }

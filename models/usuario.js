@@ -11,11 +11,11 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       // define association here
-      Usuario.belongsTo(models.perfil, {
+      Usuario.belongsTo(models.Perfil, {
         foreignKey: 'perfil_id',
         target_Key: 'id'
       })
-      Usuario.hasMany(models.reserva, {
+      Usuario.hasMany(models.Reserva, {
         foreignKey: 'usuarios_id'
       })
     }

@@ -11,15 +11,15 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       // define association here
-      Reserva.belongsTo(models.usuario,{
+      Reserva.belongsTo(models.Usuario,{
         foreignKey: 'usuarios_id',
         target_Key: 'id'
       })
-      Reserva.belongsTo(models.viajes,{
+      Reserva.belongsTo(models.Viajes,{
         foreignKey: 'viajes_id',
         target_Key: 'id'
       })
-      Reserva.hasMany(models.detalle_venta,{
+      Reserva.hasMany(models.Detalle_Venta,{
         foreignKey: 'reservas_id'
       })
     }
