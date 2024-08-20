@@ -1,4 +1,4 @@
-// controllers/usuarioController.js
+// controllers/empresaController.js
 const { Empresa } = require('../models');
 
 // Obtener todas las empresas
