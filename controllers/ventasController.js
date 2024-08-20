@@ -51,7 +51,7 @@ exports.updateVentas = async (req, res) => {
 // Eliminar una ventas
 exports.deleteVentas= async (req, res) => {
     try {
-        const eliminarVenta = await Empresa.destroy({
+        const eliminarVenta = await Ventas.destroy({
             where: { id: req.params.id }
         });
         if (!eliminarVenta) {
