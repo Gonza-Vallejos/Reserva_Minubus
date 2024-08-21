@@ -27,20 +27,30 @@ exports.getUsuarioById = async (req, res) => {
 // Crear un nuevo usuario
 exports.createUsuario = async (req, res) => {
     try {
-        const nuevoUsuario = await Usuario.create(req.body);
-        res.status(201).json(nuevoUsuario);
+      const nuevoUsuario = await Usuario.create(req.body);
+      res.status(201).json(nuevoUsuario);
     } catch (error) {
+      if (error.name === 'SequelizeValidationError') {
+        // Captura errores de validación como un formato de correo inválido
+        const mensajesDeError = error.errors.map(e => e.message);
+        res.status(400).json({ error: mensajesDeError });
+      } else if (error.name === 'SequelizeUniqueConstraintError') {
+        // Captura errores de unicidad, como un correo ya registrado
+        res.status(400).json({ error: 'El correo ya está en uso.' });
+      } else {
+        // Captura otros tipos de errores
         res.status(500).json({ error: 'Error al crear el usuario' });
+      }
     }
-};
+  };
 
 // Actualizar un usuario existente
 exports.updateUsuario = async (req, res) => {
     try {
-        const [updated] = await Usuario.update(req.body, {
+        const [actualizar] = await Usuario.update(req.body, {
             where: { id: req.params.id }
         });
-        if (!updated) {
+        if (!actualizar) {
             return res.status(404).json({ error: 'Usuario no encontrado' });
         }
         res.status(200).json({ message: 'Usuario actualizado' });
@@ -52,10 +62,10 @@ exports.updateUsuario = async (req, res) => {
 // Eliminar un usuario
 exports.deleteUsuario = async (req, res) => {
     try {
-        const deleted = await Usuario.destroy({
+        const eliminar = await Usuario.destroy({
             where: { id: req.params.id }
         });
-        if (!deleted) {
+        if (!eliminar) {
             return res.status(404).json({ error: 'Usuario no encontrado' });
         }
         res.status(200).json({ message: 'Usuario eliminado' });

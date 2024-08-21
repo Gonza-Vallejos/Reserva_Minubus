@@ -1,7 +1,6 @@
 'use strict';
-const {
-  Model
-} = require('sequelize');
+const { Model } = require('sequelize');
+
 module.exports = (sequelize, DataTypes) => {
   class Usuario extends Model {
     /**
@@ -10,22 +9,34 @@ module.exports = (sequelize, DataTypes) => {
      * The `models/index` file will call this method automatically.
      */
     static associate(models) {
-      // define association here
+      // Define associations
       Usuario.belongsTo(models.Perfil, {
         foreignKey: 'perfil_id',
         target_Key: 'id'
-      })
+      });
       Usuario.hasMany(models.Reserva, {
         foreignKey: 'usuarios_id'
-      })
+      });
     }
   }
+
   Usuario.init({
     nombre: DataTypes.STRING,
     apellido: DataTypes.STRING,
     dni: DataTypes.INTEGER,
     telefono: DataTypes.INTEGER,
-    email: DataTypes.STRING,
+    email: {
+      type: DataTypes.STRING,
+      allowNull: false,
+      unique: {
+        msg: 'El correo ya está en uso.'
+      },
+      validate: {
+        isEmail: {
+          msg: 'El formato del correo electrónico no es válido.'
+        }
+      }
+    },
     usuario: DataTypes.STRING,
     contraseña: DataTypes.STRING,
     perfil_id: DataTypes.INTEGER
@@ -33,5 +44,6 @@ module.exports = (sequelize, DataTypes) => {
     sequelize,
     modelName: 'Usuario',
   });
+
   return Usuario;
 };
