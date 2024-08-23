@@ -15,6 +15,9 @@ module.exports = (sequelize, DataTypes) => {
         foreignKey: 'provincia_id',
         target_Key: 'id'
       })
+      Localidad.hasMany(models.Empresa,{
+        foreignKey: 'localidad_id'
+      })
     }
   }
   Localidad.init({

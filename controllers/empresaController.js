@@ -4,10 +4,10 @@ const { Empresa } = require('../models');
 // Obtener todas las empresas
 exports.getEmpresa = async (req, res) => {
     try {
-        const empresa = await Empresa.findAll();
-        res.status(200).json(empresa);
+        const empresas = await Empresa.findAll();
+        res.status(200).json(empresas);
     } catch (error) {
-        res.status(500).json({ error: 'Error al obtener la empresa' });
+        res.status(500).json({ error: 'Error al obtener las empresas' });
     }
 };
 
@@ -23,12 +23,14 @@ exports.getEmpresaById = async (req, res) => {
         res.status(500).json({ error: 'Error al obtener la empresa' });
     }
 };
+
 // Crear una nueva empresa
-exports.createEmpresa= async (req, res) => {
+exports.createEmpresa = async (req, res) => {
     try {
         const nuevaEmpresa = await Empresa.create(req.body);
         res.status(201).json(nuevaEmpresa);
     } catch (error) {
+        console.error('Error al crear la empresa:', error);
         res.status(500).json({ error: 'Error al crear la empresa' });
     }
 };
