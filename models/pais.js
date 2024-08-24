@@ -21,6 +21,7 @@ module.exports = (sequelize, DataTypes) => {
   }, {
     sequelize,
     modelName: 'Pais',
+    tableName: 'pais'
   });
   return Pais;
 };
