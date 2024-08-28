@@ -1,4 +1,3 @@
-// controllers/usuarioController.js
 const { Usuario } = require('../models');
 
 // Obtener todos los usuarios
@@ -27,22 +26,22 @@ exports.getUsuarioById = async (req, res) => {
 // Crear un nuevo usuario
 exports.createUsuario = async (req, res) => {
     try {
-      const nuevoUsuario = await Usuario.create(req.body);
-      res.status(201).json(nuevoUsuario);
+        const nuevoUsuario = await Usuario.create(req.body);
+        res.status(201).json(nuevoUsuario);
     } catch (error) {
-      if (error.name === 'SequelizeValidationError') {
-        // Captura errores de validación como un formato de correo inválido
-        const mensajesDeError = error.errors.map(e => e.message);
-        res.status(400).json({ error: mensajesDeError });
-      } else if (error.name === 'SequelizeUniqueConstraintError') {
-        // Captura errores de unicidad, como un correo ya registrado
-        res.status(400).json({ error: 'El correo ya está en uso.' });
-      } else {
-        // Captura otros tipos de errores
-        res.status(500).json({ error: 'Error al crear el usuario' });
-      }
+        if (error.name === 'SequelizeValidationError') {
+            // Captura errores de validación como un formato de correo inválido
+            const mensajesDeError = error.errors.map(e => e.message);
+            res.status(400).json({ error: mensajesDeError });
+        } else if (error.name === 'SequelizeUniqueConstraintError') {
+            // Captura errores de unicidad, como un correo ya registrado
+            res.status(400).json({ error: 'El correo electrónico o el nombre de usuario ya están en uso.' });
+        } else {
+            // Captura otros tipos de errores
+            res.status(500).json({ error: 'Error al crear el usuario' });
+        }
     }
-  };
+};
 
 // Actualizar un usuario existente
 exports.updateUsuario = async (req, res) => {

@@ -3,43 +3,63 @@ const { Model } = require('sequelize');
 
 module.exports = (sequelize, DataTypes) => {
   class Usuario extends Model {
-    /**
-     * Helper method for defining associations.
-     * This method is not a part of Sequelize lifecycle.
-     * The `models/index` file will call this method automatically.
-     */
     static associate(models) {
-      // Define associations
       Usuario.belongsTo(models.Perfil, {
         foreignKey: 'perfil_id',
-        target_Key: 'id'
+        targetKey: 'id'
       });
       Usuario.hasMany(models.Reserva, {
-        foreignKey: 'usuarios_id'
+        foreignKey: 'usuario_id'
       });
     }
   }
 
   Usuario.init({
-    nombre: DataTypes.STRING,
-    apellido: DataTypes.STRING,
-    dni: DataTypes.INTEGER,
-    telefono: DataTypes.INTEGER,
+    nombre: {
+      type: DataTypes.STRING,
+      allowNull: false
+    },
+    apellido: {
+      type: DataTypes.STRING,
+      allowNull: false
+    },
+    dni: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+      unique: true
+    },
+    telefono: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+      unique: true
+    },
     email: {
       type: DataTypes.STRING,
       allowNull: false,
-      unique: {
-        msg: 'El correo ya está en uso.'
-      },
+      unique: true,
       validate: {
-        isEmail: {
-          msg: 'El formato del correo electrónico no es válido.'
-        }
+        isEmail: true
       }
     },
-    usuario: DataTypes.STRING,
-    contraseña: DataTypes.STRING,
-    perfil_id: DataTypes.INTEGER
+    usuario: {
+      type: DataTypes.STRING,
+      allowNull: false,
+      unique: true,
+      validate: {
+        len: [4, Infinity]
+      }
+    },
+    contraseña: {
+      type: DataTypes.STRING,
+      allowNull: false,
+      validate: {
+        len: [8, 12]
+      }
+    },
+    perfil_id: {
+      type: DataTypes.INTEGER,
+      allowNull: false
+    }
   }, {
     sequelize,
     modelName: 'Usuario',
