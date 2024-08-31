@@ -48,7 +48,7 @@ exports.updateVentas = async (req, res) => {
     }
 };
 
-// Eliminar una ventas
+// Eliminar una venta
 exports.deleteVentas= async (req, res) => {
     try {
         const eliminarVenta = await Ventas.destroy({
