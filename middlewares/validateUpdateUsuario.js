@@ -51,11 +51,11 @@ const validateUpdateUsuario = [
   // Validar contraseña
   body('contraseña')
     .optional()
-    .isLength({ min: 8, max: 12 }).withMessage('La contraseña debe tener entre 8 y 12 caracteres')
-    .matches(/[A-Z]/).withMessage('La contraseña debe contener al menos una letra mayúscula')
-    .matches(/[a-z]/).withMessage('La contraseña debe contener al menos una letra minúscula')
-    .matches(/[0-9]/).withMessage('La contraseña debe contener al menos un número')
-    .matches(/[@$!%*?&]/).withMessage('La contraseña debe contener al menos un carácter especial'),
+    .isLength({ min: 8, max: 12 }).withMessage('debe tener entre 8 y 12 caracteres')
+    .matches(/[A-Z]/).withMessage('debe contener al menos una letra mayúscula')
+    .matches(/[a-z]/).withMessage('debe contener al menos una letra minúscula')
+    .matches(/[0-9]/).withMessage('debe contener al menos un número')
+    .matches(/[@$!%*?&]/).withMessage('debe contener al menos un carácter especial'),
 
   // Manejo de errores
   (req, res, next) => {

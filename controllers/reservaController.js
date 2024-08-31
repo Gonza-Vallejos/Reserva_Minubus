@@ -42,7 +42,7 @@ exports.updateReserva = async (req, res) => {
             where: { id: req.params.id }
         });
         if (!actualizar) {
-            return res.status(404).json({ error: 'Reserva no encontrado' });
+            return res.status(404).json({ error: 'Reserva no encontrada' });
         }
         res.status(200).json({ message: 'Reserva actualizado' });
     } catch (error) {

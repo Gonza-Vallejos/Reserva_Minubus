@@ -11,7 +11,7 @@ const validateUsuario = [
     .trim()
     .notEmpty().withMessage('El apellido es requerido.'),
   body('dni')
-    .isInt({ min: 1, max: 99999999 }).withMessage('El DNI debe ser un número entero de hasta 8 dígitos.')
+    .isInt({ min: 1, max: 99999999 }).withMessage('El DNI debe tener entre 4 y 8 digitos.')
     .notEmpty().withMessage('El DNI es requerido.')
     .custom(async (value) => {
       const existingUser = await Usuario.findOne({ where: { dni: value } });
@@ -55,7 +55,7 @@ const validateUsuario = [
     .withMessage('La contraseña debe tener entre 8 y 12 caracteres, incluyendo mayúsculas, minúsculas, números y caracteres especiales.')
     .notEmpty().withMessage('La contraseña es requerida.'),
   body('perfil_id')
-    .isInt().withMessage('El perfil es requerido y debe ser un número entero.')
+    .isInt().withMessage('El perfil es requerido.')
     .notEmpty().withMessage('El perfil es requerido.'),
   (req, res, next) => {
     const errors = validationResult(req);
