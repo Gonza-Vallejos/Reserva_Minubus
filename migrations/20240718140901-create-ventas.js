@@ -15,7 +15,7 @@ module.exports = {
       hora: {
         type: Sequelize.DATE
       },
-      total_ventas: {
+      totalVentas: {
         type: Sequelize.INTEGER
       },
       viajes_id: {

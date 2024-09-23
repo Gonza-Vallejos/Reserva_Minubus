@@ -11,8 +11,8 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       // define association here
-      Viajes.belongsTo(models.Medio_Transporte,{
-        foreignKey: 'medio_transporte_id',
+      Viajes.belongsTo(models.MedioTransporte,{
+        foreignKey: 'medioTransporte_id',
         target_Key: 'id'
       })
       Viajes.hasMany(models.Ventas,{
@@ -24,13 +24,13 @@ module.exports = (sequelize, DataTypes) => {
     }
   }
   Viajes.init({
-    origen_localidad: DataTypes.STRING,
-    destino_localidad: DataTypes.STRING,
-    horario_salida: DataTypes.DATE,
-    fecha_viaje: DataTypes.DATE,
+    origenLocalidad: DataTypes.STRING,
+    destinoLocalidad: DataTypes.STRING,
+    horarioSalida: DataTypes.DATE,
+    fechaViaje: DataTypes.DATE,
     precio: DataTypes.FLOAT,
     chofer: DataTypes.STRING,
-    medio_transporte_id: DataTypes.INTEGER
+    medioTransporte_id: DataTypes.INTEGER
   }, {
     sequelize,
     modelName: 'Viajes',

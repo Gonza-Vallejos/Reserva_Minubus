@@ -9,16 +9,16 @@ module.exports = {
         primaryKey: true,
         type: Sequelize.INTEGER
       },
-      origen_localidad: {
+      origenLocalidad: {
         type: Sequelize.STRING
       },
-      destino_localidad: {
+      destinoLocalidad: {
         type: Sequelize.STRING
       },
-      horario_salida: {
+      horarioSalida: {
         type: Sequelize.DATE
       },
-      fecha_viaje: {
+      fechaViaje: {
         type: Sequelize.DATE
       },
       precio: {
@@ -27,10 +27,10 @@ module.exports = {
       chofer: {
         type: Sequelize.STRING
       },
-      medio_transporte_id: {
+      medioTransporte_id: {
         type: Sequelize.INTEGER,
         references: {
-          model: 'Medio_Transporte',
+          model: 'MedioTransporte',
           key: 'id'
         }
       },

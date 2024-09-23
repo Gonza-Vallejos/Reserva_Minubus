@@ -3,7 +3,7 @@
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
   async up (queryInterface, Sequelize) {
-    await queryInterface.bulkInsert('pais', [
+    await queryInterface.bulkInsert('Pais', [
       {
         id: 1,  // Asume que el ID es 1; ajusta según sea necesario
         nombre: 'Argentina',
@@ -14,6 +14,6 @@ module.exports = {
   },
 
   async down (queryInterface, Sequelize) {
-    await queryInterface.bulkDelete('pais', null, {});
+    await queryInterface.bulkDelete('Pais', null, {});
   }
 };

@@ -2,7 +2,7 @@
 const { Medio_Transporte } = require('../models');
 
 // Obtener todos los usuarios
-exports.getAllTransporte = async (req, res) => {
+exports.obtenerTransportes = async (req, res) => {
     try {
         const transportes = await Medio_Transporte.findAll();
         res.status(200).json(transportes);
@@ -14,7 +14,7 @@ exports.getAllTransporte = async (req, res) => {
 
 
 // Crear un nuevo transporte
-exports.createTransporte = async (req, res) => {
+exports.crearTransporte = async (req, res) => {
     try {
       const nuevoTransporte = await Medio_Transporte.create(req.body);
       res.status(201).json(nuevoTransporte);
@@ -27,7 +27,7 @@ exports.createTransporte = async (req, res) => {
 
 
 // Eliminar un transporte
-exports.deleteTransporte = async (req, res) => {
+exports.eliminarTransporte = async (req, res) => {
     try {
         const eliminar = await Medio_Transporte.destroy({
             where: { id: req.params.id }

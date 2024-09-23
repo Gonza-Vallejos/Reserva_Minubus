@@ -2,7 +2,7 @@
 const { Reserva } = require('../models');
 
 // Obtener todas las reservas
-exports.getAllReservas = async (req, res) => {
+exports.obtenerReservas = async (req, res) => {
     try {
         const reservas = await Reserva.findAll();
         res.status(200).json(reservas);
@@ -12,7 +12,7 @@ exports.getAllReservas = async (req, res) => {
 };
 
 // Obtener una reserva por ID
-exports.getReservaById = async (req, res) => {
+exports.obtenerReservaPorId = async (req, res) => {
     try {
         const reserva = await Reservas.findByPk(req.params.id);
         if (!reserva) {
@@ -25,7 +25,7 @@ exports.getReservaById = async (req, res) => {
 };
 
 // Crear una nueva reserva
-exports.createReserva = async (req, res) => {
+exports.crearReserva = async (req, res) => {
     try {
       const nuevoReserva = await Reserva.create(req.body);
       res.status(201).json(nuevoReserva);
@@ -36,7 +36,7 @@ exports.createReserva = async (req, res) => {
     };
 
 // Actualizar una reserva existente
-exports.updateReserva = async (req, res) => {
+exports.actualizarReserva = async (req, res) => {
     try {
         const [actualizar] = await Reserva.update(req.body, {
             where: { id: req.params.id }
@@ -51,7 +51,7 @@ exports.updateReserva = async (req, res) => {
 };
 
 // Eliminar una reserva
-exports.deleteReserva = async (req, res) => {
+exports.eliminarReserva = async (req, res) => {
     try {
         const eliminar = await Reserva.destroy({
             where: { id: req.params.id }

@@ -15,7 +15,7 @@ module.exports = (sequelize, DataTypes) => {
         foreignKey: 'viajes_id',
         target_Key: 'id'
       })
-      Ventas.hasMany(models.Detalle_Venta,{
+      Ventas.hasMany(models.DetalleVenta,{
         foreignKey: 'ventas_id'
       })
     }
@@ -23,7 +23,7 @@ module.exports = (sequelize, DataTypes) => {
   Ventas.init({
     fecha: DataTypes.DATE,
     hora: DataTypes.DATE,
-    total_ventas: DataTypes.INTEGER,
+    totalVentas: DataTypes.INTEGER,
     viajes_id: DataTypes.INTEGER
   }, {
     sequelize,

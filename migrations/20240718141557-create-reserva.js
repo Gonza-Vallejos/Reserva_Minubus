@@ -9,13 +9,13 @@ module.exports = {
         primaryKey: true,
         type: Sequelize.INTEGER
       },
-      ubicacion_origen: {
+      ubicacionOrigen: {
         type: Sequelize.STRING
       },
-      ubicacion_destino: {
+      ubicacionDestino: {
         type: Sequelize.STRING
       },
-      fecha_reserva: {
+      fechaReserva: {
         type: Sequelize.DATE
       },
       usuarios_id: {

@@ -1,7 +1,7 @@
 const { body, validationResult } = require('express-validator');
 const { Empresa } = require('../models');
 
-const validateUpdateEmpresa = [
+const validarActualizarEmpresa = [
   // Validar nombre
   body('nombre')
     .optional()
@@ -73,12 +73,12 @@ const validateUpdateEmpresa = [
 
   // Manejo de errores
   (req, res, next) => {
-    const errors = validationResult(req);
-    if (!errors.isEmpty()) {
-      return res.status(400).json({ errores: errors.array() });
+    const error = validationResult(req);
+    if (!error.isEmpty()) {
+      return res.status(400).json({ errores: error.array() });
     }
     next();
   }
 ];
 
-module.exports = validateUpdateEmpresa;
+module.exports = validarActualizarEmpresa;

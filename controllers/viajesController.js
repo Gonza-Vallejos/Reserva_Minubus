@@ -2,7 +2,7 @@
 const { Viajes } = require('../models');
 
 // Obtener todas los viajes
-exports.getViajes = async (req, res) => {
+exports.obtenerViajes = async (req, res) => {
     try {
         const viajes = await Viajes.findAll();
         res.status(200).json(viajes);
@@ -12,7 +12,7 @@ exports.getViajes = async (req, res) => {
 };
 
 // Obtener una Viaje por ID
-exports.getViajesById = async (req, res) => {
+exports.obtenerViajePorId = async (req, res) => {
     try {
         const viajes = await Viajes.findByPk(req.params.id);
         if (!viajes) {
@@ -24,7 +24,7 @@ exports.getViajesById = async (req, res) => {
     }
 };
 // Crear una nuevo Viaje
-exports.createViajes= async (req, res) => {
+exports.crearViaje= async (req, res) => {
     try {
         const nuevoViaje = await Viajes.create(req.body);
         res.status(201).json(nuevoViaje);
@@ -34,7 +34,7 @@ exports.createViajes= async (req, res) => {
 };
 
 // Actualizar un viaje existente
-exports.updateViajes = async (req, res) => {
+exports.actualizarViajes = async (req, res) => {
     try {
         const [actualizarViaje] = await Viajes.update(req.body, {
             where: { id: req.params.id }
@@ -49,7 +49,7 @@ exports.updateViajes = async (req, res) => {
 };
 
 // Eliminar un Viaje
-exports.deleteViajes= async (req, res) => {
+exports.eliminarViajes= async (req, res) => {
     try {
         const eliminarViaje = await Viajes.destroy({
             where: { id: req.params.id }

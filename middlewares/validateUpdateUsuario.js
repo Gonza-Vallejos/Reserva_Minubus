@@ -1,7 +1,7 @@
 const { body, validationResult } = require('express-validator');
 const { Usuario } = require('../models');
 
-const validateUpdateUsuario = [
+const validarActualizarUsuario = [
   // Validar email
   body('dni')
     .isInt({ min: 1, max: 99999999 }).withMessage('El DNI debe ser un número entero de hasta 8 dígitos.')
@@ -59,14 +59,14 @@ const validateUpdateUsuario = [
 
   // Manejo de errores
   (req, res, next) => {
-    const errors = validationResult(req);
-    if (!errors.isEmpty()) {
-      return res.status(400).json({ errores: errors.array() });
+    const error = validationResult(req);
+    if (!error.isEmpty()) {
+      return res.status(400).json({ errores: error.array() });
     }
     next();
   }
 ];
 
-module.exports = validateUpdateUsuario;
+module.exports = validarActualizarUsuario;
 
   

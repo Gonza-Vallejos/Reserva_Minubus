@@ -2,7 +2,7 @@
 const { Empresa } = require('../models');
 
 // Obtener todas las empresas
-exports.getEmpresa = async (req, res) => {
+exports.obtenerEmpresas = async (req, res) => {
     try {
         const empresas = await Empresa.findAll();
         res.status(200).json(empresas);
@@ -12,7 +12,7 @@ exports.getEmpresa = async (req, res) => {
 };
 
 // Obtener una Empresa por ID
-exports.getEmpresaById = async (req, res) => {
+exports.obtenerEmpresaPorId = async (req, res) => {
     try {
         const empresa = await Empresa.findByPk(req.params.id);
         if (!empresa) {
@@ -25,7 +25,7 @@ exports.getEmpresaById = async (req, res) => {
 };
 
 // Crear una nueva empresa
-exports.createEmpresa = async (req, res) => {
+exports.crearEmpresa = async (req, res) => {
     try {
         const nuevaEmpresa = await Empresa.create(req.body);
         res.status(201).json(nuevaEmpresa);
@@ -36,7 +36,7 @@ exports.createEmpresa = async (req, res) => {
 };
 
 // Actualizar una empresa existente
-exports.updateEmpresa = async (req, res) => {
+exports.actualizarEmpresa = async (req, res) => {
     try {
         const [actualizarEmpresa] = await Empresa.update(req.body, {
             where: { id: req.params.id }
@@ -51,7 +51,7 @@ exports.updateEmpresa = async (req, res) => {
 };
 
 // Eliminar una empresa
-exports.deleteEmpresa = async (req, res) => {
+exports.eliminarEmpresa = async (req, res) => {
     try {
         const eliminarEmpresa = await Empresa.destroy({
             where: { id: req.params.id }

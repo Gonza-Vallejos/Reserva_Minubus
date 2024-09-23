@@ -33,7 +33,7 @@ module.exports = {
       perfil_id: {
         type: Sequelize.INTEGER,
         references: {
-          model: 'Perfils',
+          model: 'Perfiles',
           key: 'id'
         }
       },

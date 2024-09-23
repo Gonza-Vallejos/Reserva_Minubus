@@ -2,23 +2,23 @@
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
   async up(queryInterface, Sequelize) {
-    await queryInterface.createTable('Detalle_Venta', {
+    await queryInterface.createTable('DetalleVenta', {
       id: {
         allowNull: false,
         autoIncrement: true,
         primaryKey: true,
         type: Sequelize.INTEGER
       },
-      forma_pago: {
+      formaPago: {
         type: Sequelize.STRING
       },
-      sub_total: {
+      subTotal: {
         type: Sequelize.FLOAT
       },
       descuento: {
         type: Sequelize.FLOAT
       },
-      precio_final: {
+      precioFinal: {
         type: Sequelize.FLOAT
       },
       ventas_id: {
@@ -46,6 +46,6 @@ module.exports = {
     });
   },
   async down(queryInterface, Sequelize) {
-    await queryInterface.dropTable('Detalle_Venta');
+    await queryInterface.dropTable('DetalleVenta');
   }
 };

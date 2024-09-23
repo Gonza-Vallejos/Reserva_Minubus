@@ -3,7 +3,7 @@
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
   async up (queryInterface, Sequelize) {
-    await queryInterface.bulkInsert('provincia', [
+    await queryInterface.bulkInsert('Provincia', [
       { id: 1, nombre: 'Buenos Aires', createdAt: new Date(), updatedAt: new Date() },
       { id: 2, nombre: 'Catamarca', createdAt: new Date(), updatedAt: new Date() },
       { id: 3, nombre: 'Chaco', createdAt: new Date(), updatedAt: new Date() },
@@ -32,6 +32,6 @@ module.exports = {
   },
 
   async down (queryInterface, Sequelize) {
-    await queryInterface.bulkDelete('provincia', null, {});
+    await queryInterface.bulkDelete('Provincia', null, {});
   }
 };

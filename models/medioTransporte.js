@@ -16,7 +16,7 @@ module.exports = (sequelize, DataTypes) => {
         target_Key: 'id'
       })
       Medio_Transporte.hasMany(models.Viajes, {
-        foreignKey: 'medio_transporte_id'
+        foreignKey: 'medioTransporte_id'
       })
     }
   }
@@ -24,12 +24,12 @@ module.exports = (sequelize, DataTypes) => {
     nombre: DataTypes.STRING,
     patente: DataTypes.STRING,
     marca: DataTypes.STRING,
-    cant_lugares: DataTypes.INTEGER,
+    cantLugares: DataTypes.INTEGER,
     empresa_id: DataTypes.INTEGER
   }, {
     sequelize,
-    modelName: 'Medio_Transporte',
-    tableName: 'medio_transporte',
+    modelName: 'MedioTransporte',
+    tableName: 'medioTransporte',
   });
   return Medio_Transporte;
 };

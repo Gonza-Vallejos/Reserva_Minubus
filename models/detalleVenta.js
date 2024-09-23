@@ -22,16 +22,16 @@ module.exports = (sequelize, DataTypes) => {
     }
   }
   Detalle_Venta.init({
-    forma_pago: DataTypes.STRING,
-    sub_total: DataTypes.FLOAT,
+    formaPago: DataTypes.STRING,
+    subTotal: DataTypes.FLOAT,
     descuento: DataTypes.FLOAT,
-    precio_final: DataTypes.FLOAT,
+    precioFinal: DataTypes.FLOAT,
     ventas_id: DataTypes.INTEGER,
     reservas_id: DataTypes.INTEGER
   }, {
     sequelize,
-    modelName: 'Detalle_Venta',
-    tableName: 'detalle_venta'
+    modelName: 'DetalleVenta',
+    tableName: 'detalleventa'
   });
   return Detalle_Venta;
 };

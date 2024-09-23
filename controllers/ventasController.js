@@ -2,7 +2,7 @@
 const { Ventas } = require('../models');
 
 // Obtener todas las ventas
-exports.getVentas = async (req, res) => {
+exports.obtenerVentas = async (req, res) => {
     try {
         const ventas = await Ventas.findAll();
         res.status(200).json(ventas);
@@ -12,7 +12,7 @@ exports.getVentas = async (req, res) => {
 };
 
 // Obtener una Venta por ID
-exports.getVentasById = async (req, res) => {
+exports.obtenerVentasPorId = async (req, res) => {
     try {
         const ventas = await Ventas.findByPk(req.params.id);
         if (!ventas) {
@@ -24,7 +24,7 @@ exports.getVentasById = async (req, res) => {
     }
 };
 // Crear una nueva Venta
-exports.createVentas= async (req, res) => {
+exports.crearVenta= async (req, res) => {
     try {
         const nuevaVenta = await Ventas.create(req.body);
         res.status(201).json(nuevaVenta);
@@ -34,7 +34,7 @@ exports.createVentas= async (req, res) => {
 };
 
 // Actualizar una venta existente
-exports.updateVentas = async (req, res) => {
+exports.actualizarVentas = async (req, res) => {
     try {
         const [actualizarVenta] = await Ventas.update(req.body, {
             where: { id: req.params.id }
@@ -49,7 +49,7 @@ exports.updateVentas = async (req, res) => {
 };
 
 // Eliminar una venta
-exports.deleteVentas= async (req, res) => {
+exports.eliminarVentas= async (req, res) => {
     try {
         const eliminarVenta = await Ventas.destroy({
             where: { id: req.params.id }

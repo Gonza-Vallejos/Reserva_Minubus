@@ -2,7 +2,7 @@
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
   async up(queryInterface, Sequelize) {
-    await queryInterface.createTable('Medio_Transporte', {
+    await queryInterface.createTable('MedioTransporte', {
       id: {
         allowNull: false,
         autoIncrement: true,
@@ -18,7 +18,7 @@ module.exports = {
       marca: {
         type: Sequelize.STRING
       },
-      cant_lugares: {
+      cantLugares: {
         type: Sequelize.INTEGER
       },
       empresa_id: {
@@ -38,6 +38,6 @@ module.exports = {
     });
   },
   async down(queryInterface, Sequelize) {
-    await queryInterface.dropTable('Medio_Transporte');
+    await queryInterface.dropTable('MedioTransporte');
   }
 };

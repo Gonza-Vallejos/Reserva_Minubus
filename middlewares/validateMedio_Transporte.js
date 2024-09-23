@@ -1,14 +1,14 @@
 const { body, validationResult } = require('express-validator');
 const { Medio_Transporte } = require('../models');
 
-const validateMedioTransporte = [
+const validarMedioTransporte = [
   // Validar nombre
   body('nombre')
     .notEmpty().withMessage('El nombre es requerido.')
     .isString().withMessage('El nombre debe ser un string.')
     .custom(async (nombre, { req }) => {
-      const medio = await Medio_Transporte.findOne({ where: { nombre } });
-      if (medio && medio.id !== parseInt(req.params.id)) {
+      const tranporte = await Medio_Transporte.findOne({ where: { nombre } });
+      if (tranporte && tranporte.id !== parseInt(req.params.id)) {
         throw new Error('El nombre ya está en uso por otro medio de transporte');
       }
       return true;
@@ -20,8 +20,8 @@ const validateMedioTransporte = [
     .isString().withMessage('La patente debe ser un string.')
     .matches(/^[A-Z]{2}\d{3}[A-Z]{2}$/).withMessage('El formato de la patente debe ser de dos letras, tres números y dos letras.')
     .custom(async (patente, { req }) => {
-      const medio = await Medio_Transporte.findOne({ where: { patente } });
-      if (medio && medio.id !== parseInt(req.params.id)) {
+      const tranporte = await Medio_Transporte.findOne({ where: { patente } });
+      if (tranporte && tranporte.id !== parseInt(req.params.id)) {
         throw new Error('La patente ya está en uso por otro medio de transporte');
       }
       return true;
@@ -33,7 +33,7 @@ const validateMedioTransporte = [
     .isString().withMessage('La marca debe ser un string.'),
 
   // Validar cantidad de lugares
-  body('cant_lugares')
+  body('cantLugares')
     .notEmpty().withMessage('La cantidad de lugares es requerida.')
     .isInt({ min: 10 }).withMessage('La cantidad de lugares debe ser un número mayor a 10.'),
 
@@ -44,12 +44,12 @@ const validateMedioTransporte = [
 
   // Manejo de errores
   (req, res, next) => {
-    const errors = validationResult(req);
-    if (!errors.isEmpty()) {
-      return res.status(400).json({ errores: errors.array() });
+    const error = validationResult(req);
+    if (!error.isEmpty()) {
+      return res.status(400).json({ errores: error.array() });
     }
     next();
   }
 ];
 
-module.exports = validateMedioTransporte;
+module.exports = validarMedioTransporte;
