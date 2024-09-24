@@ -7,8 +7,8 @@ const validarMedioTransporte = [
     .notEmpty().withMessage('El nombre es requerido.')
     .isString().withMessage('El nombre debe ser un string.')
     .custom(async (nombre, { req }) => {
-      const tranporte = await Medio_Transporte.findOne({ where: { nombre } });
-      if (tranporte && tranporte.id !== parseInt(req.params.id)) {
+      const transporte = await Medio_Transporte.findOne({ where: { nombre } });
+      if (transporte && transporte.id !== parseInt(req.params.id)) {
         throw new Error('El nombre ya está en uso por otro medio de transporte');
       }
       return true;
@@ -20,8 +20,8 @@ const validarMedioTransporte = [
     .isString().withMessage('La patente debe ser un string.')
     .matches(/^[A-Z]{2}\d{3}[A-Z]{2}$/).withMessage('El formato de la patente debe ser de dos letras, tres números y dos letras.')
     .custom(async (patente, { req }) => {
-      const tranporte = await Medio_Transporte.findOne({ where: { patente } });
-      if (tranporte && tranporte.id !== parseInt(req.params.id)) {
+      const transporte = await Medio_Transporte.findOne({ where: { patente } });
+      if (transporte && transporte.id !== parseInt(req.params.id)) {
         throw new Error('La patente ya está en uso por otro medio de transporte');
       }
       return true;

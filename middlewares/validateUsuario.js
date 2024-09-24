@@ -56,7 +56,7 @@ const validarUsuario = [
     .matches(/[A-Z]/).withMessage('debe contener al menos una letra mayúscula')
     .matches(/[a-z]/).withMessage('debe contener al menos una letra minúscula')
     .matches(/[0-9]/).withMessage('debe contener al menos un número')
-    .matches(/[@$!%*?&]/).withMessage('debe contener al menos un carácter especial'),
+    .matches(/[@$!%*?#_.&]/).withMessage('debe contener al menos un carácter especial'),
   body('perfil_id')
     .isInt().withMessage('El perfil es requerido.')
     .notEmpty().withMessage('El perfil es requerido.'),

@@ -3,16 +3,6 @@ const { Usuario } = require('../models');
 
 const validarActualizarUsuario = [
   // Validar email
-  body('dni')
-    .isInt({ min: 1, max: 99999999 }).withMessage('El DNI debe ser un número entero de hasta 8 dígitos.')
-    .notEmpty().withMessage('El DNI es requerido.')
-    .custom(async (telefono, { req }) => {
-        const usuario = await Usuario.findOne({ where: { telefono } });
-        if (usuario && usuario.id !== parseInt(req.params.id)) {
-          throw new Error('El teléfono ya está en uso por otro usuario');
-        }
-        return true;
-      }),
   body('email')
     .optional()
     .isEmail().withMessage('El formato del correo electrónico no es válido')
@@ -55,7 +45,26 @@ const validarActualizarUsuario = [
     .matches(/[A-Z]/).withMessage('debe contener al menos una letra mayúscula')
     .matches(/[a-z]/).withMessage('debe contener al menos una letra minúscula')
     .matches(/[0-9]/).withMessage('debe contener al menos un número')
-    .matches(/[@$!%*?&]/).withMessage('debe contener al menos un carácter especial'),
+    .matches(/[@$!%*#_.?&]/).withMessage('debe contener al menos un carácter especial'),
+
+    //validar el perfil 
+    body('perfil_id')
+    .isInt().withMessage('El perfil debe ser un número entero.')
+    .notEmpty().withMessage('El perfil es requerido.')
+    .custom(async (value, { req }) => {
+      // Obtener el usuario actual desde la base de datos según el ID
+      const usuario = await Usuario.findOne({ where: { id: req.params.id } });
+      
+      // Verificar el perfil actual del usuario en la base de datos
+      if (usuario.perfil_id === 2) {
+        throw new Error('No tienes acceso para modificar este perfil.');
+      }
+
+      // Si el perfil es 1, permitimos la validación.
+      return true;
+    }),
+
+
 
   // Manejo de errores
   (req, res, next) => {
