@@ -52,9 +52,6 @@ module.exports = (sequelize, DataTypes) => {
     contrasenia: {
       type: DataTypes.STRING,
       allowNull: false,
-      validate: {
-        len: [8, 12]
-      }
     },
     perfil_id: {
       type: DataTypes.INTEGER,

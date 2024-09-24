@@ -46,7 +46,7 @@ exports.crearUsuario = async (req, res) => {
 exports.actualizarUsuario = async (req, res) => {
     try {
         // Especificar los campos que quieres actualizar
-        const camposActualizados = ['nombre','apellido', 'email', 'telefono', 'usuario', 'contaseña', 'perfil_id']; 
+        const camposActualizados = ['nombre','apellido', 'email', 'telefono', 'usuario', 'contrasenia', 'perfil_id']; 
 
         
         const [actualizar] = await Usuario.update(req.body, {
