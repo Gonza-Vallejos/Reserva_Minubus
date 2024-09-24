@@ -5,7 +5,7 @@ exports.obtenerUsuarios = async (req, res) => {
     try {
         const usuarios = await Usuario.findAll({
             // Solo los campos que quieras traer
-            attributes: ['id','nombre', 'apellido', 'dni','telefono', 'email','usuario','contraseña', 'perfil_id'] 
+            attributes: ['id','nombre', 'apellido', 'dni','telefono', 'email','usuario','contrasenia', 'perfil_id'] 
         });
         res.status(200).json(usuarios);
     } catch (error) {
@@ -18,7 +18,7 @@ exports.obtenerUsuarios = async (req, res) => {
 exports.obtenerUsuarioPorId = async (req, res) => {
     try {
         const usuario = await Usuario.findByPk(req.params.id, {
-            attributes: ['id','nombre', 'apellido', 'dni','telefono', 'email','usuario','contraseña', 'perfil_id']
+            attributes: ['id','nombre', 'apellido', 'dni','telefono', 'email','usuario','contrasenia', 'perfil_id']
         });
 
         if (!usuario) {

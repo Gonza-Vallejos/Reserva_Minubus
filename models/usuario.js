@@ -49,7 +49,7 @@ module.exports = (sequelize, DataTypes) => {
         len: [4, Infinity]
       }
     },
-    contraseña: {
+    contrasenia: {
       type: DataTypes.STRING,
       allowNull: false,
       validate: {

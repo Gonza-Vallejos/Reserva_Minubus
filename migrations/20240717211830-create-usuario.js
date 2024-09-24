@@ -27,7 +27,7 @@ module.exports = {
       usuario: {
         type: Sequelize.STRING
       },
-      contraseña: {
+      contrasenia: {
         type: Sequelize.STRING
       },
       perfil_id: {
@@ -36,6 +36,10 @@ module.exports = {
           model: 'Perfiles',
           key: 'id'
         }
+      },
+      eliminado: {
+        type: Sequelize.STRING,
+        defaultValue: "no" 
       },
       createdAt: {
         allowNull: false,

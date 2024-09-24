@@ -39,7 +39,7 @@ const validarActualizarUsuario = [
     }),
 
   // Validar contraseña
-  body('contraseña')
+  body('contrasenia')
     .optional()
     .isLength({ min: 8, max: 12 }).withMessage('debe tener entre 8 y 12 caracteres')
     .matches(/[A-Z]/).withMessage('debe contener al menos una letra mayúscula')

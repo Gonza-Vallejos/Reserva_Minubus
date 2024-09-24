@@ -4,7 +4,9 @@ const { Empresa } = require('../models');
 // Obtener todas las empresas
 exports.obtenerEmpresas = async (req, res) => {
     try {
-        const empresas = await Empresa.findAll();
+        const empresas = await Empresa.findAll({
+            attributes: ['id','nombre', 'direccion', 'cuit','telefono', 'email','localidad_id'] 
+        });
         res.status(200).json(empresas);
     } catch (error) {
         res.status(500).json({ error: 'Error al obtener las empresas' });
@@ -14,7 +16,10 @@ exports.obtenerEmpresas = async (req, res) => {
 // Obtener una Empresa por ID
 exports.obtenerEmpresaPorId = async (req, res) => {
     try {
-        const empresa = await Empresa.findByPk(req.params.id);
+        const empresa = await Empresa.findByPk(req.params.id, {
+            attributes: ['id','nombre', 'direccion', 'cuit','telefono', 'email','localidad_id'] 
+        });
+        
         if (!empresa) {
             return res.status(404).json({ error: 'Empresa no encontrada' });
         }

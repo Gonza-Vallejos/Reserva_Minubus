@@ -35,6 +35,10 @@ module.exports = {
           key: 'id'
         }
       },
+      eliminado: {
+        type: Sequelize.STRING,
+        defaultValue: "no"
+      },
       createdAt: {
         allowNull: false,
         type: Sequelize.DATE

@@ -11,7 +11,7 @@ module.exports = {
         telefono: '5551234',
         email: 'juan.perez@example.com',
         usuario: 'juanp',
-        contraseña: 'password123',
+        contrasenia: 'password123',
         perfil_id: 1,  // Asegúrate de que este ID exista en la tabla `perfils`
         createdAt: new Date(),
         updatedAt: new Date()
@@ -23,7 +23,7 @@ module.exports = {
         telefono: '5555678',
         email: 'maria.gonzalez@example.com',
         usuario: 'mariag',
-        contraseña: 'password456',
+        contrasenia: 'password456',
         perfil_id: 2,  // Asegúrate de que este ID exista en la tabla `perfils`
         createdAt: new Date(),
         updatedAt: new Date()

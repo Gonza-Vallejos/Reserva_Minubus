@@ -27,6 +27,10 @@ module.exports = {
           model: 'Empresa',
           key: 'id'}
       },
+      eliminado: {
+        type: Sequelize.STRING,
+        defaultValue: "no" 
+      },
       createdAt: {
         allowNull: false,
         type: Sequelize.DATE
