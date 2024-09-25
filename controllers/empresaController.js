@@ -57,10 +57,14 @@ exports.actualizarEmpresa = async (req, res) => {
 
 // Eliminar una empresa
 exports.eliminarEmpresa = async (req, res) => {
+    console.log(`Solicitando eliminar empresa con ID: ${req.params.id}`);
     try {
-        const eliminarEmpresa = await Empresa.destroy({
-            where: { id: req.params.id }
+        // Actualizar el campo 'eliminado' a 'si'
+        const [eliminar] = await Empresa.update({ eliminado: 'si' }, {
+            where: { id: req.params.id },
+            fields: ['eliminado']
         });
+
         if (!eliminarEmpresa) {
             return res.status(404).json({ error: 'Empresa no encontrada' });
         }

@@ -28,10 +28,14 @@ exports.crearTransporte = async (req, res) => {
 
 // Eliminar un transporte
 exports.eliminarTransporte = async (req, res) => {
+    console.log(`Solicitando eliminar medio de transporte con ID: ${req.params.id}`);
     try {
-        const eliminar = await Medio_Transporte.destroy({
-            where: { id: req.params.id }
+        // Actualizar el campo 'eliminado' a 'si'
+        const [eliminar] = await Medio_Transporte.update({ eliminado: 'si' }, {
+            where: { id: req.params.id },
+            fields: ['eliminado']
         });
+
         if (!eliminar) {
             return res.status(404).json({ error: 'Transporte no encontrado' });
         }

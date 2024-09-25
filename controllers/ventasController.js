@@ -50,10 +50,14 @@ exports.actualizarVentas = async (req, res) => {
 
 // Eliminar una venta
 exports.eliminarVentas= async (req, res) => {
+    console.log(`Solicitando eliminar venta con ID: ${req.params.id}`);
     try {
-        const eliminarVenta = await Ventas.destroy({
-            where: { id: req.params.id }
+        // Actualizar el campo 'eliminado' a 'si'
+        const [eliminar] = await Ventas.update({ eliminado: 'si' }, {
+            where: { id: req.params.id },
+            fields: ['eliminado']
         });
+
         if (!eliminarVenta) {
             return res.status(404).json({ error: 'Venta no encontrada' });
         }

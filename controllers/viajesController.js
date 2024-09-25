@@ -50,10 +50,14 @@ exports.actualizarViajes = async (req, res) => {
 
 // Eliminar un Viaje
 exports.eliminarViajes= async (req, res) => {
+    console.log(`Solicitando eliminar viajes con ID: ${req.params.id}`);
     try {
-        const eliminarViaje = await Viajes.destroy({
-            where: { id: req.params.id }
+        // Actualizar el campo 'eliminado' a 'si'
+        const [eliminar] = await Viajes.update({ eliminado: 'si' }, {
+            where: { id: req.params.id },
+            fields: ['eliminado']
         });
+
         if (!eliminarViaje) {
             return res.status(404).json({ error: 'Viaje no encontrado' });
         }

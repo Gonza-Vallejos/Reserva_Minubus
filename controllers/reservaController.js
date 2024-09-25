@@ -52,10 +52,14 @@ exports.actualizarReserva = async (req, res) => {
 
 // Eliminar una reserva
 exports.eliminarReserva = async (req, res) => {
+    console.log(`Solicitando eliminar reserva con ID: ${req.params.id}`);
     try {
-        const eliminar = await Reserva.destroy({
-            where: { id: req.params.id }
+        // Actualizar el campo 'eliminado' a 'si'
+        const [eliminar] = await Reserva.update({ eliminado: 'si' }, {
+            where: { id: req.params.id },
+            fields: ['eliminado']
         });
+
         if (!eliminar) {
             return res.status(404).json({ error: 'Reserva no encontrada' });
         }
