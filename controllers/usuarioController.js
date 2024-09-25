@@ -34,7 +34,7 @@ exports.obtenerUsuarioPorId = async (req, res) => {
 exports.crearUsuario = async (req, res) => {
     try {
         const nuevoUsuario = await Usuario.create(req.body);
-        res.status(201).json(nuevoUsuario);
+        res.status(200).json({message: 'usuario agregado correctamente'});
     } catch (error) {
         
         res.status(500).json({ error: 'Error al crear el usuario' });

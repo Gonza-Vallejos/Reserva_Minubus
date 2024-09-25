@@ -33,7 +33,7 @@ exports.obtenerEmpresaPorId = async (req, res) => {
 exports.crearEmpresa = async (req, res) => {
     try {
         const nuevaEmpresa = await Empresa.create(req.body);
-        res.status(201).json(nuevaEmpresa);
+        res.status(200).json({message: 'Empresa creada correctamente'});
     } catch (error) {
         console.error('Error al crear la empresa:', error);
         res.status(500).json({ error: 'Error al crear la empresa' });
