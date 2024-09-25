@@ -16,7 +16,7 @@ exports.obtenerTransportes = async (req, res) => {
 // Crear un nuevo transporte
 exports.crearTransporte = async (req, res) => {
     try {
-      const nuevoTransporte = await Medio_Transporte.create(req.body);
+      const nuevoTransporte = await MedioTransporte.create(req.body);
       res.status(201).json(nuevoTransporte);
     } catch (error) {
       
