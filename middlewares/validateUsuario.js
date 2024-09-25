@@ -5,7 +5,7 @@ const { Usuario } = require('../models');
 // Middleware para validar y sanitizar los datos del usuario
 const validarUsuario = [
   body('nombre')
-    .trim()
+    .trim() 
     .notEmpty().withMessage('El nombre es requerido.'),
   body('apellido')
     .trim()

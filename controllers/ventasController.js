@@ -4,7 +4,9 @@ const { Ventas } = require('../models');
 // Obtener todas las ventas
 exports.obtenerVentas = async (req, res) => {
     try {
-        const ventas = await Ventas.findAll();
+        const ventas = await Ventas.findAll({
+            attributes:['id','fecha','hora','totalVentas','viajes_id']
+        });
         res.status(200).json(ventas);
     } catch (error) {
         res.status(500).json({ error: 'Error al obtener las ventas' });
@@ -14,7 +16,9 @@ exports.obtenerVentas = async (req, res) => {
 // Obtener una Venta por ID
 exports.obtenerVentasPorId = async (req, res) => {
     try {
-        const ventas = await Ventas.findByPk(req.params.id);
+        const ventas = await Ventas.findByPk(req.params.id, {
+            attributes:['id','fecha','hora','totalVentas','viajes_id']
+        });
         if (!ventas) {
             return res.status(404).json({ error: 'Venta no encontrada' });
         }
@@ -27,7 +31,7 @@ exports.obtenerVentasPorId = async (req, res) => {
 exports.crearVenta= async (req, res) => {
     try {
         const nuevaVenta = await Ventas.create(req.body);
-        res.status(201).json(nuevaVenta);
+        res.status(200).json({ message: 'Venta creada' });
     } catch (error) {
         res.status(500).json({ error: 'Error al crear la venta' });
     }
@@ -36,8 +40,10 @@ exports.crearVenta= async (req, res) => {
 // Actualizar una venta existente
 exports.actualizarVentas = async (req, res) => {
     try {
+        
         const [actualizarVenta] = await Ventas.update(req.body, {
             where: { id: req.params.id }
+            
         });
         if (!actualizarVenta) {
             return res.status(404).json({ error: 'Venta no encontrada' });

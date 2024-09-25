@@ -4,7 +4,9 @@ const { Reserva } = require('../models');
 // Obtener todas las reservas
 exports.obtenerReservas = async (req, res) => {
     try {
-        const reservas = await Reserva.findAll();
+        const reservas = await Reserva.findAll({
+            attributes:['id','ubicacionOrigen','ubicacionDestino','fechaReserva','usuario_id','viajes_id']
+        });
         res.status(200).json(reservas);
     } catch (error) {
         res.status(500).json({ error: 'Error al obtener las reservas' });
@@ -14,7 +16,9 @@ exports.obtenerReservas = async (req, res) => {
 // Obtener una reserva por ID
 exports.obtenerReservaPorId = async (req, res) => {
     try {
-        const reserva = await Reservas.findByPk(req.params.id);
+        const reserva = await Reservas.findByPk(req.params.id, {
+            attributes:['id','ubicacionOrigen','ubicacionDestino','fechaReserva','usuario_id','viajes_id']
+        });
         if (!reserva) {
             return res.status(404).json({ error: 'Reserva no encontrada' });
         }
@@ -28,7 +32,7 @@ exports.obtenerReservaPorId = async (req, res) => {
 exports.crearReserva = async (req, res) => {
     try {
       const nuevoReserva = await Reserva.create(req.body);
-      res.status(201).json(nuevoReserva);
+      res.status(200).json({ message: 'Reserva creada' });
     } catch (error) {
         // Captura otros tipos de errores
         res.status(500).json({ error: 'Error al crear la reserva' });
@@ -38,13 +42,15 @@ exports.crearReserva = async (req, res) => {
 // Actualizar una reserva existente
 exports.actualizarReserva = async (req, res) => {
     try {
+        const camposActualizados = ['ubicacionOrigen','ubicacionDestino','fechaReserva']; 
         const [actualizar] = await Reserva.update(req.body, {
-            where: { id: req.params.id }
+            where: { id: req.params.id },
+            fields: camposActualizados
         });
         if (!actualizar) {
             return res.status(404).json({ error: 'Reserva no encontrada' });
         }
-        res.status(200).json({ message: 'Reserva actualizado' });
+        res.status(200).json({ message: 'Reserva actualizada' });
     } catch (error) {
         res.status(500).json({ error: 'Error al actualizar la reserva' });
     }

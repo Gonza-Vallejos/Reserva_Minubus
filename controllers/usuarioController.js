@@ -34,7 +34,7 @@ exports.obtenerUsuarioPorId = async (req, res) => {
 exports.crearUsuario = async (req, res) => {
     try {
         const nuevoUsuario = await Usuario.create(req.body);
-        res.status(200).json({message: 'usuario agregado correctamente'});
+        res.status(200).json({message: 'usuario creado'});
     } catch (error) {
         
         res.status(500).json({ error: 'Error al crear el usuario' });
@@ -76,7 +76,7 @@ exports.eliminarUsuario = async (req, res) => {
         if (!eliminar) {
             return res.status(404).json({ error: 'Usuario no encontrado' });
         }
-        res.status(200).json({ message: 'Usuario eliminado lógicamente' });
+        res.status(200).json({ message: 'Usuario eliminado' });
     } catch (error) {
         res.status(500).json({ error: 'Error al eliminar el usuario' });
     }

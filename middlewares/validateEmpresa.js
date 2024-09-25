@@ -66,7 +66,7 @@ const validarEmpresa = [
     }),
 
   body('localidad_id')
-    .isInt().withMessage('El ID de localidad es requerido y debe ser un número entero.')
+    .isInt().withMessage('La identificacion de localidad es requerido y debe ser un número entero.')
     .notEmpty().withMessage('El ID de localidad es requerido.'),
 
   (req, res, next) => {
