@@ -30,11 +30,12 @@ module.exports = (sequelize, DataTypes) => {
     fechaViaje: DataTypes.DATE,
     precio: DataTypes.FLOAT,
     chofer: DataTypes.STRING,
-    medioTransporte_id: DataTypes.INTEGER
+    medioTransporte_id: DataTypes.INTEGER,
+    eliminado:DataTypes.STRING, allowNull: false
   }, {
     sequelize,
     modelName: 'Viajes',
-    tableName: 'Viajes'
+    tableName: 'viajes'
   });
   return Viajes;
 };

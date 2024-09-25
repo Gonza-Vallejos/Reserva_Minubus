@@ -56,11 +56,16 @@ module.exports = (sequelize, DataTypes) => {
     perfil_id: {
       type: DataTypes.INTEGER,
       allowNull: false
+    },
+    eliminado: {
+      type: DataTypes.STRING,
+      allowNull: false,
+      defaultValue: 'no'
     }
   }, {
     sequelize,
     modelName: 'Usuario',
-    tableName: 'Usuarios'
+    tableName: 'usuarios'
   });
 
   return Usuario;

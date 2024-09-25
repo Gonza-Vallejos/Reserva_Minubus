@@ -26,7 +26,7 @@ module.exports = (sequelize, DataTypes) => {
   }, {
     sequelize,
     modelName: 'Localidad',
-    tableName: 'Localidad'
+    tableName: 'localidad'
   });
   return Localidad;
 };

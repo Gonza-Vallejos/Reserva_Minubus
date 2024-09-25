@@ -25,11 +25,12 @@ module.exports = (sequelize, DataTypes) => {
     patente: DataTypes.STRING,
     marca: DataTypes.STRING,
     cantLugares: DataTypes.INTEGER,
-    empresa_id: DataTypes.INTEGER
+    empresa_id: DataTypes.INTEGER,
+    eliminado:DataTypes.STRING, allowNull: false
   }, {
     sequelize,
     modelName: 'MedioTransporte',
-    tableName: 'MedioTransporte',
+    tableName: 'medioTransporte',
   });
   return Medio_Transporte;
 };

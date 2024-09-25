@@ -27,11 +27,12 @@ module.exports = (sequelize, DataTypes) => {
     descuento: DataTypes.FLOAT,
     precioFinal: DataTypes.FLOAT,
     ventas_id: DataTypes.INTEGER,
-    reservas_id: DataTypes.INTEGER
+    reservas_id: DataTypes.INTEGER,
+    eliminado:DataTypes.STRING, allowNull: false
   }, {
     sequelize,
     modelName: 'DetalleVenta',
-    tableName: 'Detalleventa'
+    tableName: 'detalleVenta'
   });
   return Detalle_Venta;
 };

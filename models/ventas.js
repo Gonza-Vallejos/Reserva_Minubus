@@ -24,11 +24,12 @@ module.exports = (sequelize, DataTypes) => {
     fecha: DataTypes.DATE,
     hora: DataTypes.DATE,
     totalVentas: DataTypes.INTEGER,
-    viajes_id: DataTypes.INTEGER
+    viajes_id: DataTypes.INTEGER,
+    eliminado:DataTypes.STRING, allowNull: false
   }, {
     sequelize,
     modelName: 'Ventas',
-    tableName: 'Ventas'
+    tableName: 'ventas'
   });
   return Ventas;
 };
