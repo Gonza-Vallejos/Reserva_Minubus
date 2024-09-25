@@ -29,11 +29,13 @@ module.exports = (sequelize, DataTypes) => {
     ubicacionDestino: DataTypes.STRING,
     fechaReserva: DataTypes.DATE,
     usuarios_id: DataTypes.INTEGER,
-    viajes_id: DataTypes.INTEGER
+    viajes_id: DataTypes.INTEGER,
+    eliminado:DataTypes.STRING, allowNull: false
+
   }, {
     sequelize,
     modelName: 'Reserva',
-    tableName: 'Reservas'
+    tableName: 'reservas'
   });
   return Reserva;
 };

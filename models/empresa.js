@@ -26,11 +26,12 @@ module.exports = (sequelize, DataTypes) => {
     cuit: DataTypes.INTEGER,
     telefono: DataTypes.INTEGER,
     email: DataTypes.STRING,
-    localidad_id: DataTypes.INTEGER
+    localidad_id: DataTypes.INTEGER,
+    eliminado:DataTypes.STRING, allowNull: false
   }, {
     sequelize,
     modelName: 'Empresa',
-    tableName: 'Empresa'
+    tableName: 'empresa'
   });
   return Empresa;
 };

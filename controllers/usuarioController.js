@@ -63,18 +63,24 @@ exports.actualizarUsuario = async (req, res) => {
     }
 };
 
-
-// Eliminar un usuario
+// Eliminar un usuario lógicamente
 exports.eliminarUsuario = async (req, res) => {
+    console.log(`Solicitando eliminar usuario con ID: ${req.params.id}`);
     try {
-        const eliminar = await Usuario.destroy({
-            where: { id: req.params.id }
+        // Actualizar el campo 'eliminado' a 'si'
+        const [eliminar] = await Usuario.update({ eliminado: 'si' }, {
+            where: { id: req.params.id },
+            fields: ['eliminado']
         });
+
         if (!eliminar) {
             return res.status(404).json({ error: 'Usuario no encontrado' });
         }
-        res.status(200).json({ message: 'Usuario eliminado' });
+        res.status(200).json({ message: 'Usuario eliminado lógicamente' });
     } catch (error) {
         res.status(500).json({ error: 'Error al eliminar el usuario' });
     }
 };
+
+
+
