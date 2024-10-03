@@ -31,14 +31,41 @@ exports.obtenerUsuarioPorId = async (req, res) => {
 };
 
 // Crear un nuevo usuario
+/*
 exports.crearUsuario = async (req, res) => {
     try {
         const nuevoUsuario = await Usuario.create(req.body);
-        res.status(200).json({message: 'usuario creado'});
+        res.status(201).json({message: 'usuario creado'});
     } catch (error) {
         
         res.status(500).json({ error: 'Error al crear el usuario' });
         
+    }
+};*/
+ 
+
+
+//Crear un nuevo usuario
+exports.crearUsuario = async (req, res) => {
+    try {
+        const { nombre, apellido, dni, telefono, email, usuario, contrasenia, perfil_id } = req.body;
+        
+        // Crear el usuario con los campos separados
+        const nuevoUsuario = await Usuario.create({
+            nombre: nombre,
+            apellido: apellido,
+            dni: dni,
+            telefono:telefono,
+            email:email,
+            usuario:usuario,
+            contrasenia:contrasenia,
+            perfil_id:perfil_id
+        });
+
+        res.status(201).json(nuevoUsuario);
+    } catch (error) {
+        console.error('Error al crear el usuario:', error);
+        res.status(500).json({ error: 'Error al crear el usuario' });
     }
 };
 
@@ -65,7 +92,6 @@ exports.actualizarUsuario = async (req, res) => {
 
 // Eliminar un usuario lógicamente
 exports.eliminarUsuario = async (req, res) => {
-    console.log(`Solicitando eliminar usuario con ID: ${req.params.id}`);
     try {
         // Actualizar el campo 'eliminado' a 'si'
         const [eliminar] = await Usuario.update({ eliminado: 'si' }, {

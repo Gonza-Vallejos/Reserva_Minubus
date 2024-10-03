@@ -31,8 +31,18 @@ exports.obtenerReservaPorId = async (req, res) => {
 // Crear una nueva reserva
 exports.crearReserva = async (req, res) => {
     try {
-      const nuevoReserva = await Reserva.create(req.body);
-      res.status(200).json({ message: 'Reserva creada' });
+        const { ubicacionOrigen, ubicacionDestino, fechaReserva, usuario_id, viajes_id, eliminado } = req.body;
+        
+        // Crear el usuario con los campos separados
+        const nuevaReserva = await Reserva.create({
+            ubicacionOrigen: ubicacionOrigen,
+            ubicacionDestino: ubicacionDestino,
+            fechaReserva: fechaReserva,
+            usuario_id:usuario_id,
+            viajes_id:viajes_id,
+            eliminado:eliminado
+        });
+      res.status(201).json({ message: 'Reserva creada' });
     } catch (error) {
         // Captura otros tipos de errores
         res.status(500).json({ error: 'Error al crear la reserva' });
@@ -58,8 +68,7 @@ exports.actualizarReserva = async (req, res) => {
 
 // Eliminar una reserva
 exports.eliminarReserva = async (req, res) => {
-    console.log(`Solicitando eliminar reserva con ID: ${req.params.id}`);
-    try {
+        try {
         // Actualizar el campo 'eliminado' a 'si'
         const [eliminar] = await Reserva.update({ eliminado: 'si' }, {
             where: { id: req.params.id },

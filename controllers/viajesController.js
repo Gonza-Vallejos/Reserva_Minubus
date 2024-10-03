@@ -30,8 +30,20 @@ exports.obtenerViajePorId = async (req, res) => {
 // Crear una nuevo Viaje
 exports.crearViaje= async (req, res) => {
     try {
-        const nuevoViaje = await Viajes.create(req.body);
-        res.status(200).json({ message: 'viaje creado' });
+        const { orijenLocalidad, destinoLocalidad, horarioSalida, fechaViaje, precio, chofer, medioTransporte_id,eliminado } = req.body;
+        
+        // Crear el usuario con los campos separados
+        const nuevoViaje= await Viajes.create({
+            orijenLocalidad: orijenLocalidad,
+            destinoLocalidad: destinoLocalidad,
+            horarioSalida: horarioSalida,
+            fechaViaje:fechaViaje,
+            precio:precio,
+            chofer:chofer,
+            medioTransporte_id:medioTransporte_id,
+            eliminado:eliminado
+        });
+        res.status(201).json({ message: 'viaje creado' });
     } catch (error) {
         res.status(500).json({ error: 'Error al crear el Viaje' });
     }
@@ -56,7 +68,6 @@ exports.actualizarViajes = async (req, res) => {
 
 // Eliminar un Viaje
 exports.eliminarViajes= async (req, res) => {
-    console.log(`Solicitando eliminar viajes con ID: ${req.params.id}`);
     try {
         // Actualizar el campo 'eliminado' a 'si'
         const [eliminar] = await Viajes.update({ eliminado: 'si' }, {

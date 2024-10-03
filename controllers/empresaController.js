@@ -32,10 +32,20 @@ exports.obtenerEmpresaPorId = async (req, res) => {
 // Crear una nueva empresa
 exports.crearEmpresa = async (req, res) => {
     try {
-        const nuevaEmpresa = await Empresa.create(req.body);
-        res.status(200).json({message: 'Empresa creada correctamente'});
+        const { nombre, direccion, cuit, telefono, email, localidad_id, eliminado } = req.body;
+        
+        // Crear el usuario con los campos separados
+        const nuevaEmpresa = await Empresa.create({
+            nombre: nombre,
+            direccion: direccion,
+            cuit: cuit,
+            telefono:telefono,
+            email:email,
+            localidad_id:localidad_id,
+            eliminado:eliminado
+        });
+        res.status(201).json({message: 'Empresa creada correctamente'});
     } catch (error) {
-        console.error('Error al crear la empresa:', error);
         res.status(500).json({ error: 'Error al crear la empresa' });
     }
 };
@@ -60,7 +70,6 @@ exports.actualizarEmpresa = async (req, res) => {
 
 // Eliminar una empresa
 exports.eliminarEmpresa = async (req, res) => {
-    console.log(`Solicitando eliminar empresa con ID: ${req.params.id}`);
     try {
         // Actualizar el campo 'eliminado' a 'si'
         const [eliminar] = await Empresa.update({ eliminado: 'si' }, {

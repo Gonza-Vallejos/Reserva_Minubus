@@ -55,8 +55,18 @@ exports.actualizarTransporte = async (req, res) => {
 // Crear un nuevo transporte
 exports.crearTransporte = async (req, res) => {
     try {
-      const nuevoTransporte = await MedioTransporte.create(req.body);
-      res.status(200).json({ message: 'Transporte creado' });
+        const { nombre, patente, marca, cantLugares, empresa_id, eliminado } = req.body;
+        
+        // Crear el usuario con los campos separados
+        const nuevoTransporte = await Medio_Transporte.create({
+            nombre: nombre,
+            patente: patente,
+            marca: marca,
+            canLugares:cantLugares,
+            empresa_id:empresa_id,
+            eliminado:eliminado
+        });
+      res.status(201).json({ message: 'Transporte creado' });
     } catch (error) {
       
         res.status(500).json({ error: 'Error al crear el transporte' });
@@ -67,7 +77,7 @@ exports.crearTransporte = async (req, res) => {
 
 // Eliminar un transporte
 exports.eliminarTransporte = async (req, res) => {
-    console.log(`Solicitando eliminar medio de transporte con ID: ${req.params.id}`);
+    
     try {
         // Actualizar el campo 'eliminado' a 'si'
         const [eliminar] = await Medio_Transporte.update({ eliminado: 'si' }, {

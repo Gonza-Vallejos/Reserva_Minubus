@@ -30,8 +30,17 @@ exports.obtenerVentasPorId = async (req, res) => {
 // Crear una nueva Venta
 exports.crearVenta= async (req, res) => {
     try {
-        const nuevaVenta = await Ventas.create(req.body);
-        res.status(200).json({ message: 'Venta creada' });
+        const { fecha, hora, totalVentas, viajes_id, eliminado } = req.body;
+        
+        // Crear el usuario con los campos separados
+        const nuevaVenta = await Ventas.create({
+            fecha: fecha,
+            hora: hora,
+            totalVentas: totalVentas,
+            viajes_id:viajes_id,
+            eliminado:eliminado
+        });
+        res.status(201).json({ message: 'Venta creada' });
     } catch (error) {
         res.status(500).json({ error: 'Error al crear la venta' });
     }
@@ -56,7 +65,6 @@ exports.actualizarVentas = async (req, res) => {
 
 // Eliminar una venta
 exports.eliminarVentas= async (req, res) => {
-    console.log(`Solicitando eliminar venta con ID: ${req.params.id}`);
     try {
         // Actualizar el campo 'eliminado' a 'si'
         const [eliminar] = await Ventas.update({ eliminado: 'si' }, {
