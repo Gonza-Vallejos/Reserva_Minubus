@@ -37,16 +37,13 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.STRING,
       allowNull: false,
       unique: true,
-      validate: {
-        isEmail: true
-      }
     },
     usuario: {
       type: DataTypes.STRING,
       allowNull: false,
       unique: true,
       validate: {
-        len: [4, Infinity]
+        len: [4, 25]
       }
     },
     contrasenia: {
@@ -65,7 +62,7 @@ module.exports = (sequelize, DataTypes) => {
   }, {
     sequelize,
     modelName: 'Usuario',
-    tableName: 'Usuarios'
+    tableName: 'usuarios'
   });
 
   return Usuario;

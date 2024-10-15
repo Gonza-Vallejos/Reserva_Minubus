@@ -1,38 +1,56 @@
 'use strict';
-const {
-  Model
-} = require('sequelize');
+const { Model } = require('sequelize');
+
 module.exports = (sequelize, DataTypes) => {
   class Detalle_Venta extends Model {
-    /**
-     * Helper method for defining associations.
-     * This method is not a part of Sequelize lifecycle.
-     * The `models/index` file will call this method automatically.
-     */
+    
     static associate(models) {
-      // define association here
-      Detalle_Venta.belongsTo(models.Ventas,{
+      // Definir asociaciones aquí
+      Detalle_Venta.belongsTo(models.Ventas, {
         foreignKey: 'ventas_id',
-        target_Key: 'id'
-      })
-      Detalle_Venta.belongsTo(models.Reserva,{
+        targetKey: 'id'
+      });
+      Detalle_Venta.belongsTo(models.Reserva, {
         foreignKey: 'reservas_id',
-        target_Key: 'id'
-      })
+        targetKey: 'id'
+      });
     }
   }
+
   Detalle_Venta.init({
-    formaPago: DataTypes.STRING,
-    subTotal: DataTypes.FLOAT,
-    descuento: DataTypes.FLOAT,
-    precioFinal: DataTypes.FLOAT,
-    ventas_id: DataTypes.INTEGER,
-    reservas_id: DataTypes.INTEGER,
-    eliminado:DataTypes.STRING, allowNull: false
+    formaPago: {
+      type: DataTypes.STRING,
+      allowNull: false
+    },
+    subTotal: {
+      type: DataTypes.FLOAT,
+      allowNull: false
+    },
+    descuento: {
+      type: DataTypes.FLOAT
+    },
+    precioFinal: {
+      type: DataTypes.FLOAT,
+      allowNull: false
+    },
+    ventas_id: {
+      type: DataTypes.INTEGER,
+      allowNull: false
+    },
+    reservas_id: {
+      type: DataTypes.INTEGER,
+      allowNull: false
+    },
+    eliminado: {
+      type: DataTypes.STRING,
+      allowNull: false,
+      defaultValue: 'no'
+    }
   }, {
     sequelize,
     modelName: 'DetalleVenta',
-    tableName: 'Detalleventa'
+    tableName: 'detalleventas'
   });
+
   return Detalle_Venta;
 };
