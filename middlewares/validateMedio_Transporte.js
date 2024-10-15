@@ -1,5 +1,5 @@
 const { body, validationResult } = require('express-validator');
-const { Medio_Transporte } = require('../models');
+const { MedioTransporte } = require('../models');
 
 const validarMedioTransporte = [
   // Validar nombre
@@ -7,7 +7,7 @@ const validarMedioTransporte = [
     .notEmpty().withMessage('El nombre es requerido.')
     .isString().withMessage('El nombre debe ser un string.')
     .custom(async (nombre, { req }) => {
-      const transporte = await Medio_Transporte.findOne({ where: { nombre } });
+      const transporte = await MedioTransporte.findOne({ where: { nombre } });
       if (transporte && transporte.id !== parseInt(req.params.id)) {
         throw new Error('El nombre ya está en uso por otro medio de transporte');
       }
@@ -18,9 +18,9 @@ const validarMedioTransporte = [
   body('patente')
     .notEmpty().withMessage('La patente es requerida.')
     .isString().withMessage('La patente debe ser un string.')
-    .matches(/^[A-Z]{2}\d{3}[A-Z]{2}$/).withMessage('El formato de la patente debe ser de dos letras, tres números y dos letras.')
+    .matches(/^[A-Z]{2}\d{3}[A-Z]{2}$/).withMessage('El formato de la patente debe ser de dos letras, tres números y dos letras en mayúsculas.')
     .custom(async (patente, { req }) => {
-      const transporte = await Medio_Transporte.findOne({ where: { patente } });
+      const transporte = await MedioTransporte.findOne({ where: { patente } });
       if (transporte && transporte.id !== parseInt(req.params.id)) {
         throw new Error('La patente ya está en uso por otro medio de transporte');
       }

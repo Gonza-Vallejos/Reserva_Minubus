@@ -30,18 +30,18 @@ exports.obtenerViajePorId = async (req, res) => {
 // Crear una nuevo Viaje
 exports.crearViaje= async (req, res) => {
     try {
-        const { orijenLocalidad, destinoLocalidad, horarioSalida, fechaViaje, precio, chofer, medioTransporte_id,eliminado } = req.body;
+        const { origenLocalidad, destinoLocalidad, horarioSalida, fechaViaje, precio, chofer, medioTransporte_id } = req.body;
         
         // Crear el usuario con los campos separados
         const nuevoViaje= await Viajes.create({
-            orijenLocalidad: orijenLocalidad,
+            origenLocalidad: origenLocalidad,
             destinoLocalidad: destinoLocalidad,
             horarioSalida: horarioSalida,
             fechaViaje:fechaViaje,
             precio:precio,
             chofer:chofer,
             medioTransporte_id:medioTransporte_id,
-            eliminado:eliminado
+           
         });
         res.status(201).json({ message: 'viaje creado' });
     } catch (error) {

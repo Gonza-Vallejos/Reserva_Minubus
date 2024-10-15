@@ -9,7 +9,7 @@ module.exports = (sequelize, DataTypes) => {
         targetKey: 'id'
       });
       Usuario.hasMany(models.Reserva, {
-        foreignKey: 'usuario_id'
+        foreignKey: 'usuarios_id'
       });
     }
   }

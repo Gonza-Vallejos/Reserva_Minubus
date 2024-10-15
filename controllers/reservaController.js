@@ -31,16 +31,16 @@ exports.obtenerReservaPorId = async (req, res) => {
 // Crear una nueva reserva
 exports.crearReserva = async (req, res) => {
     try {
-        const { ubicacionOrigen, ubicacionDestino, fechaReserva, usuario_id, viajes_id, eliminado } = req.body;
+        const { ubicacionOrigen, ubicacionDestino, fechaReserva, usuarios_id, viajes_id } = req.body;
         
         // Crear el usuario con los campos separados
         const nuevaReserva = await Reserva.create({
             ubicacionOrigen: ubicacionOrigen,
             ubicacionDestino: ubicacionDestino,
             fechaReserva: fechaReserva,
-            usuario_id:usuario_id,
+            usuarios_id:usuarios_id,
             viajes_id:viajes_id,
-            eliminado:eliminado
+           
         });
       res.status(201).json({ message: 'Reserva creada' });
     } catch (error) {
