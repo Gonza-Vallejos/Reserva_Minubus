@@ -25,7 +25,7 @@ exports.obtenerEmpresaPorId = async (req, res) => {
         }
         res.status(200).json(empresa);
     } catch (error) {
-        res.status(500).json({ error: 'Error al obtener la empresa' });
+        res.status(500).json({ error: 'Error al obtener la Empresa' });
     }
 };
 
