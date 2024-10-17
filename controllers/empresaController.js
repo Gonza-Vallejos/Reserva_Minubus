@@ -32,7 +32,7 @@ exports.obtenerEmpresaPorId = async (req, res) => {
 // Crear una nueva empresa
 exports.crearEmpresa = async (req, res) => {
     try {
-        const { nombre, direccion, cuit, telefono, email, localidad_id, eliminado } = req.body;
+        const { nombre, direccion, cuit, telefono, email, localidad_id} = req.body;
         
         // Crear el usuario con los campos separados
         const nuevaEmpresa = await Empresa.create({
@@ -42,7 +42,7 @@ exports.crearEmpresa = async (req, res) => {
             telefono:telefono,
             email:email,
             localidad_id:localidad_id,
-            eliminado:eliminado
+            
         });
         res.status(201).json({message: 'Empresa creada correctamente'});
     } catch (error) {
