@@ -1,10 +1,10 @@
 // controllers/medio_trasporteController.js
-const { Medio_Transporte } = require('../models');
+const { MedioTransporte } = require('../models');
 
 // Obtener todos los transportes
 exports.obtenerTransportes = async (req, res) => {
     try {
-        const transportes = await Medio_Transporte.findAll({
+        const transportes = await MedioTransporte.findAll({
             attributes: ['id','nombre','patente','marca','cantLugares','empresa_id']
         });
         res.status(200).json(transportes);
@@ -16,7 +16,7 @@ exports.obtenerTransportes = async (req, res) => {
 // Obtener un transporte por ID
 exports.obtenerTransportePorId = async (req, res) => {
     try {
-        const transportes = await Medio_Transporte.findByPk(req.params.id, {
+        const transportes = await MedioTransporte.findByPk(req.params.id, {
             attributes: ['id','nombre','patente','marca','cantLugares','empresa_id']
         });
 
@@ -36,7 +36,7 @@ exports.actualizarTransporte = async (req, res) => {
         const camposActualizados = ['nombre','cantLugares']; 
 
         
-        const [actualizar] = await Medio_Transporte.update(req.body, {
+        const [actualizar] = await MedioTransporte.update(req.body, {
             where: { id: req.params.id },
             fields: camposActualizados // Solo estos campos serán actualizados
         });
@@ -55,16 +55,16 @@ exports.actualizarTransporte = async (req, res) => {
 // Crear un nuevo transporte
 exports.crearTransporte = async (req, res) => {
     try {
-        const { nombre, patente, marca, cantLugares, empresa_id, eliminado } = req.body;
+        const { nombre, patente, marca, cantLugares, empresa_id } = req.body;
         
         // Crear el usuario con los campos separados
-        const nuevoTransporte = await Medio_Transporte.create({
+        const nuevoTransporte = await MedioTransporte.create({
             nombre: nombre,
             patente: patente,
             marca: marca,
-            canLugares:cantLugares,
+            cantLugares:cantLugares,
             empresa_id:empresa_id,
-            eliminado:eliminado
+           
         });
       res.status(201).json({ message: 'Transporte creado' });
     } catch (error) {
@@ -72,7 +72,7 @@ exports.crearTransporte = async (req, res) => {
         res.status(500).json({ error: 'Error al crear el transporte' });
       }
     };
-
+ 
 
 
 // Eliminar un transporte
@@ -80,7 +80,7 @@ exports.eliminarTransporte = async (req, res) => {
     
     try {
         // Actualizar el campo 'eliminado' a 'si'
-        const [eliminar] = await Medio_Transporte.update({ eliminado: 'si' }, {
+        const [eliminar] = await MedioTransporte.update({ eliminado: 'si' }, {
             where: { id: req.params.id },
             fields: ['eliminado']
         });

@@ -1,27 +1,32 @@
 'use strict';
-const {
-  Model
-} = require('sequelize');
+const { Model } = require('sequelize');
+
 module.exports = (sequelize, DataTypes) => {
   class Perfil extends Model {
-    /**
-     * Helper method for defining associations.
-     * This method is not a part of Sequelize lifecycle.
-     * The `models/index` file will call this method automatically.
-     */
+
     static associate(models) {
-      // define association here
+      // Definir asociaciones aquí
       Perfil.hasMany(models.Usuario, {
         foreignKey: 'perfil_id'
-      })
+      });
     }
   }
+
   Perfil.init({
-    tipo: DataTypes.STRING
+    tipo: {
+      type: DataTypes.STRING,
+      allowNull: false
+    },
+    eliminado: {
+      type: DataTypes.STRING,
+      allowNull: false,
+      defaultValue: 'no'
+    }
   }, {
     sequelize,
     modelName: 'Perfil',
-    tableName: 'Perfiles'
+    tableName: 'perfiles' 
   });
+
   return Perfil;
 };
