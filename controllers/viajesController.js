@@ -5,7 +5,7 @@ const { Viajes } = require('../models');
 exports.obtenerViajes = async (req, res) => {
     try {
         const viajes = await Viajes.findAll({
-            attributes:['id','origenLocalidad','destinoLocalidad','orarioSalida','fechaViaje','precio','chofer','medioTransporte_id']
+            attributes:['id','origenLocalidad','destinoLocalidad','horarioSalida','fechaViaje','precio','chofer','medioTransporte_id']
         });
         res.status(200).json(viajes);
     } catch (error) {
@@ -17,7 +17,7 @@ exports.obtenerViajes = async (req, res) => {
 exports.obtenerViajePorId = async (req, res) => {
     try {
         const viajes = await Viajes.findByPk(req.params.id, {
-            attributes:['id','origenLocalidad','destinoLocalidad','orarioSalida','fechaViaje','precio','chofer','medioTransporte_id']
+            attributes:['id','origenLocalidad','destinoLocalidad','horarioSalida','fechaViaje','precio','chofer','medioTransporte_id']
         });
         if (!viajes) {
             return res.status(404).json({ error: 'Viaje no encontrado' });

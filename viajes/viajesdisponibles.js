@@ -1,0 +1,45 @@
+const viajesController = require('../controllers/viajesController');
+const medioTransporteController = require('../controllers/medio_transporteController');
+const { Viajes } = require('../models');  // Asegúrate de que la ruta al modelo sea correcta
+
+exports.obtenerViajesDisponibles = async (req, res) => {
+    try {
+        const fechaActual = new Date();
+        
+        // Obtén el origen y destino ingresados por el usuario desde los parámetros de consulta
+        const { origen, destino } = req.body;
+       
+        if (!origen || !destino) {
+            return res.status(400).json({ error: 'Por favor, proporciona tanto el origen como el destino.' });
+        }
+
+        const todosLosViajes = await Viajes.findAll({
+            attributes: ['id', 'origenLocalidad', 'destinoLocalidad', 'horarioSalida', 'fechaViaje', 'precio', 'chofer', 'medioTransporte_id']
+        });
+
+        const viajesDisponibles = todosLosViajes.filter(viaje => {
+            const fechaViaje = new Date(viaje.fechaViaje);
+            const horariosalida = new Date(viaje.horarioSalida);
+            
+            
+           
+            // Filtrar por fecha actual o posterior y por coincidencia de origen y destino
+            return fechaViaje >= fechaActual &&
+            viaje.origenLocalidad === origen &&
+            viaje.destinoLocalidad === destino &&
+            (fechaViaje > fechaActual || // Si la fecha es futura, pasa automáticamente
+            (horariosalida.getHours() > fechaActual.getHours() || // Si la hora es mayor, pasa
+            (horariosalida.getHours() === fechaActual.getHours() && // Si la hora es igual, compara los minutos
+            horariosalida.getMinutes() >= fechaActual.getMinutes())));
+ });
+       
+
+        if (viajesDisponibles.length === 0) {
+            return res.status(404).json({ error: 'No hay viajes disponibles para el origen y destino especificados.' });
+        }
+
+        res.status(200).json(viajesDisponibles);
+    } catch (error) {
+        res.status(500).json({ error: 'Error al obtener los viajes disponibles' });
+    }
+};
