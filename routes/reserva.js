@@ -4,11 +4,11 @@ const reservaController = require('../controllers/reservaController');
 const validateReserva =  require( '../middlewares/validateReserva');
 const validateUpdateReserva= require('../middlewares/validateUpdateReserva')
 
-router.get('/', reservaController.obtenerReservas);
+router.get('/obtenerReserva', reservaController.obtenerReservas);
 
 router.get('/:id', reservaController.obtenerReservaPorId);
 
-router.post('/',  validateReserva,reservaController.crearReserva);
+router.post('/crearReserva',  validateReserva,reservaController.crearReserva);
 
 router.put('/:id', validateUpdateReserva,reservaController.actualizarReserva);
 

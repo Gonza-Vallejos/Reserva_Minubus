@@ -3,11 +3,11 @@ const router = express.Router();
 const ventasController = require('../controllers/ventasController');
 const validateVenta = require('../middlewares/validateVenta');
 
-router.get('/', ventasController.obtenerVentas);
+router.get('/obtenerVentas', ventasController.obtenerVentas);
 
 router.get('/:id', ventasController.obtenerVentasPorId);
 
-router.post('/', validateVenta, ventasController.crearVenta);
+router.post('/crearVenta', validateVenta, ventasController.crearVenta);
 
 router.put('/:id', ventasController.actualizarVentas);
 

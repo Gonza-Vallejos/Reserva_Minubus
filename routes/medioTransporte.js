@@ -4,9 +4,9 @@ const transporteController = require('../controllers/medio_transporteController'
 const validateMedioTransporte = require('../middlewares/validateMedio_Transporte');
 const validateUpdateTransporte= require('../middlewares/validateUpdateMedio_Transporte');
 
-router.get('/', transporteController.obtenerTransportes);
+router.get('/obtenerTransporte', transporteController.obtenerTransportes);
 
-router.post('/', validateMedioTransporte ,transporteController.crearTransporte);
+router.post('/crearTransporte', validateMedioTransporte ,transporteController.crearTransporte);
 
 router.patch('/:id', transporteController.eliminarTransporte);
 

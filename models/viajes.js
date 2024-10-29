@@ -29,7 +29,7 @@ module.exports = (sequelize, DataTypes) => {
       allowNull: false
     },
     horarioSalida: {
-      type: DataTypes.DATE,
+      type: DataTypes.TIME,
       allowNull: false
     },
     fechaViaje: {

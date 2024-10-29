@@ -4,16 +4,22 @@ const viajesController = require('../controllers/viajesController');
 const validateViaje = require('../middlewares/validateViajes');
 const validateUpdateViaje = require('../middlewares/validateUpdateViajes'); 
 const viajesdisponibles = require('../viajes/viajesdisponibles')
-//router.get('/', viajesController.obtenerViajes);
 
-//router.get('/:id', viajesController.obtenerViajePorId);
 
-router.post('/', validateViaje,viajesController.crearViaje);
+router.get('/viajesDisponible', viajesdisponibles.obtenerViajesDisponibles);
+
+router.get('/:id', viajesController.obtenerViajePorId);
+
+router.get('/obtenerViajes', viajesController.obtenerViajes);
 
 router.put('/:id', validateUpdateViaje,viajesController.actualizarViajes);
 
 router.patch('/:id', viajesController.eliminarViajes);
 
-router.get('/disponible', viajesdisponibles.obtenerViajesDisponibles);
+router.post('/crearViaje', validateViaje,viajesController.crearViaje);
+
+
+
+
 
 module.exports = router;
