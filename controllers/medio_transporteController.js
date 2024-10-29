@@ -16,7 +16,7 @@ exports.obtenerTransportes = async (req, res) => {
 // Obtener un transporte por ID
 exports.obtenerTransportePorId = async (req, res) => {
     try {
-        const transportes = await MedioTransporte.findByPk(req.params.id, {
+        const transportes = await MedioTransporte.findByPk(req.query.id, {
             attributes: ['id','nombre','patente','marca','cantLugares','empresa_id']
         });
 

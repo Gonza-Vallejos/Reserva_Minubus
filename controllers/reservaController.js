@@ -1,5 +1,7 @@
 // controllers/reservaController.js
 const { Reserva } = require('../models');
+const {viajesController} = require('../controllers/viajesController');
+
 
 // Obtener todas las reservas
 exports.obtenerReservas = async (req, res) => {
@@ -16,7 +18,7 @@ exports.obtenerReservas = async (req, res) => {
 // Obtener una reserva por ID
 exports.obtenerReservaPorId = async (req, res) => {
     try {
-        const reserva = await Reservas.findByPk(req.params.id, {
+        const reserva = await Reservas.findByPk(req.query.id, {
             attributes:['id','ubicacionOrigen','ubicacionDestino','fechaReserva','usuario_id','viajes_id']
         });
         if (!reserva) {
@@ -32,7 +34,36 @@ exports.obtenerReservaPorId = async (req, res) => {
 exports.crearReserva = async (req, res) => {
     try {
         const { ubicacionOrigen, ubicacionDestino, fechaReserva, usuarios_id, viajes_id } = req.body;
-        
+         console.log('ver id viaje:', viajes_id )
+         //const viajes_id = req.body.viajes_id; // o req.query.viajes_id
+        const viajesIdNumber = parseInt(viajes_id, 10);
+
+        // Verificar que el viaje existe
+     console.log('Datos de la solicitud:', req.body);
+        const viaje = await viajesController.obtenerViajePorId(viajesIdNumber);
+        console.log('ver viaje data', viaje)
+        // Validación para asegurarse de que el viaje existe y tiene datos
+        if (!viaje || !viaje.data || !viaje.data.length) {
+            return res.status(404).json({ mensaje: 'Viaje no encontrado' });
+        }
+        // Inicializar variables
+        let trasnporteid;
+          console.log('que me trae viajedata', viaje.data)
+        // Verificar si `viaje.data` existe y recorrer los datos
+        if (viaje.data) {
+            viaje.data.forEach((data) => {
+                trasnporteid = data.medioTransporte_id;
+                console.log(`TrasnporteID: ${trasnporteid}`);
+            });
+        }
+          
+    
+        const id_medioTransporte = trasnporteid;
+        // Verificar que el medio de transporte está disponible para ese viaje
+        const medioTransporte = await medioTransporteController.obtenerTransportePorId(id_medioTransporte);
+        if (!medioTransporte) {
+            return res.status(404).json({ mensaje: 'Medio de transporte no disponible' });
+        }
         // Crear el usuario con los campos separados
         const nuevaReserva = await Reserva.create({
             ubicacionOrigen: ubicacionOrigen,

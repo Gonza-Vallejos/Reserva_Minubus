@@ -16,7 +16,7 @@ exports.obtenerViajes = async (req, res) => {
 // Obtener una Viaje por ID
 exports.obtenerViajePorId = async (req, res) => {
     try {
-        const viajes = await Viajes.findByPk(req.params.id, {
+        const viajes = await Viajes.findByPk(req.query.id, {
             attributes:['id','origenLocalidad','destinoLocalidad','horarioSalida','fechaViaje','precio','chofer','medioTransporte_id']
         });
         if (!viajes) {

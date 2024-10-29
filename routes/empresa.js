@@ -6,7 +6,7 @@ const validateUpdateEmpresa = require('../middlewares/validateUpdateEmpresa');
 
 router.get('/obtenerEmpresa', empresaController.obtenerEmpresas);
 
-router.get('/:id', empresaController.obtenerEmpresaPorId);
+router.get('/obtenerEmpresaId', empresaController.obtenerEmpresaPorId);
 
 router.post('/crearEmpresa', validateEmpresa, empresaController.crearEmpresa);
 

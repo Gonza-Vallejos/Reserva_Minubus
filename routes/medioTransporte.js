@@ -10,7 +10,7 @@ router.post('/crearTransporte', validateMedioTransporte ,transporteController.cr
 
 router.patch('/:id', transporteController.eliminarTransporte);
 
-router.get('/:id',transporteController.obtenerTransportePorId);
+router.get('/obtenerTransporteId',transporteController.obtenerTransportePorId);
 
 router.put('/:id', validateUpdateTransporte ,transporteController.actualizarTransporte);
 module.exports = router;

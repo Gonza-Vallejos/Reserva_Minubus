@@ -6,13 +6,22 @@ const reservaController = require('../controllers/reservaController');
 const reservarPasaje = async (req, res) => {
     try {
         const { id_viaje, usuarioId } = req.body;
-
+        
         // Verificar que el viaje existe
         const viaje = await viajesController.obtenerViajePorId(id_viaje);
-        if (!viaje) {
-            return res.status(404).json({ mensaje: 'Viaje no encontrado' });
+        // Inicializar variables
+        let trasnporteid;
+
+        // Verificar si `viaje.data` existe y recorrer los datos
+        if (viaje.data) {
+            viaje.data.forEach((data) => {
+                trasnporteid = data.medioTransporte_id;
+                console.log(`TrasnporteID: ${trasnporteid}`);
+            });
         }
-        const id_medioTransporte = viaje.medioTransporte_id
+          
+    
+        const id_medioTransporte = trasnporteid;
         // Verificar que el medio de transporte está disponible para ese viaje
         const medioTransporte = await medioTransporteController.obtenerTransportePorId(id_medioTransporte);
         if (!medioTransporte) {
@@ -20,7 +29,7 @@ const reservarPasaje = async (req, res) => {
         }
 
         // Verificar si el usuario ya tiene una reserva para ese viaje
-        const reservaExistente = await reservaController.obtenerReservaPorUsuarioYViaje(usuarioId, id_viaje);
+       /* const reservaExistente = await reservaController.obtenerReservaPorUsuarioYViaje(usuarioId, id_viaje);
         if (reservaExistente) {
             return res.status(400).json({ mensaje: 'El usuario ya tiene una reserva para este viaje.' });
         }
@@ -28,7 +37,7 @@ const reservarPasaje = async (req, res) => {
         // Verificar si hay asientos disponibles en el medio de transporte
         if (medioTransporte.cantLugares <= 0) {
             return res.status(400).json({ mensaje: 'No hay asientos disponibles para este medio de transporte.' });
-        }
+        }*/
 
         // Crear una nueva reserva
         const nuevaReserva = {
@@ -42,7 +51,7 @@ const reservarPasaje = async (req, res) => {
         const reserva = await reservaController.crearReserva(nuevaReserva);
 
         // Restar un asiento disponible en el medio de transporte
-        await medioTransporteController.restarAsiento(id_medioTransporte);
+        //await medioTransporteController.restarAsiento(id_medioTransporte);
 
         return res.status(201).json({
             mensaje: 'Reserva creada exitosamente',
@@ -53,11 +62,10 @@ const reservarPasaje = async (req, res) => {
         return res.status(500).json({ mensaje: 'Error al realizar la reserva', error });
     }
 };
-
 module.exports = {
     reservarPasaje
 };
-
+/*
 // Obtener medio de transporte por ID
 const obtenerMedioTransportePorId = async (id) => {
     try {
@@ -86,10 +94,7 @@ const restarAsiento = async (id) => {
     }
 };
 
-module.exports = {
-    obtenerMedioTransportePorId,
-    restarAsiento
-};
+
 
 const obtenerReservaPorUsuarioYViaje = async (usuarioId, viajeId) => {
     try {
@@ -112,3 +117,21 @@ module.exports = {
     crearReserva
     // otros métodos...
 };
+module.exports = {
+    reservarPasaje
+};
+module.exports = {
+    obtenerMedioTransportePorId,
+    restarAsiento
+};*/
+
+
+
+
+
+
+
+
+
+
+
