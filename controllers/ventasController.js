@@ -16,7 +16,7 @@ exports.obtenerVentas = async (req, res) => {
 // Obtener una Venta por ID
 exports.obtenerVentasPorId = async (req, res) => {
     try {
-        const ventas = await Ventas.findByPk(req.params.id, {
+        const ventas = await Ventas.findByPk(req.query.id, {
             attributes:['id','fecha','hora','totalVentas','viajes_id']
         });
         if (!ventas) {

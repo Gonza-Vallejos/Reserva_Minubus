@@ -9,7 +9,7 @@ const validateUpdateUsuario = require('../middlewares/validateUpdateUsuario');
 router.get('/obtenerEmpresa', usuarioController.obtenerUsuarios);
 
 // Ruta para obtener un usuario por ID 
-router.get('/:id', usuarioController.obtenerUsuarioPorId);
+router.get('/obtenerUsuarioId', usuarioController.obtenerUsuarioPorId);
 
 // Ruta para crear un nuevo usuario
 router.post('/crearUsuario', validateUsuario, usuarioController.crearUsuario);

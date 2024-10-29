@@ -6,12 +6,13 @@ const validateUpdateReserva= require('../middlewares/validateUpdateReserva')
 
 router.get('/obtenerReserva', reservaController.obtenerReservas);
 
-router.get('/:id', reservaController.obtenerReservaPorId);
+router.get('/obtenerReservaId', reservaController.obtenerReservaPorId);
 
 router.post('/crearReserva',  validateReserva,reservaController.crearReserva);
 
 router.put('/:id', validateUpdateReserva,reservaController.actualizarReserva);
 
 router.patch('/:id', reservaController.eliminarReserva);
+
 
 module.exports = router;

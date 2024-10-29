@@ -17,7 +17,7 @@ exports.obtenerUsuarios = async (req, res) => {
 // Obtener un usuario por ID
 exports.obtenerUsuarioPorId = async (req, res) => {
     try {
-        const usuario = await Usuario.findByPk(req.params.id, {
+        const usuario = await Usuario.findByPk(req.query.id, {
             attributes: ['id','nombre', 'apellido', 'dni','telefono', 'email','usuario','contrasenia', 'perfil_id']
         });
 

@@ -5,7 +5,7 @@ const validateVenta = require('../middlewares/validateVenta');
 
 router.get('/obtenerVentas', ventasController.obtenerVentas);
 
-router.get('/:id', ventasController.obtenerVentasPorId);
+router.get('/obtenerVentasId', ventasController.obtenerVentasPorId);
 
 router.post('/crearVenta', validateVenta, ventasController.crearVenta);
 

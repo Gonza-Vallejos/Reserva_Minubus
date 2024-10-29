@@ -16,7 +16,7 @@ exports.obtenerEmpresas = async (req, res) => {
 // Obtener una Empresa por ID
 exports.obtenerEmpresaPorId = async (req, res) => {
     try {
-        const empresa = await Empresa.findByPk(req.params.id, {
+        const empresa = await Empresa.findByPk(req.query.id, {
             attributes: ['id','nombre', 'direccion', 'cuit','telefono', 'email','localidad_id'] 
         });
         
