@@ -1,6 +1,7 @@
 // controllers/reservaController.js
-const { Reserva } = require('../models');
-const {viajesController} = require('../controllers/viajesController');
+const { Reserva, Viajes } = require('../models/');
+const viajesController = require('../controllers/viajesController');
+const medioTransporteController = require('../controllers/medio_transporteController');
 
 
 // Obtener todas las reservas
@@ -18,7 +19,7 @@ exports.obtenerReservas = async (req, res) => {
 // Obtener una reserva por ID
 exports.obtenerReservaPorId = async (req, res) => {
     try {
-        const reserva = await Reservas.findByPk(req.query.id, {
+        const reserva = await Reserva.findByPk(req.query.id, {
             attributes:['id','ubicacionOrigen','ubicacionDestino','fechaReserva','usuario_id','viajes_id']
         });
         if (!reserva) {
@@ -34,51 +35,47 @@ exports.obtenerReservaPorId = async (req, res) => {
 exports.crearReserva = async (req, res) => {
     try {
         const { ubicacionOrigen, ubicacionDestino, fechaReserva, usuarios_id, viajes_id } = req.body;
-         console.log('ver id viaje:', viajes_id )
-         //const viajes_id = req.body.viajes_id; // o req.query.viajes_id
-        const viajesIdNumber = parseInt(viajes_id, 10);
 
-        // Verificar que el viaje existe
-     console.log('Datos de la solicitud:', req.body);
-        const viaje = await viajesController.obtenerViajePorId(viajesIdNumber);
-        console.log('ver viaje data', viaje)
-        // Validación para asegurarse de que el viaje existe y tiene datos
-        if (!viaje || !viaje.data || !viaje.data.length) {
-            return res.status(404).json({ mensaje: 'Viaje no encontrado' });
+        // Forzar la conversión a número para usuarios_id y viajes_id
+        const usuariosIdNumber = Number(usuarios_id);
+        const viajesIdNumber = Number(viajes_id);
+
+        if (isNaN(usuariosIdNumber) || isNaN(viajesIdNumber)) {
+            return res.status(400).json({ error: 'usuarios_id o viajes_id no es un número válido' });
         }
-        // Inicializar variables
-        let trasnporteid;
-          console.log('que me trae viajedata', viaje.data)
-        // Verificar si `viaje.data` existe y recorrer los datos
-        if (viaje.data) {
-            viaje.data.forEach((data) => {
-                trasnporteid = data.medioTransporte_id;
-                console.log(`TrasnporteID: ${trasnporteid}`);
-            });
-        }
-          
-    
-        const id_medioTransporte = trasnporteid;
-        // Verificar que el medio de transporte está disponible para ese viaje
-        const medioTransporte = await medioTransporteController.obtenerTransportePorId(id_medioTransporte);
+
+        console.log('Datos de la solicitud:', { ubicacionOrigen, ubicacionDestino, fechaReserva, usuariosIdNumber, viajesIdNumber });
+
+        // Verificar que el viaje existe antes de continuar
+         // Obtener el viaje por ID
+         const viaje = await viajesController.obtenerViajePorId(viajesIdNumber);
+
+         if (!viaje) {
+             return res.status(404).json({ mensaje: 'Viaje no encontrado' });
+         }
+
+
+        // Obtener el medio de transporte utilizando el id del viaje
+        const medioTransporte = await medioTransporteController.obtenerTransportePorId(viaje.medioTransporte_id);
         if (!medioTransporte) {
             return res.status(404).json({ mensaje: 'Medio de transporte no disponible' });
         }
-        // Crear el usuario con los campos separados
+
+        // Crear la reserva con los valores correctos y numéricos
         const nuevaReserva = await Reserva.create({
-            ubicacionOrigen: ubicacionOrigen,
-            ubicacionDestino: ubicacionDestino,
-            fechaReserva: fechaReserva,
-            usuarios_id:usuarios_id,
-            viajes_id:viajes_id,
-           
+            ubicacionOrigen,
+            ubicacionDestino,
+            fechaReserva,
+            usuarios_id: usuariosIdNumber,
+            viajes_id: viajesIdNumber
         });
-      res.status(201).json({ message: 'Reserva creada' });
+
+        res.status(201).json({ message: 'Reserva creada', reserva: nuevaReserva });
     } catch (error) {
-        // Captura otros tipos de errores
+        console.error("Error al crear la reserva:", error);
         res.status(500).json({ error: 'Error al crear la reserva' });
-      }
-    };
+    }
+};
 
 // Actualizar una reserva existente
 exports.actualizarReserva = async (req, res) => {
