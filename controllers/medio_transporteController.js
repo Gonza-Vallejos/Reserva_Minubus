@@ -14,7 +14,19 @@ exports.obtenerTransportes = async (req, res) => {
 };
 
 // Obtener un transporte por ID
-exports.obtenerTransportePorId = async (id) => {
+exports.obtenerTransportePorId = async (req, res) => {
+    try {
+        const transporte = await MedioTransporte.findByPk(req.query.id, {
+            attributes: ['id', 'nombre', 'patente', 'marca', 'cantLugares', 'empresa_id']
+        });
+        res.status(200).json(transporte); // Retorna el objeto si existe o `null` si no se encuentra
+    } catch (error) {
+        console.error("Error al obtener el transporte:", error);
+        throw error;
+    }
+};
+// Obtener un transporte por ID
+exports.obtenerTransporteId = async (id) => {
     try {
         const transporte = await MedioTransporte.findByPk(id, {
             attributes: ['id', 'nombre', 'patente', 'marca', 'cantLugares', 'empresa_id']

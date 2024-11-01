@@ -14,7 +14,22 @@ exports.obtenerViajes = async (req, res) => {
 };
 
 // Obtener una Viaje por ID
-exports.obtenerViajePorId = async (id) => {
+exports.obtenerViajePorId = async (req, res) => {
+    try {
+        const viaje = await Viajes.findByPk(req.query.id, {
+            attributes: ['id', 'origenLocalidad', 'destinoLocalidad', 'horarioSalida', 'fechaViaje', 'precio', 'chofer', 'medioTransporte_id']
+        });
+        if (!viaje) {
+            return res.status(404).json({ error: 'Viaje no encontrado' });
+        }
+        res.status(200).json(viaje);
+    } catch (error) {
+        console.error("Error al obtener el viaje:", error);
+        throw error;
+    }
+};
+// Obtener una Viaje por ID
+exports.obtenerViajeId = async (id) => {
     try {
         const viaje = await Viajes.findByPk(id, {
             attributes: ['id', 'origenLocalidad', 'destinoLocalidad', 'horarioSalida', 'fechaViaje', 'precio', 'chofer', 'medioTransporte_id']

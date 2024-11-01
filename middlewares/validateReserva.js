@@ -13,7 +13,7 @@ const validarReserva = [
     .isString().withMessage('La ubicación de destino debe ser un texto.'),
 
   // Validar fecha de la reserva
-  body('fechaReserva')
+/*  body('fechaReserva')
     .notEmpty().withMessage('La fecha de la reserva es requerida.')
     .isISO8601().withMessage('La fecha de la reserva debe tener un formato de fecha válido.')
     .custom((fecha_reserva) => {
@@ -21,11 +21,11 @@ const validarReserva = [
       const fechaReserva = new Date(fecha_reserva);
 
       // Verificar que la fecha de reserva no sea anterior a la fecha actual
-      if (fechaReserva < fechaActual) {
-        throw new Error('La fecha y hora de la reserva no pueden ser anteriores a la fecha y hora actual.');
+      if (fechaReserva.getDay() ==! fechaActual.getDay() || fechaReserva.getMonth() ==! fechaActual.getMonth()) {
+        return ('La fecha y hora de la reserva no pueden ser anteriores o posteriores a la fecha y hora actual.');
       }
       return true;
-    }),
+    }),*/
 
   // Validar usuarios_id
   body('usuarios_id')
