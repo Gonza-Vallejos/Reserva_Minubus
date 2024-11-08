@@ -1,8 +1,8 @@
 // controllers/reservaController.js
-const { Reserva, sequelize } = require('../models/');
+const { Reserva, Viajes } = require('../models/');
 const viajesController = require('../controllers/viajesController');
 const medioTransporteController = require('../controllers/medio_transporteController');
-const { DATE } = require('sequelize');
+
 
 
 // Obtener todas las reservas
@@ -36,7 +36,7 @@ exports.obtenerReservaPorId = async (req, res) => {
 exports.crearReserva = async (req, res) => {
     try {
         const { ubicacionOrigen, ubicacionDestino, usuarios_id, viajes_id } = req.body;
-      
+       
         // Obtener el viaje y su medio de transporte
         const viaje = await viajesController.obtenerViajeId(viajes_id);
         if (!viaje) {
@@ -54,12 +54,13 @@ exports.crearReserva = async (req, res) => {
         if (medioTransporte.cantLugares <= 0) {
             return res.status(400).json({ mensaje: 'No hay lugares disponibles en este medio de transporte' });
         }
-      
+        const fechaActual = new Date();
+        console.log('ver fecha actual en el crear reserva', fechaActual)
           // Crear la reserva
          const nuevaReserva = await Reserva.create({
             ubicacionOrigen,
             ubicacionDestino,
-            fechaReserva: 
+            fechaReserva:fechaActual.toLocaleString(), 
             usuarios_id,
             viajes_id
         });

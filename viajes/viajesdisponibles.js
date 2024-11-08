@@ -6,6 +6,10 @@ exports.obtenerViajesDisponibles = async (req, res) => {
     try {
         const fechaActual = new Date();
         
+        console.log('***ver fecha actual****', fechaActual.toLocaleString());
+        console.log('***ver fecha actual****', fechaActual.toLocaleDateString());
+        console.log('***ver fecha actual****', fechaActual.toISOString());
+        
         // Obtén el origen y destino ingresados por el usuario desde los parámetros de consulta
         const { origen, destino } = req.body;
        
