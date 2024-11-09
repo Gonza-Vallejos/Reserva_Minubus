@@ -13,7 +13,7 @@ const validarActualizarReserva = [
     .isString().withMessage('La ubicación de destino debe ser un texto.'),
 
   // Validar fecha de la reserva
-  body('fechaReserva')
+ /* body('fechaReserva')
     .notEmpty().withMessage('La fecha de la reserva es requerida.')
     .isISO8601().withMessage('La fecha de la reserva debe tener un formato de fecha válido.')
     .custom((fecha_reserva) => {
@@ -25,11 +25,9 @@ const validarActualizarReserva = [
         throw new Error('La fecha y hora de la reserva no pueden ser anteriores a la fecha y hora actual.');
       }
       return true;
-    }),
+    }),*/
 
-  
 
-  
 
   // Manejo de errores
   (req, res, next) => {

@@ -10,9 +10,9 @@ router.get('/obtenerReservaId', reservaController.obtenerReservaPorId);
 
 router.post('/crearReserva',  validateReserva,reservaController.crearReserva);
 
-router.put('/:id', validateUpdateReserva,reservaController.actualizarReserva);
+router.put('/actualizarReserva/:id', validateUpdateReserva,reservaController.actualizarReserva);
 
-router.patch('/:id', reservaController.eliminarReserva);
+router.put('/:id/eliminarReserva', reservaController.eliminarReserva);
 
 
 module.exports = router;
