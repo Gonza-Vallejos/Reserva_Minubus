@@ -18,7 +18,7 @@ exports.obtenerViajesDisponibles = async (req, res) => {
         }
 
         const todosLosViajes = await Viajes.findAll({
-            attributes: ['id', 'origenLocalidad', 'destinoLocalidad', 'horarioSalida', 'fechaViaje', 'precio', 'chofer', 'medioTransporte_id']
+            attributes: ['id', 'origenLocalidad', 'destinoLocalidad', 'horarioSalida', 'fechaViaje', 'precio', 'chofer', 'medioTransporte_id', 'eliminado' ]
         });
 
         const viajesDisponibles = todosLosViajes.filter(viaje => {
@@ -31,6 +31,7 @@ exports.obtenerViajesDisponibles = async (req, res) => {
             return fechaViaje >= fechaActual &&
             viaje.origenLocalidad === origen &&
             viaje.destinoLocalidad === destino &&
+            viaje.eliminado === "no" && 
             (fechaViaje > fechaActual || // Si la fecha es futura, pasa automáticamente
             (horariosalida.getHours() > fechaActual.getHours() || // Si la hora es mayor, pasa
             (horariosalida.getHours() === fechaActual.getHours() && // Si la hora es igual, compara los minutos
@@ -41,6 +42,12 @@ exports.obtenerViajesDisponibles = async (req, res) => {
         if (viajesDisponibles.length === 0) {
             return res.status(404).json({ error: 'No hay viajes disponibles para el origen y destino especificados.' });
         }
+        
+       // Verificar y mostrar el campo `eliminado` en la consola
+       viajesDisponibles.forEach(viaje => {
+        console.log('************ver eliminado********', viaje.eliminado);
+       
+    });
 
         res.status(200).json(viajesDisponibles);
     } catch (error) {

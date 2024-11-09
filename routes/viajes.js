@@ -12,9 +12,9 @@ router.get('/obtenerViajesId', viajesController.obtenerViajePorId);
 
 router.get('/obtenerViajes', viajesController.obtenerViajes);
 
-router.put('/:id', validateUpdateViaje,viajesController.actualizarViajes);
+router.put('/actualizarViaje/:id', validateUpdateViaje,viajesController.actualizarViajes);
 
-router.patch('/:id', viajesController.eliminarViajes);
+router.put('/eliminarViaje/:id', viajesController.eliminarViajes);
 
 router.post('/crearViaje', validateViaje,viajesController.crearViaje);
 

@@ -12,7 +12,7 @@ router.post('/crearReserva',  validateReserva,reservaController.crearReserva);
 
 router.put('/actualizarReserva/:id', validateUpdateReserva,reservaController.actualizarReserva);
 
-router.put('/:id/eliminarReserva', reservaController.eliminarReserva);
+router.put('/eliminarReserva/:id', reservaController.eliminarReserva);
 
 
 module.exports = router;
