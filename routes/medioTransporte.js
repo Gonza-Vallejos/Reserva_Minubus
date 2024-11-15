@@ -8,9 +8,9 @@ router.get('/obtenerTransporte', transporteController.obtenerTransportes);
 
 router.post('/crearTransporte', validateMedioTransporte ,transporteController.crearTransporte);
 
-router.patch('/:id', transporteController.eliminarTransporte);
+router.put('/eliminarTransporte/:id', transporteController.eliminarTransporte);
 
 router.get('/obtenerTransporteId',transporteController.obtenerTransportePorId);
 
-router.put('/:id', validateUpdateTransporte ,transporteController.actualizarTransporte);
+router.put('/actualizarTransporte/:id', validateUpdateTransporte ,transporteController.actualizarTransporte);
 module.exports = router;

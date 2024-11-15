@@ -10,8 +10,8 @@ router.get('/obtenerEmpresaId', empresaController.obtenerEmpresaPorId);
 
 router.post('/crearEmpresa', validateEmpresa, empresaController.crearEmpresa);
 
-router.put('/:id', validateUpdateEmpresa, empresaController.actualizarEmpresa);
+router.put('/actualizarEmpresa/:id', validateUpdateEmpresa, empresaController.actualizarEmpresa);
 
-router.patch('/:id', empresaController.eliminarEmpresa);
+router.put('/eliminarEmpresa/:id', empresaController.eliminarEmpresa);
 
 module.exports = router;

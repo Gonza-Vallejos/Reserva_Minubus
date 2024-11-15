@@ -42,12 +42,17 @@ exports.obtenerTransporteId = async (id) => {
 exports.actualizarTransporte = async (req, res) => {
     try {
         // Especificar los campos que quieres actualizar
-        const camposActualizados = ['nombre','cantLugares']; 
+        const {nombre, cantLugares} = req.body
+        
 
         
-        const [actualizar] = await MedioTransporte.update(req.body, {
+        const [actualizar] = await MedioTransporte.update({
+            nombre:nombre,
+            cantLugares:cantLugares,
+
+        }, {
             where: { id: req.params.id },
-            fields: camposActualizados // Solo estos campos serán actualizados
+            fields: ['nombre','cantLugares']// Solo estos campos serán actualizados
         });
 
         if (!actualizar) {

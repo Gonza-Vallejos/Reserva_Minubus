@@ -9,9 +9,9 @@ router.get('/obtenerVentasId', ventasController.obtenerVentasPorId);
 
 router.post('/crearVenta', validateVenta, ventasController.crearVenta);
 
-router.put('/:id', ventasController.actualizarVentas);
+router.put('/actualizarVenta/:id', ventasController.actualizarVentas);
 
-router.patch('/:id', ventasController.eliminarVentas);
+router.put('/eliminarVenta/:id', ventasController.eliminarVentas);
 
 
 module.exports = router; 

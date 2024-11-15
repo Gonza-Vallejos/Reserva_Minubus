@@ -15,11 +15,11 @@ router.get('/obtenerUsuarioId', usuarioController.obtenerUsuarioPorId);
 router.post('/crearUsuario', validateUsuario, usuarioController.crearUsuario);
 
 // Ruta para actualizar un usuario existente
-router.put('/:id', validateUpdateUsuario, usuarioController.actualizarUsuario);
+router.put('actualizarUsuario/:id', validateUpdateUsuario, usuarioController.actualizarUsuario);
 
 
 // Ruta para eliminar un usuario lógicamente
-router.patch('/:id', usuarioController.eliminarUsuario);
+router.put('eliminarUsuario/:id', usuarioController.eliminarUsuario);
 
 
 
