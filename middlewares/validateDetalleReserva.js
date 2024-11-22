@@ -1,17 +1,21 @@
 const { body, validationResult } = require('express-validator');
-const { Reserva, Usuario, Viajes } = require('../models');
+const { DetalleReserva } = require('../models');
 
-const validarActualizarReserva = [
-  // Validar ubicación de origen
-  body('ubicacionOrigen')
+const validarDetalleReserva = [
+  // Validar el nombre
+  body('personas.*.nombre')
+    .notEmpty().withMessage('El nombre es requerido.')
+    .isString().withMessage('El nombre debe ser un texto.'),
+
+  // Validar la ubicación de origen
+  body('personas.*.ubicacionOrigen')
     .notEmpty().withMessage('La ubicación de origen es requerida.')
     .isString().withMessage('La ubicación de origen debe ser un texto.'),
 
-  // Validar ubicación de destino
-  body('ubicacionDestino')
+  // Validar la ubicación de destino
+  body('personas.*.ubicacionDestino')
     .notEmpty().withMessage('La ubicación de destino es requerida.')
     .isString().withMessage('La ubicación de destino debe ser un texto.'),
-
 
   // Manejo de errores
   (req, res, next) => {
@@ -22,5 +26,6 @@ const validarActualizarReserva = [
     next();
   }
 ];
- 
-module.exports = validarActualizarReserva;
+
+module.exports = validarDetalleReserva;
+

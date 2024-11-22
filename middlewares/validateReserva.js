@@ -3,7 +3,7 @@ const { Reserva, Usuario, Viajes } = require('../models');
 
 const validarReserva = [
   // Validar ubicación de origen
-  body('ubicacionOrigen')
+ /* body('ubicacionOrigen')
     .notEmpty().withMessage('La ubicación de origen es requerida.')
     .isString().withMessage('La ubicación de origen debe ser un texto.'),
 
@@ -12,20 +12,7 @@ const validarReserva = [
     .notEmpty().withMessage('La ubicación de destino es requerida.')
     .isString().withMessage('La ubicación de destino debe ser un texto.'),
 
-  // Validar fecha de la reserva
-/*  body('fechaReserva')
-    .notEmpty().withMessage('La fecha de la reserva es requerida.')
-    .isISO8601().withMessage('La fecha de la reserva debe tener un formato de fecha válido.')
-    .custom((fecha_reserva) => {
-      const fechaActual = new Date();
-      const fechaReserva = new Date(fecha_reserva);
-
-      // Verificar que la fecha de reserva no sea anterior a la fecha actual
-      if (fechaReserva.getDay() ==! fechaActual.getDay() || fechaReserva.getMonth() ==! fechaActual.getMonth()) {
-        return ('La fecha y hora de la reserva no pueden ser anteriores o posteriores a la fecha y hora actual.');
-      }
-      return true;
-    }),*/
+*/
 
   // Validar usuarios_id
   body('usuarios_id')
@@ -35,12 +22,6 @@ const validarReserva = [
       const usuario = await Usuario.findByPk(usuarios_id);
       if (!usuario) {
         throw new Error('El usuario especificado no existe.');
-      }
-
-      // Validar unicidad del usuario para la reserva
-      const reservaExistente = await Reserva.findOne({ where: { usuarios_id, id: { $ne: req.params.id } } });
-      if (reservaExistente) {
-        throw new Error('Este usuario ya tiene una reserva.');
       }
 
       return true;

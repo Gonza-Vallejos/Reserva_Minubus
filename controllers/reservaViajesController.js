@@ -9,7 +9,7 @@ const obtenerReservaPorUsuarioYViaje = async (usuarios_id, viajes_id) => {
                 usuarios_id: usuarios_id,
                 viajes_id: viajes_id
             },
-            attributes:['id','ubicacionOrigen','ubicacionDestino','fechaReserva','usuarios_id','viajes_id'],
+            attributes:['id','fechaReserva','usuarios_id','viajes_id'],
         });
         return reserva;// Retorna la reserva si existe, de lo contrario, retorna null
     } catch (error) {
