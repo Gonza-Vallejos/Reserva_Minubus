@@ -24,12 +24,6 @@ const validarReserva = [
         throw new Error('El usuario especificado no existe.');
       }
 
-      // Validar unicidad del usuario para la reserva
-      const reservaExistente = await Reserva.findOne({ where: { usuarios_id, id: { $ne: req.params.id } } });
-      if (reservaExistente) {
-        throw new Error('Este usuario ya tiene una reserva.');
-      }
-
       return true;
     }),
 
