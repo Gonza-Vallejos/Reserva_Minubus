@@ -17,18 +17,14 @@ module.exports = (sequelize, DataTypes) => {
       Reserva.hasMany(models.DetalleVenta, {
         foreignKey: 'reservas_id'
       });
+      Reserva.hasMany(models.DetalleReserva, {
+         foreignKey: 'reserva_id' 
+        })
     }
   }
 
   Reserva.init({
-    ubicacionOrigen: {
-      type: DataTypes.STRING,
-      allowNull: false
-    },
-    ubicacionDestino: {
-      type: DataTypes.STRING,
-      allowNull: false
-    },
+   
     fechaReserva: {
       type: DataTypes.DATE,
       allowNull: false,

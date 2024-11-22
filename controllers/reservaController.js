@@ -1,5 +1,5 @@
 // controllers/reservaController.js
-const { Reserva, Viajes } = require('../models/');
+const { Reserva, Viajes,DetalleReserva } = require('../models/');
 const viajesController = require('../controllers/viajesController');
 const medioTransporteController = require('../controllers/medio_transporteController');
 const resrvaUsuario = require('../controllers/reservaViajesController')
@@ -32,7 +32,7 @@ exports.obtenerReservaPorId = async (req, res) => {
         res.status(500).json({ error: 'Error al obtener la reserva' });
     }
 };
-
+/*
 // Crear una nueva reserva
 exports.crearReserva = async (req, res) => {
     try {
@@ -83,7 +83,70 @@ exports.crearReserva = async (req, res) => {
     } catch (error) {
         res.status(500).json({ error: 'Error al crear la reserva' });
     }
+};*/
+// Crear una nueva reserva
+exports.crearReserva = async (req, res) => {
+    try {
+        const { usuarios_id, viajes_id, personas } = req.body;
+
+        // Obtener el viaje y su medio de transporte
+        const viaje = await viajesController.obtenerViajeId(viajes_id);
+        if (!viaje) {
+            return res.status(404).json({ mensaje: 'Viaje no encontrado' });
+        }
+
+        const medioTransporte = await medioTransporteController.obtenerTransporteId(viaje.medioTransporte_id);
+        if (!medioTransporte) {
+            return res.status(404).json({ mensaje: 'Medio de transporte no disponible' });
+        }
+
+        // Verificar si hay suficientes lugares disponibles antes de crear la reserva
+        if (medioTransporte.cantLugares < personas.length) {
+            return res.status(400).json({ mensaje: 'No hay suficientes lugares disponibles en este medio de transporte' });
+        }
+
+        
+        /*
+        // Verificar si el usuario ya tiene una reserva para este viaje
+        const usuarioReserva = await resrvaUsuario.obtenerReservaPorUsuarioYViaje(usuarios_id, viajes_id);
+        if (usuarioReserva) {
+            return res.status(400).json({ mensaje: 'El usuario ya posee una reserva para este viaje CC' });
+        } */
+        
+        const fechaActual = new Date();
+
+        // Crear la reserva principal, 
+        const nuevaReserva = await Reserva.create({
+            fechaReserva: fechaActual, 
+            usuarios_id,
+            viajes_id
+        });
+        console.log('reserva principal anda');
+
+        // Iterar sobre el array de personas para crear los detalles de reserva
+        for (const persona of personas) {
+            await DetalleReserva.create({
+                nombre: persona.nombre,
+                ubicacionOrigen: persona.ubicacionOrigen,
+                ubicacionDestino: persona.ubicacionDestino,
+                reserva_id: nuevaReserva.id
+            });
+        }
+
+        // Descontar los lugares correspondientes
+        medioTransporte.cantLugares -= personas.length;
+        await medioTransporte.save();
+
+        res.status(201).json({ message: 'Reserva creada con detalles', reserva: nuevaReserva });
+
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: 'Error al crear la reserva' });
+    }
 };
+
+
+
 
 // Actualizar una reserva existente
 exports.actualizarReserva = async (req, res) => {
@@ -115,18 +178,41 @@ exports.actualizarReserva = async (req, res) => {
 
 // Eliminar una reserva
 exports.eliminarReserva = async (req, res) => {
-        try {
-        // Actualizar el campo 'eliminado' a 'si'
-        const [eliminar] = await Reserva.update({ eliminado: 'si' }, {
-            where: { id: req.params.id },
-            fields: ['eliminado']
-        });
+    try {
+        // Obtener la reserva a eliminar
+        const reserva = await Reserva.findOne({ where: { id: req.params.id } });
 
-        if (!eliminar) {
+        if (!reserva) {
             return res.status(404).json({ error: 'Reserva no encontrada' });
         }
-        res.status(200).json({ message: 'Reserva eliminada' });
+
+        // Actualizar el campo 'eliminado' a 'si'
+        await reserva.update({ eliminado: 'si' });
+
+        // Obtener el viaje y su medio de transporte
+        const viaje = await viajesController.obtenerViajeId(reserva.viajes_id);
+        if (!viaje) {
+            return res.status(404).json({ mensaje: 'Viaje no encontrado' });
+        }
+
+        const medioTransporte = await medioTransporteController.obtenerTransporteId(viaje.medioTransporte_id);
+        if (!medioTransporte) {
+            return res.status(404).json({ mensaje: 'Medio de transporte no disponible' });
+        }
+
+        // Contar el número de detalles asociados con la reserva (cada detalle representa una persona)
+        const detallesReserva = await DetalleReserva.findAll({ where: { reserva_id: reserva.id } });
+        const cantidadPersonas = detallesReserva.length;
+
+        // Sumar los lugares correspondientes al medio de transporte
+        medioTransporte.cantLugares += cantidadPersonas;
+
+        // Guardar los cambios realizados en la base de datos
+        await medioTransporte.save();
+
+        res.status(200).json({ message: 'Reserva eliminada y lugares devueltos' });
     } catch (error) {
-        res.status(500).json({ error: 'Error al eliminar la Reserva' });
+        console.error(error);
+        res.status(500).json({ error: 'Error al eliminar la reserva' });
     }
 };
