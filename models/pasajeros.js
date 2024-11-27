@@ -1,11 +1,11 @@
 'use strict';
 const { Model } = require('sequelize');
 module.exports = (sequelize, DataTypes) => {
-  class DetalleReserva extends Model {
+  class Pasajeros extends Model {
     
     static associate(models) {
       // Asociación con el modelo Reserva
-      DetalleReserva.belongsTo(models.Reserva, {
+      Pasajeros.belongsTo(models.Reserva, {
         foreignKey: 'reserva_id',
         targetKey: 'id'
        
@@ -13,9 +13,17 @@ module.exports = (sequelize, DataTypes) => {
     }
   }
 
-  DetalleReserva.init({
+  Pasajeros.init({
     nombre: {
       type: DataTypes.STRING,
+      allowNull: false
+    },
+    apellido: {
+      type: DataTypes.STRING,
+      allowNull: false
+    },
+    dni: {
+      type: DataTypes.INTEGER,
       allowNull: false
     },
     ubicacionOrigen: {
@@ -32,10 +40,10 @@ module.exports = (sequelize, DataTypes) => {
     }
   }, {
     sequelize,
-    modelName: 'DetalleReserva',
-    tableName: 'detallereserva',
+    modelName: 'Pasajeros',
+    tableName: 'pasajeros',
     timestamps: false
   });
 
-  return DetalleReserva;
+  return Pasajeros;
 };

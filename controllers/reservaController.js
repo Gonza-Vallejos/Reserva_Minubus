@@ -1,5 +1,5 @@
 // controllers/reservaController.js
-const { Reserva, Viajes,DetalleReserva } = require('../models/');
+const { Reserva, Viajes,Pasajeros } = require('../models/');
 const viajesController = require('../controllers/viajesController');
 const medioTransporteController = require('../controllers/medio_transporteController');
 const resrvaUsuario = require('../controllers/reservaViajesController')
@@ -74,11 +74,13 @@ exports.crearReserva = async (req, res) => {
 
         // Iterar sobre el array de personas para crear los detalles de reserva
         for (const persona of personas) {
-            await DetalleReserva.create({
+            await Pasajeros.create({
                 nombre: persona.nombre,
+                apellido: persona.apellido,
+                dni: persona.dni,
                 ubicacionOrigen: persona.ubicacionOrigen,
                 ubicacionDestino: persona.ubicacionDestino,
-                reserva_id: nuevaReserva.id
+                reserva_id: nuevaReserva.id 
             });
         }
 
@@ -86,7 +88,7 @@ exports.crearReserva = async (req, res) => {
         medioTransporte.cantLugares -= personas.length;
         await medioTransporte.save();
 
-        res.status(201).json({ message: 'Reserva creada con detalles', reserva: nuevaReserva });
+        res.status(201).json({ message: 'Reserva creada exitosamente', reserva: nuevaReserva });
 
     } catch (error) {
         console.error(error);
@@ -100,18 +102,21 @@ exports.crearReserva = async (req, res) => {
 // Actualizar una reserva existente
 exports.actualizarReserva = async (req, res) => {
     try {
-        const { ubicacionOrigen, ubicacionDestino } = req.body;
+        const { nombre, apellido, dni, ubicacionOrigen, ubicacionDestino } = req.body;
         const fechaActual = new Date()
 
-        const [actualizar] = await Reserva.update(
+        const [actualizar] = await Personas.update(
             {
+                nombre: nombre,
+                apellido: apellido,
+                dni: dni,
                 ubicacionOrigen: ubicacionOrigen,
                 ubicacionDestino: ubicacionDestino,
                 fechaReserva: fechaActual.toLocaleString() // Asignar la fecha actual
             },
             {
                 where: { id: req.params.id },
-                fields: ['ubicacionOrigen', 'ubicacionDestino', 'fechaReserva']
+                fields: ['nombre','apellido','dni','ubicacionOrigen', 'ubicacionDestino', 'fechaReserva']
             }
         );
 
@@ -171,14 +176,14 @@ exports.eliminarReserva = async (req, res) => {
 exports.eliminarPasajero = async (req, res) => {
     try {
         // Obtener la reserva a eliminar
-        const reserva = await Reserva.findOne({ where: { id: req.params.id } });
+        const pasajero= await Pasajeros.findOne({ where: { id: req.params.id } });
 
-        if (!reserva) {
-            return res.status(404).json({ error: 'Reserva no encontrada' });
+        if (!pasajero) {
+            return res.status(404).json({ error: 'pasajero no encontrado' });
         }
         
         // Actualizar el campo 'eliminado' a 'si'
-        await DetalleReserva.update({ eliminado: 'si' });
+        await Pasajeros.update({ eliminado: 'si' });
 
         // Obtener el viaje y su medio de transporte
         const viaje = await viajesController.obtenerViajeId(reserva.viajes_id);
@@ -191,9 +196,9 @@ exports.eliminarPasajero = async (req, res) => {
             return res.status(404).json({ mensaje: 'Medio de transporte no disponible' });
         }
 
-        // Contar el número de detalles asociados con la reserva (cada detalle representa una persona)
-        const detallesReserva = await DetalleReserva.findAll({ where: { reserva_id: reserva.id } });
-        const cantidadPersonas = detallesReserva.length;
+        // Contar el número de pasajeros asociados con la reserva (cada detalle representa una persona)
+        const pasajeros = await pasajeros.findAll({ where: { reserva_id: reserva.id } });
+        const cantidadPersonas = pasajeros.length;
 
         // Sumar los lugares correspondientes al medio de transporte
         medioTransporte.cantLugares += cantidadPersonas;
@@ -208,16 +213,36 @@ exports.eliminarPasajero = async (req, res) => {
     }
 };
 
-exports.listarPasajeros = async (req,res) => {
+exports.listarTodosLosPasajeros = async (req, res) => {
     try {
-        const reserva = await Reserva.findByPk(req.query.id, {
-            attributes:['id','ubicacionOrigen','ubicacionDestino','fechaReserva','usuario_id','viajes_id']
+        const pasajeros = await Pasajeros.findAll({
+            attributes: ['nombre', 'apellido', 'dni', 'ubicacionOrigen', 'ubicacionDestino']
         });
-        if (!reserva) {
-            return res.status(404).json({ error: 'Reserva no encontrada' });
+
+        if (!pasajeros.length) {
+            return res.status(404).json({ error: 'No hay pasajeros registrados' });
         }
-        res.status(200).json(reserva);
+
+        res.status(200).json(pasajeros);
     } catch (error) {
-        res.status(500).json({ error: 'Error al obtener la reserva' });
+        console.error(error);
+        res.status(500).json({ error: 'Error al obtener los pasajeros' });
     }
-}
+};
+
+exports.listarPasajerosPorReserva = async (req, res) => {
+    try {
+        const pasajeros = await Pasajeros.findAll({
+            where: { reserva_id: req.query.id },
+            attributes: ['nombre', 'apellido', 'dni', 'ubicacionOrigen', 'ubicacionDestino']
+        });
+        if (!pasajeros) {
+            return res.status(404).json({ error: `No se encontraron pasajeros para la reserva ` });
+        }
+
+        res.status(200).json(pasajeros);
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: 'Error al obtener los pasajeros de la reserva' });
+    }
+};

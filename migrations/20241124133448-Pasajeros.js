@@ -2,7 +2,8 @@
 
 module.exports = {
   up: async (queryInterface, Sequelize) => {
-    await queryInterface.createTable('DetalleReserva', {
+    // Crear la nueva tabla 'pasajeros'
+    await queryInterface.createTable('pasajeros', {
       id: {
         type: Sequelize.INTEGER,
         primaryKey: true,
@@ -12,17 +13,22 @@ module.exports = {
       nombre: {
         type: Sequelize.STRING,
         allowNull: false,
-        
+      },
+      apellido: {
+        type: Sequelize.STRING,
+        allowNull: false, // Cambiar si no es obligatorio
+      },
+      dni: {
+        type: Sequelize.INTEGER,
+        allowNull: false, // Cambiar si no es obligatorio
       },
       ubicacionOrigen: {
         type: Sequelize.STRING,
         allowNull: false,
-        
       },
       ubicacionDestino: {
         type: Sequelize.STRING,
         allowNull: false,
-        
       },
       reserva_id: {
         type: Sequelize.INTEGER,
@@ -35,6 +41,11 @@ module.exports = {
         onDelete: 'CASCADE',
         comment: 'Referencia a la reserva principal'
       },
+      eliminado: {
+        type: Sequelize.STRING,
+        allowNull: false,
+        defaultValue: "no" ,
+      },
       createdAt: {
         type: Sequelize.DATE,
         allowNull: false,
@@ -46,9 +57,8 @@ module.exports = {
         defaultValue: Sequelize.literal('CURRENT_TIMESTAMP')
       }
     });
+
+   
   },
 
-  down: async (queryInterface, Sequelize) => {
-    await queryInterface.dropTable('DetalleReserva');
-  }
 };
