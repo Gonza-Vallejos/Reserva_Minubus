@@ -167,6 +167,26 @@ exports.eliminarReserva = async (req, res) => {
 };
 
 
+exports.listarPasajeros = async (id_reserva, id_detalle_reserva) => {
+    try {
+        const reservaDetalle= await DetalleReserva.findByPk(id_reserva, {
+            where: {
+                id: id_detalle_reserva,
+                reserva_id: id_reserva
+            },
+            attributes:['id','ubicacionOrigen','ubicacionDestino','fechaReserva','usuario_id','viajes_id']
+        });
+        if (!reservaDetalle) {
+            return res.status(404).json({ error: 'Reserva no encontrada' });
+        }
+        res.status(200).json(reservaDetalle);
+    } catch (error) {
+        res.status(500).json({ error: 'Error al obtener la reserva' });
+    }
+}
+
+
+
 // Eliminar Pasajero
 exports.eliminarPasajero = async (req, res) => {
     try {
@@ -176,7 +196,10 @@ exports.eliminarPasajero = async (req, res) => {
         if (!reserva) {
             return res.status(404).json({ error: 'Reserva no encontrada' });
         }
-        
+
+        const pasajeros = await  reservaController.listarPasajeros(reserva.reserva_id, );
+
+       
         // Actualizar el campo 'eliminado' a 'si'
         await DetalleReserva.update({ eliminado: 'si' });
 
@@ -207,17 +230,3 @@ exports.eliminarPasajero = async (req, res) => {
         res.status(500).json({ error: 'Error al eliminar la reserva' });
     }
 };
-
-exports.listarPasajeros = async (req,res) => {
-    try {
-        const reserva = await Reserva.findByPk(req.query.id, {
-            attributes:['id','ubicacionOrigen','ubicacionDestino','fechaReserva','usuario_id','viajes_id']
-        });
-        if (!reserva) {
-            return res.status(404).json({ error: 'Reserva no encontrada' });
-        }
-        res.status(200).json(reserva);
-    } catch (error) {
-        res.status(500).json({ error: 'Error al obtener la reserva' });
-    }
-}
