@@ -1,8 +1,10 @@
 // controllers/reservaController.js
-const { Reserva, Viajes,Pasajeros } = require('../models/');
+const { Reserva,Pasajeros,Viaje } = require('../models/');
 const viajesController = require('../controllers/viajesController');
 const medioTransporteController = require('../controllers/medio_transporteController');
-const resrvaUsuario = require('../controllers/reservaViajesController')
+const resrvaUsuario = require('../controllers/reservaViajesController');
+const { where } = require('sequelize');
+const { Where } = require('sequelize/lib/utils');
 
 
 
@@ -70,7 +72,7 @@ exports.crearReserva = async (req, res) => {
             usuarios_id,
             viajes_id
         });
-        console.log('reserva principal anda');
+        
 
         // Iterar sobre el array de personas para crear los detalles de reserva
         for (const persona of personas) {
@@ -140,8 +142,19 @@ exports.eliminarReserva = async (req, res) => {
             return res.status(404).json({ error: 'Reserva no encontrada' });
         }
 
-        // Actualizar el campo 'eliminado' a 'si'
+        // Actualizar el campo 'eliminado' de la reserva
         await reserva.update({ eliminado: 'si' });
+
+        const pasajeros = await Pasajeros.findAll({ where: { reserva_id: req.params.id } })
+        if (!pasajeros) {
+            return res.status(404).json({ error: 'pasajero no encontrado' });
+        }
+        // Actualizar el campo 'eliminado' de los pasajeros
+        await Pasajeros.update(
+            { eliminado: 'si' }, 
+            { where: { reserva_id: req.params.id } }
+        );
+
 
         // Obtener el viaje y su medio de transporte
         const viaje = await viajesController.obtenerViajeId(reserva.viajes_id);
@@ -154,16 +167,16 @@ exports.eliminarReserva = async (req, res) => {
             return res.status(404).json({ mensaje: 'Medio de transporte no disponible' });
         }
 
-        // Contar el número de detalles asociados con la reserva (cada detalle representa una persona)
-        const detallesReserva = await DetalleReserva.findAll({ where: { reserva_id: reserva.id } });
-        const cantidadPersonas = detallesReserva.length;
+        // Contar el número de pasajeros (personas) asociados con la reserva
+        const cantidadPersonas = pasajeros.length;
 
         // Sumar los lugares correspondientes al medio de transporte
         medioTransporte.cantLugares += cantidadPersonas;
 
-        // Guardar los cambios realizados en la base de datos
+        // Guardar los cambios realizados en el medio de transporte
         await medioTransporte.save();
 
+        // Responder con éxito
         res.status(200).json({ message: 'Reserva eliminada y lugares devueltos' });
     } catch (error) {
         console.error(error);
@@ -171,45 +184,42 @@ exports.eliminarReserva = async (req, res) => {
     }
 };
 
-
 // Eliminar Pasajero
 exports.eliminarPasajero = async (req, res) => {
     try {
-        // Obtener la reserva a eliminar
-        const pasajero= await Pasajeros.findOne({ where: { id: req.params.id } });
-
-        if (!pasajero) {
-            return res.status(404).json({ error: 'pasajero no encontrado' });
-        }
         
-        // Actualizar el campo 'eliminado' a 'si'
-        await Pasajeros.update({ eliminado: 'si' });
+        // Actualizar el campo 'eliminado' a 'si' 
+        await Pasajeros.update({ eliminado: 'si' },
+            { where: { id: req.params.id } }
+        );
+        
+        //Guardo los datos del pasajero en la variable pasajeros
+        const pasajeros = await Pasajeros.findOne({ where: { id: req.params.id } })
+        
+        //Obtengo la reserva del pasajero mediante reserva_id que esta en la variable pasajeros
+        const reserva = await Reserva.findOne({ where: { id: pasajeros.reserva_id } });
 
         // Obtener el viaje y su medio de transporte
         const viaje = await viajesController.obtenerViajeId(reserva.viajes_id);
         if (!viaje) {
             return res.status(404).json({ mensaje: 'Viaje no encontrado' });
-        }
+        } 
 
         const medioTransporte = await medioTransporteController.obtenerTransporteId(viaje.medioTransporte_id);
         if (!medioTransporte) {
             return res.status(404).json({ mensaje: 'Medio de transporte no disponible' });
         }
 
-        // Contar el número de pasajeros asociados con la reserva (cada detalle representa una persona)
-        const pasajeros = await pasajeros.findAll({ where: { reserva_id: reserva.id } });
-        const cantidadPersonas = pasajeros.length;
-
         // Sumar los lugares correspondientes al medio de transporte
-        medioTransporte.cantLugares += cantidadPersonas;
+        medioTransporte.cantLugares += 1;
 
         // Guardar los cambios realizados en la base de datos
         await medioTransporte.save();
 
-        res.status(200).json({ message: 'Reserva eliminada y lugares devueltos' });
+        res.status(200).json({ message: 'Pasajero eliminado' });
     } catch (error) {
         console.error(error);
-        res.status(500).json({ error: 'Error al eliminar la reserva' });
+        res.status(500).json({ error: 'Error al eliminar el Pasajero' });
     }
 };
 

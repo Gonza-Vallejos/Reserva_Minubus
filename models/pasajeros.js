@@ -37,7 +37,13 @@ module.exports = (sequelize, DataTypes) => {
     reserva_id: {
       type: DataTypes.INTEGER,
       allowNull: false
+    },
+    eliminado: {
+      type: DataTypes.STRING,
+      allowNull: false,
+      defaultValue: 'no'
     }
+    
   }, {
     sequelize,
     modelName: 'Pasajeros',
