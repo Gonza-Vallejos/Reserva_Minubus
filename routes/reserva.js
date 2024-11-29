@@ -15,5 +15,13 @@ router.put('/actualizarReserva/:id', validateUpdateReserva,reservaController.act
 
 router.put('/eliminarReserva/:id', reservaController.eliminarReserva);
 
+router.put('/eliminarPasajero/:id', reservaController.eliminarPasajero);
+
+router.get('/listarPasajerosPorReserva/', reservaController.listarPasajerosPorReserva);
+router.get('/listarPasajeros/', reservaController.listarTodosLosPasajeros);
+
+
+
+
 
 module.exports = router; 

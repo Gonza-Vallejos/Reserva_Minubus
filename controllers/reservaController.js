@@ -1,8 +1,10 @@
 // controllers/reservaController.js
-const { Reserva, Viajes,DetalleReserva } = require('../models/');
+const { Reserva,Pasajeros,Viaje } = require('../models/');
 const viajesController = require('../controllers/viajesController');
 const medioTransporteController = require('../controllers/medio_transporteController');
-const resrvaUsuario = require('../controllers/reservaViajesController')
+const resrvaUsuario = require('../controllers/reservaViajesController');
+const { where } = require('sequelize');
+const { Where } = require('sequelize/lib/utils');
 
 
 
@@ -70,15 +72,17 @@ exports.crearReserva = async (req, res) => {
             usuarios_id,
             viajes_id
         });
-        console.log('reserva principal anda');
+        
 
         // Iterar sobre el array de personas para crear los detalles de reserva
         for (const persona of personas) {
-            await DetalleReserva.create({
+            await Pasajeros.create({
                 nombre: persona.nombre,
+                apellido: persona.apellido,
+                dni: persona.dni,
                 ubicacionOrigen: persona.ubicacionOrigen,
                 ubicacionDestino: persona.ubicacionDestino,
-                reserva_id: nuevaReserva.id
+                reserva_id: nuevaReserva.id 
             });
         }
 
@@ -86,7 +90,7 @@ exports.crearReserva = async (req, res) => {
         medioTransporte.cantLugares -= personas.length;
         await medioTransporte.save();
 
-        res.status(201).json({ message: 'Reserva creada con detalles', reserva: nuevaReserva });
+        res.status(201).json({ message: 'Reserva creada exitosamente', reserva: nuevaReserva });
 
     } catch (error) {
         console.error(error);
@@ -100,18 +104,21 @@ exports.crearReserva = async (req, res) => {
 // Actualizar una reserva existente
 exports.actualizarReserva = async (req, res) => {
     try {
-        const { ubicacionOrigen, ubicacionDestino } = req.body;
+        const { nombre, apellido, dni, ubicacionOrigen, ubicacionDestino } = req.body;
         const fechaActual = new Date()
 
-        const [actualizar] = await Reserva.update(
+        const [actualizar] = await Personas.update(
             {
+                nombre: nombre,
+                apellido: apellido,
+                dni: dni,
                 ubicacionOrigen: ubicacionOrigen,
                 ubicacionDestino: ubicacionDestino,
                 fechaReserva: fechaActual.toLocaleString() // Asignar la fecha actual
             },
             {
                 where: { id: req.params.id },
-                fields: ['ubicacionOrigen', 'ubicacionDestino', 'fechaReserva']
+                fields: ['nombre','apellido','dni','ubicacionOrigen', 'ubicacionDestino', 'fechaReserva']
             }
         );
 
@@ -135,8 +142,19 @@ exports.eliminarReserva = async (req, res) => {
             return res.status(404).json({ error: 'Reserva no encontrada' });
         }
 
-        // Actualizar el campo 'eliminado' a 'si'
+        // Actualizar el campo 'eliminado' de la reserva
         await reserva.update({ eliminado: 'si' });
+
+        const pasajeros = await Pasajeros.findAll({ where: { reserva_id: req.params.id } })
+        if (!pasajeros) {
+            return res.status(404).json({ error: 'pasajero no encontrado' });
+        }
+        // Actualizar el campo 'eliminado' de los pasajeros
+        await Pasajeros.update(
+            { eliminado: 'si' }, 
+            { where: { reserva_id: req.params.id } }
+        );
+
 
         // Obtener el viaje y su medio de transporte
         const viaje = await viajesController.obtenerViajeId(reserva.viajes_id);
@@ -149,16 +167,16 @@ exports.eliminarReserva = async (req, res) => {
             return res.status(404).json({ mensaje: 'Medio de transporte no disponible' });
         }
 
-        // Contar el número de detalles asociados con la reserva (cada detalle representa una persona)
-        const detallesReserva = await DetalleReserva.findAll({ where: { reserva_id: reserva.id } });
-        const cantidadPersonas = detallesReserva.length;
+        // Contar el número de pasajeros (personas) asociados con la reserva
+        const cantidadPersonas = pasajeros.length;
 
         // Sumar los lugares correspondientes al medio de transporte
         medioTransporte.cantLugares += cantidadPersonas;
 
-        // Guardar los cambios realizados en la base de datos
+        // Guardar los cambios realizados en el medio de transporte
         await medioTransporte.save();
 
+        // Responder con éxito
         res.status(200).json({ message: 'Reserva eliminada y lugares devueltos' });
     } catch (error) {
         console.error(error);
@@ -166,67 +184,75 @@ exports.eliminarReserva = async (req, res) => {
     }
 };
 
-
-exports.listarPasajeros = async (id_reserva, id_detalle_reserva) => {
-    try {
-        const reservaDetalle= await DetalleReserva.findByPk(id_reserva, {
-            where: {
-                id: id_detalle_reserva,
-                reserva_id: id_reserva
-            },
-            attributes:['id','ubicacionOrigen','ubicacionDestino','fechaReserva','usuario_id','viajes_id']
-        });
-        if (!reservaDetalle) {
-            return res.status(404).json({ error: 'Reserva no encontrada' });
-        }
-        res.status(200).json(reservaDetalle);
-    } catch (error) {
-        res.status(500).json({ error: 'Error al obtener la reserva' });
-    }
-}
-
-
-
 // Eliminar Pasajero
 exports.eliminarPasajero = async (req, res) => {
     try {
-        // Obtener la reserva a eliminar
-        const reserva = await Reserva.findOne({ where: { id: req.params.id } });
-
-        if (!reserva) {
-            return res.status(404).json({ error: 'Reserva no encontrada' });
-        }
-
-        const pasajeros = await  reservaController.listarPasajeros(reserva.reserva_id, );
-
-       
-        // Actualizar el campo 'eliminado' a 'si'
-        await DetalleReserva.update({ eliminado: 'si' });
+        
+        // Actualizar el campo 'eliminado' a 'si' 
+        await Pasajeros.update({ eliminado: 'si' },
+            { where: { id: req.params.id } }
+        );
+        
+        //Guardo los datos del pasajero en la variable pasajeros
+        const pasajeros = await Pasajeros.findOne({ where: { id: req.params.id } })
+        
+        //Obtengo la reserva del pasajero mediante reserva_id que esta en la variable pasajeros
+        const reserva = await Reserva.findOne({ where: { id: pasajeros.reserva_id } });
 
         // Obtener el viaje y su medio de transporte
         const viaje = await viajesController.obtenerViajeId(reserva.viajes_id);
         if (!viaje) {
             return res.status(404).json({ mensaje: 'Viaje no encontrado' });
-        }
+        } 
 
         const medioTransporte = await medioTransporteController.obtenerTransporteId(viaje.medioTransporte_id);
         if (!medioTransporte) {
             return res.status(404).json({ mensaje: 'Medio de transporte no disponible' });
         }
 
-        // Contar el número de detalles asociados con la reserva (cada detalle representa una persona)
-        const detallesReserva = await DetalleReserva.findAll({ where: { reserva_id: reserva.id } });
-        const cantidadPersonas = detallesReserva.length;
-
         // Sumar los lugares correspondientes al medio de transporte
-        medioTransporte.cantLugares += cantidadPersonas;
+        medioTransporte.cantLugares += 1;
 
         // Guardar los cambios realizados en la base de datos
         await medioTransporte.save();
 
-        res.status(200).json({ message: 'Reserva eliminada y lugares devueltos' });
+        res.status(200).json({ message: 'Pasajero eliminado' });
     } catch (error) {
         console.error(error);
-        res.status(500).json({ error: 'Error al eliminar la reserva' });
+        res.status(500).json({ error: 'Error al eliminar el Pasajero' });
+    }
+};
+
+exports.listarTodosLosPasajeros = async (req, res) => {
+    try {
+        const pasajeros = await Pasajeros.findAll({
+            attributes: ['nombre', 'apellido', 'dni', 'ubicacionOrigen', 'ubicacionDestino']
+        });
+
+        if (!pasajeros.length) {
+            return res.status(404).json({ error: 'No hay pasajeros registrados' });
+        }
+
+        res.status(200).json(pasajeros);
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: 'Error al obtener los pasajeros' });
+    }
+};
+
+exports.listarPasajerosPorReserva = async (req, res) => {
+    try {
+        const pasajeros = await Pasajeros.findAll({
+            where: { reserva_id: req.query.id },
+            attributes: ['nombre', 'apellido', 'dni', 'ubicacionOrigen', 'ubicacionDestino']
+        });
+        if (!pasajeros) {
+            return res.status(404).json({ error: `No se encontraron pasajeros para la reserva ` });
+        }
+
+        res.status(200).json(pasajeros);
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: 'Error al obtener los pasajeros de la reserva' });
     }
 };
