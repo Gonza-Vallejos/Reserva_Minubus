@@ -39,7 +39,7 @@ exports.obtenerReservaPorId = async (req, res) => {
 exports.crearReserva = async (req, res) => {
     try {
         const { usuarios_id, viajes_id, personas } = req.body;
-
+        console.log(req.body);
         // Obtener el viaje y su medio de transporte
         const viaje = await viajesController.obtenerViajeId(viajes_id);
         if (!viaje) {
