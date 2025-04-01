@@ -6,8 +6,8 @@ module.exports = (sequelize, DataTypes) => {
 
     static associate(models) {
       // Definir asociaciones aquí
-      Ventas.belongsTo(models.Viajes, {
-        foreignKey: 'viajes_id',
+      Ventas.belongsTo(models.Reserva, {
+        foreignKey: 'reserva_id',
         targetKey: 'id'
       });
       Ventas.hasMany(models.DetalleVenta, {
@@ -29,7 +29,7 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.INTEGER,
       allowNull: false
     },
-    viajes_id: {
+    reserva_id: {
       type: DataTypes.INTEGER,
       allowNull: false
     },

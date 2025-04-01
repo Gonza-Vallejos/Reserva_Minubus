@@ -14,12 +14,12 @@ module.exports = (sequelize, DataTypes) => {
         foreignKey: 'viajes_id',
         targetKey: 'id'
       });
-      Reserva.hasMany(models.DetalleVenta, {
-        foreignKey: 'reservas_id'
-      });
       Reserva.hasMany(models.Pasajeros, {
          foreignKey: 'reserva_id' 
-        })
+        });
+        Reserva.hasMany(models.Ventas, {
+          foreignKey: 'reserva_id' 
+         })
     }
   }
 

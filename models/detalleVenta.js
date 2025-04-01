@@ -10,10 +10,6 @@ module.exports = (sequelize, DataTypes) => {
         foreignKey: 'ventas_id',
         targetKey: 'id'
       });
-      Detalle_Venta.belongsTo(models.Reserva, {
-        foreignKey: 'reservas_id',
-        targetKey: 'id'
-      });
     }
   }
 
@@ -34,10 +30,6 @@ module.exports = (sequelize, DataTypes) => {
       allowNull: false
     },
     ventas_id: {
-      type: DataTypes.INTEGER,
-      allowNull: false
-    },
-    reservas_id: {
       type: DataTypes.INTEGER,
       allowNull: false
     },

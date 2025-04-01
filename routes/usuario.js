@@ -6,7 +6,7 @@ const validateUpdateUsuario = require('../middlewares/validateUpdateUsuario');
 
 
 // Ruta para obtener todos los usuarios
-router.get('/obtenerEmpresa', usuarioController.obtenerUsuarios);
+router.get('/obtenerUsuario', usuarioController.obtenerUsuarios);
 
 // Ruta para obtener un usuario por ID 
 router.get('/obtenerUsuarioId', usuarioController.obtenerUsuarioPorId);

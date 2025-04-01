@@ -18,10 +18,10 @@ module.exports = {
       totalVentas: {
         type: Sequelize.INTEGER
       },
-      viajes_id: {
+      reserva_id: {
         type: Sequelize.INTEGER,
-        references: {
-          model: 'Viajes',
+        references:{
+          model: 'Reservas',
           key: 'id'
         }
       },

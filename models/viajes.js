@@ -10,9 +10,6 @@ module.exports = (sequelize, DataTypes) => {
         foreignKey: 'medioTransporte_id',
         targetKey: 'id'
       });
-      Viajes.hasMany(models.Ventas, {
-        foreignKey: 'viajes_id'
-      });
       Viajes.hasMany(models.Reserva, {
         foreignKey: 'viajes_id'
       });

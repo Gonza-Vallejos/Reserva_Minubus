@@ -8,14 +8,14 @@ module.exports = {
   },
 
   down: async (queryInterface, Sequelize) => {
-    // En caso de que necesites revertir la migración, puedes agregar nuevamente las columnas
+   
     await queryInterface.addColumn('reservas', 'ubicacionOrigen', {
       type: Sequelize.STRING,
-      allowNull: true, // o 'false' dependiendo de tu necesidad
+      allowNull: true, 
     });
     await queryInterface.addColumn('reservas', 'ubicacionDestino', {
       type: Sequelize.STRING,
-      allowNull: true, // o 'false' dependiendo de tu necesidad
+      allowNull: true, 
     });
   }
 };
