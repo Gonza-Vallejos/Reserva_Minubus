@@ -7,7 +7,7 @@ router.get('/obtenerVentas', ventasController.obtenerVentas);
 
 router.get('/obtenerVentasId', ventasController.obtenerVentasPorId);
 
-router.post('/crearVenta', validateVenta, ventasController.crearVenta);
+router.post('/crearVenta', ventasController.crearVenta);
 
 router.put('/actualizarVenta/:id', ventasController.actualizarVentas);
 

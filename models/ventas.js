@@ -19,10 +19,14 @@ module.exports = (sequelize, DataTypes) => {
   Ventas.init({
     fecha: {
       type: DataTypes.DATE,
-      allowNull: false
+      allowNull: false,
+      get() {
+        const rawValue = this.getDataValue('fecha');
+         return rawValue ? rawValue.toISOString() : null;
+      }
     },
     hora: {
-      type: DataTypes.DATE,
+      type: DataTypes.TIME,
       allowNull: false
     },
     totalVentas: {

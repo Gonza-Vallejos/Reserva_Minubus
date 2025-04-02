@@ -8,6 +8,7 @@ const { Where } = require('sequelize/lib/utils');
 
 
 
+
 // Obtener todas las reservas
 exports.obtenerReservas = async (req, res) => {
     try {
@@ -114,7 +115,7 @@ exports.actualizarReserva = async (req, res) => {
                 dni: dni,
                 ubicacionOrigen: ubicacionOrigen,
                 ubicacionDestino: ubicacionDestino,
-                fechaReserva: fechaActual.toLocaleString() // Asignar la fecha actual
+                fechaReserva: fechaActual// Asignar la fecha actual
             },
             {
                 where: { id: req.params.id },

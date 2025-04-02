@@ -1,11 +1,12 @@
 // controllers/ventasController.js
-const { Ventas } = require('../models');
+const { Ventas,Pasajeros } = require('../models');
+const { listarPasajerosPorReserva } = require('./reservaController');
 
 // Obtener todas las ventas
 exports.obtenerVentas = async (req, res) => {
     try {
         const ventas = await Ventas.findAll({
-            attributes:['id','fecha','hora','totalVentas','viajes_id']
+            attributes:['id','fecha','hora','totalVentas','reserva_id']
         });
         res.status(200).json(ventas);
     } catch (error) {
@@ -17,7 +18,7 @@ exports.obtenerVentas = async (req, res) => {
 exports.obtenerVentasPorId = async (req, res) => {
     try {
         const ventas = await Ventas.findByPk(req.query.id, {
-            attributes:['id','fecha','hora','totalVentas','viajes_id']
+            attributes:['id','fecha','hora','totalVentas','reserva_id']
         });
         if (!ventas) {
             return res.status(404).json({ error: 'Venta no encontrada' });
@@ -28,20 +29,42 @@ exports.obtenerVentasPorId = async (req, res) => {
     }
 };
 // Crear una nueva Venta
-exports.crearVenta= async (req, res) => {
+exports.crearVenta = async (req, res) => {
     try {
-        const { fecha, hora, totalVentas, viajes_id, eliminado } = req.body;
-        
-        // Crear el usuario con los campos separados
+        const { reserva_id } = req.body;
+        console.log(req.body);
+
+        let cantidadPasajeros = 0; // Declarar la variable antes del try interno
+
+        try {
+            cantidadPasajeros = await Pasajeros.count({
+                where: { reserva_id: reserva_id }
+            });
+        } catch (error) {
+            console.error(error);
+            return res.status(500).json({ error: 'Error al contar los pasajeros de la reserva' });
+        }
+
+        console.log('ver pasajeros: ', cantidadPasajeros);
+
+        const totalVentas = cantidadPasajeros;
+        const fechaActual = new Date();
+
+        const horaString = fechaActual.toLocaleTimeString('es-ES', { hour12: false });
+
+        console.log("Hora:", horaString);
+
+        // Crear la venta con los campos necesarios
         const nuevaVenta = await Ventas.create({
-            fecha: fecha,
-            hora: hora,
+            fecha: fechaActual,
+            hora: horaString,
             totalVentas: totalVentas,
-            viajes_id:viajes_id,
-            eliminado:eliminado
+            reserva_id: reserva_id,
         });
+
         res.status(201).json({ message: 'Venta creada' });
     } catch (error) {
+        console.error(error);
         res.status(500).json({ error: 'Error al crear la venta' });
     }
 };
