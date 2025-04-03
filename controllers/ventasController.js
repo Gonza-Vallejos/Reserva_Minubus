@@ -1,6 +1,9 @@
 // controllers/ventasController.js
-const { Ventas,Pasajeros } = require('../models');
+const { Ventas,Pasajeros,Reserva,Viajes,DetalleVenta } = require('../models');
 const { listarPasajerosPorReserva } = require('./reservaController');
+const ventasController = require('../controllers/ventasController');
+const viajesController = require('../controllers/viajesController');
+const reservaController = require('../controllers/reservaController');
 
 // Obtener todas las ventas
 exports.obtenerVentas = async (req, res) => {
@@ -24,6 +27,21 @@ exports.obtenerVentasPorId = async (req, res) => {
             return res.status(404).json({ error: 'Venta no encontrada' });
         }
         res.status(200).json(ventas);
+    } catch (error) {
+        res.status(500).json({ error: 'Error al obtener la venta' });
+    }
+};
+
+// Obtener una Venta por ID
+exports.obtenerVentasId = async (id) => {
+    try {
+        const ventas = await Ventas.findByPk(id, {
+            attributes:['id','fecha','hora','totalVentas','reserva_id']
+        });
+        if (!ventas) {
+            return res.status(404).json({ error: 'Venta no encontrada' });
+        }
+       return ventas;
     } catch (error) {
         res.status(500).json({ error: 'Error al obtener la venta' });
     }
@@ -103,3 +121,54 @@ exports.eliminarVentas= async (req, res) => {
         res.status(500).json({ error: 'Error al eliminar la venta' });
     }
 };
+
+
+exports.crearDetalleVenta= async (req, res) =>{
+
+    try {
+        const { formaPago, descuento, ventas_id } = req.body;
+        console.log(req.body);
+
+        const ventas = await ventasController.obtenerVentasId(ventas_id);
+        if (!ventas) {
+            return res.status(404).json({ mensaje: 'venta no encontrado' });
+        }
+        console.log('*********',ventas.reserva_id)
+
+
+        const reserva = await reservaController.obtenerReservaId(ventas.reserva_id);
+        if (!reserva) {
+            return res.status(404).json({ mensaje: 'Reserva no encontrada' });
+        }
+
+        const viaje = await viajesController.obtenerViajeId(reserva.viajes_id);
+        if (!viaje) {
+            return res.status(404).json({ mensaje: 'Viaje no encontrado' });
+        }
+
+
+        const subTotal = (viaje.precio * ventas.totalVentas);
+        console.log('ver precio', subTotal);
+
+        
+        const precioFinal = (subTotal - descuento);
+
+        console.log('ver precio final', precioFinal);
+
+        // Crear detalle venta con los campos necesarios
+        const nuevoDetalleVenta = await DetalleVenta.create({
+            formaPago: formaPago,
+            subTotal: subTotal,
+            descuento: descuento,
+            precioFinal: precioFinal,
+            ventas_id: ventas_id,
+        });
+
+        res.status(201).json({ message: 'detalle venta creado' });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: 'Error al crear  detalle venta' });
+    }
+
+
+}

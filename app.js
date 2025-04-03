@@ -10,6 +10,7 @@ var medioTransporteRouter = require('./routes/medioTransporte');
 var reservaRouter = require('./routes/reserva');
 var ventasRouter = require('./routes/ventas');
 var viajesRouter = require('./routes/viajes');
+var detalleVentaRouter = require('./routes/detalleVenta');
 
 var app = express();
 
@@ -30,6 +31,7 @@ app.use('/medioTransporte', medioTransporteRouter);
 app.use('/reserva', reservaRouter);
 app.use('/ventas', ventasRouter);
 app.use('/viajes', viajesRouter);
+app.use('/detalleVenta', detalleVentaRouter);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

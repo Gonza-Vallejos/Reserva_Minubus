@@ -13,10 +13,11 @@ const { Where } = require('sequelize/lib/utils');
 exports.obtenerReservas = async (req, res) => {
     try {
         const reservas = await Reserva.findAll({
-            attributes:['id','fechaReserva','usuario_id','viajes_id']
+            attributes:['id','fechaReserva','usuarios_id','viajes_id']
         });
         res.status(200).json(reservas);
     } catch (error) {
+        console.error('Error al obtener reservas:', error); 
         res.status(500).json({ error: 'Error al obtener las reservas' });
     }
 };
@@ -25,7 +26,7 @@ exports.obtenerReservas = async (req, res) => {
 exports.obtenerReservaPorId = async (req, res) => {
     try {
         const reserva = await Reserva.findByPk(req.query.id, {
-            attributes:['id','fechaReserva','usuario_id','viajes_id']
+            attributes:['id','fechaReserva','usuarios_id','viajes_id']
         });
         if (!reserva) {
             return res.status(404).json({ error: 'Reserva no encontrada' });
@@ -33,6 +34,22 @@ exports.obtenerReservaPorId = async (req, res) => {
         res.status(200).json(reserva);
     } catch (error) {
         res.status(500).json({ error: 'Error al obtener la reserva' });
+    }
+};
+
+// Obtener una reserva por ID
+exports.obtenerReservaId = async (id) => {
+    try {
+        const reserva = await Reserva.findByPk(id, {
+            attributes:['id','fechaReserva','usuarios_id','viajes_id']
+        });
+        if (!reserva) {
+            return console.error("Error al obtener la reserva:", error);
+            
+        }
+        return reserva;
+    } catch (error) {
+        throw error;
     }
 };
 

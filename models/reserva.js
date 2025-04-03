@@ -28,10 +28,7 @@ module.exports = (sequelize, DataTypes) => {
     fechaReserva: {
       type: DataTypes.DATE,
       allowNull: false,
-      get() {
-        const rawValue = this.getDataValue('fechaReserva');
-         return rawValue ? rawValue.toISOString() : null;
-      }
+     
     },
     usuarios_id: {
       type: DataTypes.INTEGER,

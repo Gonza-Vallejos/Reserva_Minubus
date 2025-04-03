@@ -20,10 +20,7 @@ module.exports = (sequelize, DataTypes) => {
     fecha: {
       type: DataTypes.DATE,
       allowNull: false,
-      get() {
-        const rawValue = this.getDataValue('fecha');
-         return rawValue ? rawValue.toISOString() : null;
-      }
+     
     },
     hora: {
       type: DataTypes.TIME,
