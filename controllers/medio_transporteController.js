@@ -44,8 +44,6 @@ exports.actualizarTransporte = async (req, res) => {
         // Especificar los campos que quieres actualizar
         const {nombre, cantLugares} = req.body
         
-
-        
         const [actualizar] = await MedioTransporte.update({
             nombre:nombre,
             cantLugares:cantLugares,

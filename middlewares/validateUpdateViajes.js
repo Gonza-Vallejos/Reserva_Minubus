@@ -1,5 +1,5 @@
 const { body, validationResult } = require('express-validator');
-const { Viajes, MedioTransporte } = require('../models');
+const {MedioTransporte } = require('../models');
 
 // Middleware para validar y sanitizar los datos del viaje
 const validarActualizarViaje = [

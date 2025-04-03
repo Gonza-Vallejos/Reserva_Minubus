@@ -1,5 +1,5 @@
 const { body, validationResult } = require('express-validator');
-const { Reserva, Usuario, Viajes } = require('../models');
+
 
 const validarActualizarReserva = [
   // Validar ubicación de origen

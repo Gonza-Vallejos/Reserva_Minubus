@@ -1,6 +1,4 @@
-const viajesController = require('../controllers/viajesController');
-const medioTransporteController = require('../controllers/medio_transporteController');
-const { Viajes } = require('../models');  // Asegúrate de que la ruta al modelo sea correcta
+const { Viajes } = require('../models');  
 
 exports.obtenerViajesDisponibles = async (req, res) => {
     try {
@@ -10,7 +8,7 @@ exports.obtenerViajesDisponibles = async (req, res) => {
         console.log('***ver fecha actual****', fechaActual.toLocaleDateString());
         console.log('***ver fecha actual****', fechaActual.toISOString());
         
-        // Obtén el origen y destino ingresados por el usuario desde los parámetros de consulta
+        
         const { origen, destino } = req.body;
        
         if (!origen || !destino) {

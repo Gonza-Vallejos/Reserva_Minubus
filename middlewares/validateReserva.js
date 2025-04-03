@@ -2,18 +2,7 @@ const { body, validationResult } = require('express-validator');
 const { Reserva, Usuario, Viajes } = require('../models');
 
 const validarReserva = [
-  // Validar ubicación de origen
- /* body('ubicacionOrigen')
-    .notEmpty().withMessage('La ubicación de origen es requerida.')
-    .isString().withMessage('La ubicación de origen debe ser un texto.'),
-
-  // Validar ubicación de destino
-  body('ubicacionDestino')
-    .notEmpty().withMessage('La ubicación de destino es requerida.')
-    .isString().withMessage('La ubicación de destino debe ser un texto.'),
-
-*/
-
+ 
   // Validar usuarios_id
   body('usuarios_id')
     .notEmpty().withMessage('El ID del usuario es requerido.')

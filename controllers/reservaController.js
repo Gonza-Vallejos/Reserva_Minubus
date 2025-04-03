@@ -33,11 +33,11 @@ exports.obtenerReservaPorId = async (req, res) => {
         }
         res.status(200).json(reserva);
     } catch (error) {
-        res.status(500).json({ error: 'Error al obtener la reserva' });
+        res.status(500).json({ error: 'Error al obtener la reserva'});
     }
 };
 
-// Obtener una reserva por ID
+// Obtener una reserva por ID - Funcion que se ocupa internamente
 exports.obtenerReservaId = async (id) => {
     try {
         const reserva = await Reserva.findByPk(id, {
@@ -58,6 +58,7 @@ exports.crearReserva = async (req, res) => {
     try {
         const { usuarios_id, viajes_id, personas } = req.body;
         console.log(req.body);
+
         // Obtener el viaje y su medio de transporte
         const viaje = await viajesController.obtenerViajeId(viajes_id);
         if (!viaje) {
@@ -66,7 +67,7 @@ exports.crearReserva = async (req, res) => {
 
         const medioTransporte = await medioTransporteController.obtenerTransporteId(viaje.medioTransporte_id);
         if (!medioTransporte) {
-            return res.status(404).json({ mensaje: 'Medio de transporte no disponible' });
+            return res.status(404).json({ mensaje: 'Medio de transporte no encontrado' });
         }
 
         // Verificar si hay suficientes lugares disponibles antes de crear la reserva
@@ -195,7 +196,7 @@ exports.eliminarReserva = async (req, res) => {
         await medioTransporte.save();
 
         // Responder con éxito
-        res.status(200).json({ message: 'Reserva eliminada y lugares devueltos' });
+        res.status(200).json({ message: 'Reserva eliminada' });
     } catch (error) {
         console.error(error);
         res.status(500).json({ error: 'Error al eliminar la reserva' });

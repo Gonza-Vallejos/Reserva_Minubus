@@ -2,7 +2,7 @@ const { body, validationResult } = require('express-validator');
 const { DetalleReserva } = require('../models');
 
 const validarDetalleReserva = [
-  // Validar el nombre
+  // Validar el nombre el operador * indica que esta validando el campo nombre de todo el array personas
   body('personas.*.nombre')
     .notEmpty().withMessage('El nombre es requerido.')
     .isString().withMessage('El nombre debe ser un texto.'),

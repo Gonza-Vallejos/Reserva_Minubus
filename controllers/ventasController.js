@@ -127,13 +127,12 @@ exports.crearDetalleVenta= async (req, res) =>{
 
     try {
         const { formaPago, descuento, ventas_id } = req.body;
-        console.log(req.body);
 
         const ventas = await ventasController.obtenerVentasId(ventas_id);
         if (!ventas) {
             return res.status(404).json({ mensaje: 'venta no encontrado' });
         }
-        console.log('*********',ventas.reserva_id)
+        
 
 
         const reserva = await reservaController.obtenerReservaId(ventas.reserva_id);

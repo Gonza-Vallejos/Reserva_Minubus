@@ -4,7 +4,7 @@ const { Usuario } = require('../models');
 exports.obtenerUsuarios = async (req, res) => {
     try {
         const usuarios = await Usuario.findAll({
-            // Solo los campos que quieras traer
+            // Solo los campos a utilizar
             attributes: ['id','nombre', 'apellido', 'dni','telefono', 'email','usuario','contrasenia', 'perfil_id'] 
         });
         res.status(200).json(usuarios);
@@ -51,7 +51,6 @@ exports.crearUsuario = async (req, res) => {
 
         res.status(201).json(nuevoUsuario);
     } catch (error) {
-        console.error('Error al crear el usuario:', error);
         res.status(500).json({ error: 'Error al crear el usuario' });
     }
 };

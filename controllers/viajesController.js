@@ -95,4 +95,19 @@ exports.eliminarViajes= async (req, res) => {
     } catch (error) {
         res.status(500).json({ error: 'Error al eliminar el viaje' });
     }
+
+
+
+
+    exports.obtenerVentas = async (id) => {
+        try {
+            const venta = await Venta.findByPk(id, {
+                attributes: ['id', 'fecha', 'hora', 'totalVentas', 'reserva_id']
+            });
+            return venta;
+        } catch (error) {
+            console.error("Error al obtener la venta:", error);
+            throw error;
+        }
+    };
 };
