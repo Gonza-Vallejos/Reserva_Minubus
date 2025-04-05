@@ -126,7 +126,7 @@ exports.actualizarReserva = async (req, res) => {
         const { nombre, apellido, dni, ubicacionOrigen, ubicacionDestino } = req.body;
         const fechaActual = new Date()
 
-        const [actualizar] = await Personas.update(
+        const [actualizar] = await Pasajeros.update(
             {
                 nombre: nombre,
                 apellido: apellido,
@@ -262,7 +262,7 @@ exports.listarTodosLosPasajeros = async (req, res) => {
 exports.listarPasajerosPorReserva = async (req, res) => {
     try {
         const pasajeros = await Pasajeros.findAll({
-            where: { reserva_id: req.query.id },
+            where: { reserva_id: req.params.id },
             attributes: ['nombre', 'apellido', 'dni', 'ubicacionOrigen', 'ubicacionDestino']
         });
         if (!pasajeros) {

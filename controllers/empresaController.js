@@ -77,7 +77,7 @@ exports.eliminarEmpresa = async (req, res) => {
             fields: ['eliminado']
         });
 
-        if (!eliminarEmpresa) {
+        if (!eliminar) {
             return res.status(404).json({ error: 'Empresa no encontrada' });
         }
         res.status(200).json({ message: 'Empresa eliminada' });

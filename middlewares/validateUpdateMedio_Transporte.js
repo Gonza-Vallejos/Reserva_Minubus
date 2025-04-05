@@ -1,5 +1,5 @@
 const { body, validationResult } = require('express-validator');
-const { Medio_Transporte } = require('../models');
+const { MedioTransporte } = require('../models');
 
 const validarActualizarTransporte = [
   // Validar nombre
@@ -7,7 +7,7 @@ const validarActualizarTransporte = [
     .notEmpty().withMessage('El nombre es requerido.')
     .isString().withMessage('El nombre debe ser un string.')
     .custom(async (nombre, { req }) => {
-      const transporte = await Medio_Transporte.findOne({ where: { nombre } });
+      const transporte = await MedioTransporte.findOne({ where: { nombre } });
       if (transporte && transporte.id !== parseInt(req.params.id)) {
         throw new Error('El nombre ya está en uso por otro medio de transporte');
       }

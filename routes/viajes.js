@@ -8,7 +8,7 @@ const viajesdisponibles = require('../viajes/viajesdisponibles')
 
 router.get('/viajesDisponible', viajesdisponibles.obtenerViajesDisponibles);
 
-router.get('/obtenerViajesId', viajesController.obtenerViajePorId);
+router.get('/obtenerViajesId/:id', viajesController.obtenerViajePorId);
 
 router.get('/obtenerViajes', viajesController.obtenerViajes);
 

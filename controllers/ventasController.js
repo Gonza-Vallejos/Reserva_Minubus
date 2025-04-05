@@ -20,7 +20,7 @@ exports.obtenerVentas = async (req, res) => {
 // Obtener una Venta por ID
 exports.obtenerVentasPorId = async (req, res) => {
     try {
-        const ventas = await Ventas.findByPk(req.query.id, {
+        const ventas = await Ventas.findByPk(req.params.id, {
             attributes:['id','fecha','hora','totalVentas','reserva_id']
         });
         if (!ventas) {
@@ -49,9 +49,12 @@ exports.obtenerVentasId = async (id) => {
 // Crear una nueva Venta
 exports.crearVenta = async (req, res) => {
     try {
-        const { reserva_id } = req.body;
-        console.log(req.body);
+        const { reserva_id, formaPago, descuento, } = req.body;
 
+        const venta = await Ventas.findOne({ where: { reserva_id: reserva_id } });
+        if(venta){
+            return res.status(404).json({ error: 'Ya existe la venta' });
+        }
         let cantidadPasajeros = 0; // Declarar la variable antes del try interno
 
         try {
@@ -79,8 +82,10 @@ exports.crearVenta = async (req, res) => {
             totalVentas: totalVentas,
             reserva_id: reserva_id,
         });
+        await crearDetalleVentaInterno(formaPago, descuento, nuevaVenta.id);
 
         res.status(201).json({ message: 'Venta creada' });
+       
     } catch (error) {
         console.error(error);
         res.status(500).json({ error: 'Error al crear la venta' });
@@ -127,6 +132,7 @@ exports.crearDetalleVenta= async (req, res) =>{
 
     try {
         const { formaPago, descuento, ventas_id } = req.body;
+        console.log('los datos:',req.body)
 
         const ventas = await ventasController.obtenerVentasId(ventas_id);
         if (!ventas) {
@@ -170,4 +176,26 @@ exports.crearDetalleVenta= async (req, res) =>{
     }
 
 
+}
+
+async function crearDetalleVentaInterno(formaPago, descuento, ventas_id) {
+    const ventas = await ventasController.obtenerVentasId(ventas_id);
+    if (!ventas) throw new Error('Venta no encontrada');
+
+    const reserva = await reservaController.obtenerReservaId(ventas.reserva_id);
+    if (!reserva) throw new Error('Reserva no encontrada');
+
+    const viaje = await viajesController.obtenerViajeId(reserva.viajes_id);
+    if (!viaje) throw new Error('Viaje no encontrado');
+
+    const subTotal = viaje.precio * ventas.totalVentas;
+    const precioFinal = subTotal - descuento;
+
+    await DetalleVenta.create({
+        formaPago,
+        subTotal,
+        descuento,
+        precioFinal,
+        ventas_id
+    });
 }

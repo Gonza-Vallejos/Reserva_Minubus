@@ -17,7 +17,8 @@ router.put('/eliminarReserva/:id', reservaController.eliminarReserva);
 
 router.put('/eliminarPasajero/:id', reservaController.eliminarPasajero);
 
-router.get('/listarPasajerosPorReserva/', reservaController.listarPasajerosPorReserva);
+router.get('/listarPasajerosPorReserva/:id', reservaController.listarPasajerosPorReserva);
+
 router.get('/listarPasajeros/', reservaController.listarTodosLosPasajeros);
 
 

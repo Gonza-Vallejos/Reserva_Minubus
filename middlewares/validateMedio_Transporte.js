@@ -6,6 +6,7 @@ const validarMedioTransporte = [
   body('nombre')
     .notEmpty().withMessage('El nombre es requerido.')
     .isString().withMessage('El nombre debe ser un string.')
+    
     .custom(async (nombre, { req }) => {
       const transporte = await MedioTransporte.findOne({ where: { nombre } });
       if (transporte && transporte.id !== parseInt(req.params.id)) {

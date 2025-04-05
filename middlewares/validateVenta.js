@@ -3,25 +3,21 @@ const { Ventas } = require('../models');
 
 
 const validarVenta = [
-  body('fecha')
-    .notEmpty().withMessage('La fecha es requerida.')
-    .isISO8601().withMessage('El formato de la fecha no es válido.')
-    .toDate(),
-  body('hora')
-    .notEmpty().withMessage('La hora es requerida.')
-    .isISO8601().withMessage('El formato de la hora no es válido.')
-    .toDate(),
-  body('totalVentas')
-    .isInt({ min: 0 }).withMessage('El total de ventas debe ser un número entero positivo.')
-    .notEmpty().withMessage('El total de ventas es requerido.'),
-  body('viajes_id')
-    .isInt().withMessage('El identificador de viaje debe ser un número entero.')
-    .notEmpty().withMessage('El identificador de viaje es requerido.')
-    .custom(async (value) => {
-      const existeVenta = await Ventas.findOne({ where: { viajes_id: value } });
-      if (!existeVenta) {
-        throw new Error('El viaje no existe');
+  body('reserva_id')
+    .isInt().withMessage('El identificador de reserva debe ser un número entero.')
+    .notEmpty().withMessage('El identificador de reserva es requerido.')
+    .custom(async (reserva_id, { req }) => {
+      const venta = await Ventas.findByPk(reserva_id);
+      if (!venta) {
+        throw new Error('la venta especificada no existe.');
       }
+
+      // Validar unicidad del viaje para la reserva
+      const ventaExistente = await Ventas.findOne({ where: { reserva_id, id: { $ne: req.params.id } } });
+      if (ventaExistente) {
+        throw new Error('Error al generar la venta');
+      }
+
       return true;
     }),
   

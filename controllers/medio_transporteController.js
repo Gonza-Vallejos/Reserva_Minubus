@@ -16,7 +16,7 @@ exports.obtenerTransportes = async (req, res) => {
 // Obtener un transporte por ID
 exports.obtenerTransportePorId = async (req, res) => {
     try {
-        const transporte = await MedioTransporte.findByPk(req.query.id, {
+        const transporte = await MedioTransporte.findByPk(req.params.id, {
             attributes: ['id', 'nombre', 'patente', 'marca', 'cantLugares', 'empresa_id']
         });
         res.status(200).json(transporte); // Retorna el objeto si existe o `null` si no se encuentra
