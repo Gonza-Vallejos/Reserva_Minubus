@@ -13,5 +13,7 @@ router.put('/actualizarVenta/:id', ventasController.actualizarVentas);
 
 router.put('/eliminarVenta/:id', ventasController.eliminarVentas);
 
+router.get('/obtenerVentaDetalle/:id', ventasController.obtenerVentaDetalle);
+
 
 module.exports = router; 
