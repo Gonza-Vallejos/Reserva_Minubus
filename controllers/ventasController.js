@@ -82,7 +82,7 @@ exports.crearVenta = async (req, res) => {
             totalVentas: totalVentas,
             reserva_id: reserva_id,
         });
-        await crearDetalleVentaInterno(formaPago, descuento, nuevaVenta.id);
+        await generarDetalleVenta(formaPago, descuento, nuevaVenta.id);
 
         res.status(201).json({ message: 'Venta creada' });
        
@@ -178,24 +178,32 @@ exports.crearDetalleVenta= async (req, res) =>{
 
 }
 
-async function crearDetalleVentaInterno(formaPago, descuento, ventas_id) {
-    const ventas = await ventasController.obtenerVentasId(ventas_id);
-    if (!ventas) throw new Error('Venta no encontrada');
+async function generarDetalleVenta(formaPago, descuento, ventas_id) {
+    try {
+        const ventas = await ventasController.obtenerVentasId(ventas_id);
+        if (!ventas) throw new Error('Venta no encontrada');
+    
+        const reserva = await reservaController.obtenerReservaId(ventas.reserva_id);
+        if (!reserva) throw new Error('Reserva no encontrada');
+    
+        const viaje = await viajesController.obtenerViajeId(reserva.viajes_id);
+        if (!viaje) throw new Error('Viaje no encontrado');
+    
+        const subTotal = viaje.precio * ventas.totalVentas;
+        const precioFinal = subTotal - descuento;
+    
+        await DetalleVenta.create({
+            formaPago,
+            subTotal,
+            descuento,
+            precioFinal,
+            ventas_id
+        });
 
-    const reserva = await reservaController.obtenerReservaId(ventas.reserva_id);
-    if (!reserva) throw new Error('Reserva no encontrada');
-
-    const viaje = await viajesController.obtenerViajeId(reserva.viajes_id);
-    if (!viaje) throw new Error('Viaje no encontrado');
-
-    const subTotal = viaje.precio * ventas.totalVentas;
-    const precioFinal = subTotal - descuento;
-
-    await DetalleVenta.create({
-        formaPago,
-        subTotal,
-        descuento,
-        precioFinal,
-        ventas_id
-    });
+        console.log('Se generó el detalle venta')
+    } catch (error) {
+         console.error(error);
+        console.error('Error al generar el detalle venta')
+    }
+   
 }
