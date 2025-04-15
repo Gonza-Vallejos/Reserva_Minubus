@@ -9,38 +9,19 @@ const pasajerosViajes = require('../controllers/pasajerosViajesController');
 const { autenticarToken, permitirPerfiles } = require('../middlewares/authMiddleware');
 
 //  Solo cliente puede ver viajes disponibles
-router.get('/viajesDisponible',
-  autenticarToken,
-  permitirPerfiles('usuarioCliente'),
-  viajesdisponibles.obtenerViajesDisponibles
-);
+router.get('/viajesDisponible', autenticarToken,permitirPerfiles('usuarioCliente', 'usuarioEmpresa', 'usuarioCliente'),viajesdisponibles.obtenerViajesDisponibles);
 
-//  Acceso general (podés ajustarlo si querés restringir)
-router.get('/obtenerViajesId/:id', autenticarToken, viajesController.obtenerViajePorId);
-router.get('/obtenerViajes', autenticarToken, permitirPerfiles('usuarioMostrador', 'usuarioAdministrador'), viajesController.obtenerViajes);
+router.get('/obtenerViajesId/:id', autenticarToken ,permitirPerfiles('usuarioMostrador', 'usuarioAdministrador','usuarioEmpresa '), viajesController.obtenerViajePorId);
 
-//  Solo mostrador o admin pueden crear, actualizar y eliminar
-router.put('/actualizarViaje/:id',
-  autenticarToken,
-  permitirPerfiles('usuarioMostrador', 'usuarioAdministrador'),
-  validateUpdateViaje,
-  viajesController.actualizarViajes
-);
+router.get('/obtenerViajes', autenticarToken, permitirPerfiles('usuarioMostrador', 'usuarioAdministrador','usuarioEmpresa '), viajesController.obtenerViajes);
 
-router.put('/eliminarViaje/:id',
-  autenticarToken,
-  permitirPerfiles('usuarioMostrador', 'usuarioAdministrador'),
-  viajesController.eliminarViajes
-);
+router.put('/actualizarViaje/:id',autenticarToken,permitirPerfiles('usuarioMostrador', 'usuarioAdministrador'),validateUpdateViaje,viajesController.actualizarViajes);
 
-router.post('/crearViaje',
-  autenticarToken,
-  permitirPerfiles('usuarioMostrador', 'usuarioAdministrador'),
-  validateViaje,
-  viajesController.crearViaje
-);
+router.put('/eliminarViaje/:id',autenticarToken,permitirPerfiles('usuarioMostrador', 'usuarioAdministrador'),viajesController.eliminarViajes);
 
-//  Acceso general a pasajeros (ajustá si querés restricción)
-router.get('/obtenerPasajerosViajesId/:id', autenticarToken, pasajerosViajes.obtenerPasajerosPorViaje);
+router.post('/crearViaje',autenticarToken,permitirPerfiles('usuarioMostrador', 'usuarioAdministrador'),validateViaje,viajesController.crearViaje);
+
+router.get('/obtenerPasajerosViajesId/:id', autenticarToken ,permitirPerfiles('usuarioMostrador', 'usuarioAdministrador','usuarioEmpresa', 'usuarioChofer'), pasajerosViajes.obtenerPasajerosPorViaje);
 
 module.exports = router;
+

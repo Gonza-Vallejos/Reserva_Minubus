@@ -17,11 +17,11 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.STRING,
       allowNull: false
     },
-    eliminado: {
+    /*eliminado: {
       type: DataTypes.STRING,
       allowNull: false,
       defaultValue: 'no'
-    }
+    }*/
   }, {
     sequelize,
     modelName: 'Perfil',

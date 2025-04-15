@@ -53,7 +53,7 @@ exports.crearEmpresa = async (req, res) => {
 // Actualizar una empresa existente
 exports.actualizarEmpresa = async (req, res) => {
     try {
-        const camposActualizados = ['nombre', 'direccion','telefono', 'email','localidad_id']; 
+        const camposActualizados = ['nombre', 'direccion','telefono', 'email']; 
 
         const [actualizarEmpresa] = await Empresa.update(req.body, {
             where: { id: req.params.id },

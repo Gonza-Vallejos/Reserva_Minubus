@@ -4,13 +4,15 @@ const transporteController = require('../controllers/medio_transporteController'
 const validateMedioTransporte = require('../middlewares/validateMedio_Transporte');
 const validateUpdateTransporte= require('../middlewares/validateUpdateMedio_Transporte');
 
-router.get('/obtenerTransporte', transporteController.obtenerTransportes);
+const { autenticarToken, permitirPerfiles } = require('../middlewares/authMiddleware');
 
-router.post('/crearTransporte', validateMedioTransporte ,transporteController.crearTransporte);
+router.get('/obtenerTransporte',autenticarToken,permitirPerfiles('usuarioAdministrador', 'usuarioEmpresa','usuarioMostrador'), transporteController.obtenerTransportes);
 
-router.put('/eliminarTransporte/:id', transporteController.eliminarTransporte);
+router.post('/crearTransporte',autenticarToken,permitirPerfiles('usuarioAdministrador', 'usuarioMostrador'), validateMedioTransporte ,transporteController.crearTransporte);
 
-router.get('/obtenerTransporteId/:id',transporteController.obtenerTransportePorId);
+router.put('/eliminarTransporte/:id',autenticarToken,permitirPerfiles('usuarioAdministrador', 'usuarioMostrador'), transporteController.eliminarTransporte);
 
-router.put('/actualizarTransporte/:id', validateUpdateTransporte ,transporteController.actualizarTransporte);
+router.get('/obtenerTransporteId/:id',autenticarToken,permitirPerfiles('usuarioAdministrador', 'usuarioEmpresa', 'usuarioMostrador'),transporteController.obtenerTransportePorId);
+
+router.put('/actualizarTransporte/:id', autenticarToken,permitirPerfiles('usuarioAdministrador', 'usuarioMostrador'),validateUpdateTransporte ,transporteController.actualizarTransporte);
 module.exports = router;

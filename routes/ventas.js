@@ -3,17 +3,19 @@ const router = express.Router();
 const ventasController = require('../controllers/ventasController');
 const validateVenta = require('../middlewares/validateVenta');
 
-router.get('/obtenerVentas', ventasController.obtenerVentas);
+const { autenticarToken, permitirPerfiles } = require('../middlewares/authMiddleware');
 
-router.get('/obtenerVentasId/:id', ventasController.obtenerVentasPorId);
+router.get('/obtenerVentas',autenticarToken,permitirPerfiles('usuarioAdministrador'), ventasController.obtenerVentas);
 
-router.post('/crearVenta',ventasController.crearVenta);
+router.get('/obtenerVentasId/:id', autenticarToken,permitirPerfiles('usuarioAdministrador'),ventasController.obtenerVentasPorId);
 
-router.put('/actualizarVenta/:id', ventasController.actualizarVentas);
+router.post('/crearVenta', autenticarToken,permitirPerfiles('usuarioAdministrador'),ventasController.crearVenta);
 
-router.put('/eliminarVenta/:id', ventasController.eliminarVentas);
+router.put('/actualizarVenta/:id', autenticarToken,permitirPerfiles('usuarioAdministrador'), ventasController.actualizarVentas);
 
-router.get('/obtenerVentaDetalle/:id', ventasController.obtenerVentaDetalle);
+router.put('/eliminarVenta/:id', autenticarToken,permitirPerfiles('usuarioAdministrador'),ventasController.eliminarVentas);
+
+router.get('/obtenerVentaDetalle/:id', autenticarToken,permitirPerfiles('usuarioAdministrador'),ventasController.obtenerVentaDetalle);
 
 
 module.exports = router; 

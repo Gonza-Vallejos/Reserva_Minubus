@@ -5,21 +5,24 @@ const validateReserva =  require( '../middlewares/validateReserva');
 const validateUpdateReserva= require('../middlewares/validateUpdateReserva')
 const validateDetalleReserva = require('../middlewares/validateDetalleReserva')
 
-router.get('/obtenerReserva', reservaController.obtenerReservas);
 
-router.get('/obtenerReservaId', reservaController.obtenerReservaPorId);
+const { autenticarToken, permitirPerfiles } = require('../middlewares/authMiddleware');
 
-router.post('/crearReserva',  validateReserva,validateDetalleReserva,reservaController.crearReserva);
+router.get('/obtenerReserva',autenticarToken,permitirPerfiles('usuarioAdministrador', 'usuarioCliente', 'usuarioEmpresa','usuarioMostrador'), reservaController.obtenerReservas);
 
-router.put('/actualizarReserva/:id', validateUpdateReserva,reservaController.actualizarReserva);
+router.get('/obtenerReservaId',autenticarToken,permitirPerfiles('usuarioAdministrador', 'usuarioCliente', 'usuarioEmpresa','usuarioMostrador'), reservaController.obtenerReservaPorId);
 
-router.put('/eliminarReserva/:id', reservaController.eliminarReserva);
+router.post('/crearReserva',autenticarToken,permitirPerfiles('usuarioAdministrador', 'usuarioCliente'),  validateReserva,validateDetalleReserva,reservaController.crearReserva);
 
-router.put('/eliminarPasajero/:id', reservaController.eliminarPasajero);
+router.put('/actualizarReserva/:id',autenticarToken,permitirPerfiles('usuarioAdministrador', 'usuarioCliente'), validateUpdateReserva,reservaController.actualizarReserva);
 
-router.get('/listarPasajerosPorReserva/:id', reservaController.listarPasajerosPorReserva);
+router.put('/eliminarReserva/:id',autenticarToken,permitirPerfiles('usuarioAdministrador', 'usuarioCliente', 'usuarioMostrador'), reservaController.eliminarReserva);
 
-router.get('/listarPasajeros/', reservaController.listarTodosLosPasajeros);
+router.put('/eliminarPasajero/:id',autenticarToken,permitirPerfiles('usuarioAdministrador', 'usuarioMostrador'), reservaController.eliminarPasajero);
+
+router.get('/listarPasajerosPorReserva/:id',autenticarToken,permitirPerfiles('usuarioAdministrador', 'usuarioMostrador'), reservaController.listarPasajerosPorReserva);
+
+router.get('/listarPasajeros/',autenticarToken,permitirPerfiles('usuarioAdministrador', 'usuarioMostrador '), reservaController.listarTodosLosPasajeros);
 
 
 
