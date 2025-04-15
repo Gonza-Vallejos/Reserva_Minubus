@@ -1,4 +1,5 @@
 const { Usuario } = require('../models');
+const bcrypt = require('bcrypt');
 
 // Obtener todos los usuarios
 exports.obtenerUsuarios = async (req, res) => {
@@ -36,7 +37,8 @@ exports.obtenerUsuarioPorId = async (req, res) => {
 exports.crearUsuario = async (req, res) => {
     try {
         const { nombre, apellido, dni, telefono, email, usuario, contrasenia, perfil_id } = req.body;
-        
+        const saltRounds = 10;
+        const hashedPassword = await bcrypt.hash(contrasenia, saltRounds);
         // Crear el usuario con los campos separados
         const nuevoUsuario = await Usuario.create({
             nombre: nombre,
@@ -45,7 +47,7 @@ exports.crearUsuario = async (req, res) => {
             telefono:telefono,
             email:email,
             usuario:usuario,
-            contrasenia:contrasenia,
+            contrasenia:hashedPassword,
             perfil_id:perfil_id
         });
 

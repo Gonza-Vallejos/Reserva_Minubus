@@ -13,6 +13,14 @@ var viajesRouter = require('./routes/viajes');
 var detalleVentaRouter = require('./routes/detalleVenta');
 
 var app = express();
+//--------------
+require('dotenv').config();
+
+app.use(express.json());
+
+const authRoutes = require('./routes/auth');
+app.use('/api/auth', authRoutes); // URL: /api/auth/login
+
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));

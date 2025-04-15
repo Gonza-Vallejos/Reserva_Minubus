@@ -4,22 +4,43 @@ const viajesController = require('../controllers/viajesController');
 const validateViaje = require('../middlewares/validateViajes');
 const validateUpdateViaje = require('../middlewares/validateUpdateViajes'); 
 const viajesdisponibles = require('../viajes/viajesdisponibles')
+const pasajerosViajes = require('../controllers/pasajerosViajesController');
 
+const { autenticarToken, permitirPerfiles } = require('../middlewares/authMiddleware');
 
-router.get('/viajesDisponible', viajesdisponibles.obtenerViajesDisponibles);
+//  Solo cliente puede ver viajes disponibles
+router.get('/viajesDisponible',
+  autenticarToken,
+  permitirPerfiles('usuarioCliente'),
+  viajesdisponibles.obtenerViajesDisponibles
+);
 
-router.get('/obtenerViajesId/:id', viajesController.obtenerViajePorId);
+//  Acceso general (podés ajustarlo si querés restringir)
+router.get('/obtenerViajesId/:id', autenticarToken, viajesController.obtenerViajePorId);
+router.get('/obtenerViajes', autenticarToken, permitirPerfiles('usuarioMostrador', 'usuarioAdministrador'), viajesController.obtenerViajes);
 
-router.get('/obtenerViajes', viajesController.obtenerViajes);
+//  Solo mostrador o admin pueden crear, actualizar y eliminar
+router.put('/actualizarViaje/:id',
+  autenticarToken,
+  permitirPerfiles('usuarioMostrador', 'usuarioAdministrador'),
+  validateUpdateViaje,
+  viajesController.actualizarViajes
+);
 
-router.put('/actualizarViaje/:id', validateUpdateViaje,viajesController.actualizarViajes);
+router.put('/eliminarViaje/:id',
+  autenticarToken,
+  permitirPerfiles('usuarioMostrador', 'usuarioAdministrador'),
+  viajesController.eliminarViajes
+);
 
-router.put('/eliminarViaje/:id', viajesController.eliminarViajes);
+router.post('/crearViaje',
+  autenticarToken,
+  permitirPerfiles('usuarioMostrador', 'usuarioAdministrador'),
+  validateViaje,
+  viajesController.crearViaje
+);
 
-router.post('/crearViaje', validateViaje,viajesController.crearViaje);
-
-
-
-
+//  Acceso general a pasajeros (ajustá si querés restricción)
+router.get('/obtenerPasajerosViajesId/:id', autenticarToken, pasajerosViajes.obtenerPasajerosPorViaje);
 
 module.exports = router;

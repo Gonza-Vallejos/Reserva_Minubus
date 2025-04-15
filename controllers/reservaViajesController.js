@@ -18,6 +18,10 @@ const obtenerReservaPorUsuarioYViaje = async (usuarios_id, viajes_id) => {
     }
 };
 
+
+
+
+
 module.exports = {
-    obtenerReservaPorUsuarioYViaje,
+    obtenerReservaPorUsuarioYViaje,  
 };
