@@ -5,6 +5,7 @@ const validateViaje = require('../middlewares/validateViajes');
 const validateUpdateViaje = require('../middlewares/validateUpdateViajes'); 
 const viajesdisponibles = require('../viajes/viajesdisponibles')
 const pasajerosViajes = require('../controllers/pasajerosViajesController');
+const ventasViajes = require('../controllers/ventasViajesController');
 
 const { autenticarToken, permitirPerfiles } = require('../middlewares/authMiddleware');
 
@@ -21,7 +22,9 @@ router.put('/eliminarViaje/:id',autenticarToken,permitirPerfiles('usuarioMostrad
 
 router.post('/crearViaje',autenticarToken,permitirPerfiles('usuarioMostrador', 'usuarioAdministrador'),validateViaje,viajesController.crearViaje);
 
-router.get('/obtenerPasajerosViajesId/:id', autenticarToken ,permitirPerfiles('usuarioMostrador', 'usuarioAdministrador','usuarioEmpresa', 'usuarioChofer'), pasajerosViajes.obtenerPasajerosPorViaje);
+router.get('/obtenerPasajerosViajesId/:id', autenticarToken ,permitirPerfiles('usuarioMostrador', 'usuarioAdministrador', 'usuarioChofer'), pasajerosViajes.obtenerPasajerosPorViaje);
+
+router.get('/obtenerVentasViajesId/:id', autenticarToken ,permitirPerfiles('usuarioMostrador', 'usuarioAdministrador','usuarioEmpresa ' ), ventasViajes.obtenerVentasPorViaje);
 
 module.exports = router;
 
