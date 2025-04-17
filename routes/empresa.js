@@ -8,7 +8,7 @@ const { autenticarToken, permitirPerfiles } = require('../middlewares/authMiddle
 
 router.get('/obtenerEmpresa',autenticarToken,permitirPerfiles('usuarioAdministrador'), empresaController.obtenerEmpresas);
 
-router.get('/obtenerEmpresaId',autenticarToken,permitirPerfiles('usuarioAdministrador'), empresaController.obtenerEmpresaPorId);
+router.get('/obtenerEmpresaId',autenticarToken,permitirPerfiles('usuarioAdministrador', 'usuarioEmpresa'), empresaController.obtenerEmpresaPorId);
 
 router.post('/crearEmpresa',autenticarToken,permitirPerfiles('usuarioAdministrador'), validateEmpresa, empresaController.crearEmpresa);
 

@@ -10,7 +10,7 @@ const ventasViajes = require('../controllers/ventasViajesController');
 const { autenticarToken, permitirPerfiles } = require('../middlewares/authMiddleware');
 
 //  Solo cliente puede ver viajes disponibles
-router.get('/viajesDisponible', autenticarToken,permitirPerfiles('usuarioCliente', 'usuarioEmpresa', 'usuarioCliente'),viajesdisponibles.obtenerViajesDisponibles);
+router.get('/viajesDisponible', autenticarToken,permitirPerfiles('usuarioAdministrador', 'usuarioEmpresa', 'usuarioCliente','usuarioMostrador'),viajesdisponibles.obtenerViajesDisponibles);
 
 router.get('/obtenerViajesId/:id', autenticarToken ,permitirPerfiles('usuarioMostrador', 'usuarioAdministrador','usuarioEmpresa '), viajesController.obtenerViajePorId);
 
@@ -24,7 +24,7 @@ router.post('/crearViaje',autenticarToken,permitirPerfiles('usuarioMostrador', '
 
 router.get('/obtenerPasajerosViajesId/:id', autenticarToken ,permitirPerfiles('usuarioMostrador', 'usuarioAdministrador', 'usuarioChofer'), pasajerosViajes.obtenerPasajerosPorViaje);
 
-router.get('/obtenerVentasViajesId/:id', autenticarToken ,permitirPerfiles('usuarioMostrador', 'usuarioAdministrador','usuarioEmpresa ' ), ventasViajes.obtenerVentasPorViaje);
+router.get('/obtenerVentasViajesId/:id', autenticarToken ,permitirPerfiles( 'usuarioAdministrador','usuarioEmpresa ' ), ventasViajes.obtenerVentasPorViaje);
 
 module.exports = router;
 

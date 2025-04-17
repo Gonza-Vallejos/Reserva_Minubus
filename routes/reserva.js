@@ -8,7 +8,7 @@ const validateDetalleReserva = require('../middlewares/validateDetalleReserva')
 
 const { autenticarToken, permitirPerfiles } = require('../middlewares/authMiddleware');
 
-router.get('/obtenerReserva',autenticarToken,permitirPerfiles('usuarioAdministrador', 'usuarioCliente', 'usuarioEmpresa','usuarioMostrador'), reservaController.obtenerReservas);
+router.get('/obtenerReserva',autenticarToken,permitirPerfiles('usuarioAdministrador', 'usuarioEmpresa','usuarioMostrador'), reservaController.obtenerReservas);
 
 router.get('/obtenerReservaId',autenticarToken,permitirPerfiles('usuarioAdministrador', 'usuarioCliente', 'usuarioEmpresa','usuarioMostrador'), reservaController.obtenerReservaPorId);
 
@@ -16,13 +16,13 @@ router.post('/crearReserva',autenticarToken,permitirPerfiles('usuarioAdministrad
 
 router.put('/actualizarReserva/:id',autenticarToken,permitirPerfiles('usuarioAdministrador', 'usuarioCliente'), validateUpdateReserva,reservaController.actualizarReserva);
 
-router.put('/eliminarReserva/:id',autenticarToken,permitirPerfiles('usuarioAdministrador', 'usuarioCliente', 'usuarioMostrador'), reservaController.eliminarReserva);
+router.put('/eliminarReserva/:id',autenticarToken,permitirPerfiles('usuarioAdministrador', 'usuarioMostrador'), reservaController.eliminarReserva);
 
 router.put('/eliminarPasajero/:id',autenticarToken,permitirPerfiles('usuarioAdministrador', 'usuarioMostrador'), reservaController.eliminarPasajero);
 
 router.get('/listarPasajerosPorReserva/:id',autenticarToken,permitirPerfiles('usuarioAdministrador', 'usuarioMostrador'), reservaController.listarPasajerosPorReserva);
 
-router.get('/listarPasajeros/',autenticarToken,permitirPerfiles('usuarioAdministrador', 'usuarioMostrador '), reservaController.listarTodosLosPasajeros);
+router.get('/listarPasajeros/',autenticarToken,permitirPerfiles('usuarioAdministrador'), reservaController.listarTodosLosPasajeros);
 
 
 
