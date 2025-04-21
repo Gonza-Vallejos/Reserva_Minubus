@@ -14,7 +14,7 @@ router.get('/obtenerUsuario',autenticarToken,permitirPerfiles('usuarioAdministra
 router.get('/obtenerUsuarioId',autenticarToken,permitirPerfiles('usuarioAdministrador','usuarioMostrador','usuarioEmpresa'), usuarioController.obtenerUsuarioPorId);
 
 // Ruta para crear un nuevo usuario
-router.post('/crearUsuario',autenticarToken,permitirPerfiles('usuarioAdministrador'), validateUsuario, usuarioController.crearUsuario);
+router.post('/crearUsuario', validateUsuario, usuarioController.crearUsuario);
 
 // Ruta para actualizar un usuario existente
 router.put('actualizarUsuario/:id',autenticarToken,permitirPerfiles('usuarioAdministrador'), validateUpdateUsuario, usuarioController.actualizarUsuario);

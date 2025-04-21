@@ -16,15 +16,17 @@ const validarActualizarUsuario = [
 
   // Validar teléfono
   body('telefono')
-    .optional()
-    .isInt().withMessage('El teléfono debe ser un número entero')
-    .custom(async (telefono, { req }) => {
-      const usuario = await Usuario.findOne({ where: { telefono } });
-      if (usuario && usuario.id !== parseInt(req.params.id)) {
-        throw new Error('El teléfono ya está en uso por otro usuario');
-      }
-      return true;
-    }),
+  .notEmpty().withMessage('El teléfono es requerido.')
+  .isNumeric().withMessage('El teléfono debe contener solo números.')
+  .isLength({ min: 10, max: 13 }).withMessage('El teléfono debe tener entre 10 y 13 dígitos.')
+  .custom(async (value) => {
+    const existeUsuario = await Usuario.findOne({ where: { telefono: value } });
+    if (existeUsuario) {
+      throw new Error('El teléfono ya está en uso.');
+    }
+    return true;
+  }),
+
 
   // Validar usuario
   body('usuario')

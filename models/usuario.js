@@ -29,10 +29,11 @@ module.exports = (sequelize, DataTypes) => {
       unique: true
     },
     telefono: {
-      type: DataTypes.INTEGER,
+      type: DataTypes.STRING,
       allowNull: false,
-      unique: true
+      unique: true,
     },
+    
     email: {
       type: DataTypes.STRING,
       allowNull: false,

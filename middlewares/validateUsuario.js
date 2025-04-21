@@ -20,9 +20,10 @@ const validarUsuario = [
       }
       return true;
     }),
-  body('telefono')
-    .isInt().withMessage('El teléfono debe ser un número entero.')
+    body('telefono')
     .notEmpty().withMessage('El teléfono es requerido.')
+    .isNumeric().withMessage('El teléfono debe contener solo números.')
+    .isLength({ min: 10, max: 13 }).withMessage('El teléfono debe tener entre 10 y 13 dígitos.')
     .custom(async (value) => {
       const existeUsuario = await Usuario.findOne({ where: { telefono: value } });
       if (existeUsuario) {
@@ -30,6 +31,7 @@ const validarUsuario = [
       }
       return true;
     }),
+  
   body('email')
     .isEmail().withMessage('El formato del correo electrónico no es válido.')
     .notEmpty().withMessage('El correo electrónico es requerido.')

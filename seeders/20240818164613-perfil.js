@@ -6,16 +6,34 @@ module.exports = {
     await queryInterface.bulkInsert('Perfiles', [
       {
         id: 1,
-        tipo: 'Admin',
+        tipo: 'usuarioAdministrador',
         createdAt: new Date(),
         updatedAt: new Date()
       },
       {
         id: 2,
-        tipo: 'User',
+        tipo: 'usuarioEmpresa',
         createdAt: new Date(),
         updatedAt: new Date()
-      }
+      },
+      {
+        id: 3,
+        tipo: 'usuarioMostrador',
+        createdAt: new Date(),
+        updatedAt: new Date()
+      },
+      {
+        id: 4,
+        tipo: 'usuarioChofer',
+        createdAt: new Date(),
+        updatedAt: new Date()
+      },
+      {
+        id: 5,
+        tipo: 'usuarioCliente',
+        createdAt: new Date(),
+        updatedAt: new Date()
+      },
       
     ], {});
   },

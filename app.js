@@ -2,6 +2,11 @@ var express = require('express');
 var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
+const cors = require('cors');
+
+
+
+
 
 var indexRouter = require('./routes/index');
 var usuariosRouter = require('./routes/usuario');  
@@ -17,6 +22,8 @@ var app = express();
 require('dotenv').config();
 
 app.use(express.json());
+app.use(cors());
+
 
 const authRoutes = require('./routes/auth');
 app.use('/api/auth', authRoutes); // URL: /api/auth/login
@@ -41,7 +48,7 @@ app.use('/ventas', ventasRouter);
 app.use('/viajes', viajesRouter);
 app.use('/detalleVenta', detalleVentaRouter);
 
-// catch 404 and forward to error handler
+
 app.use(function(req, res, next) {
   next(createError(404));
 });
