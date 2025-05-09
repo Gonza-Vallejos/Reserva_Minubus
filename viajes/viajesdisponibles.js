@@ -4,12 +4,8 @@ exports.obtenerViajesDisponibles = async (req, res) => {
     try {
         const fechaActual = new Date();
         
-        console.log('***ver fecha actual****', fechaActual.toLocaleString());
-        console.log('***ver fecha actual****', fechaActual.toLocaleDateString());
-        console.log('***ver fecha actual****', fechaActual.toISOString());
-        
-        
-        const { origen, destino } = req.body;
+
+        const { origen, destino } = req.query;
        
         if (!origen || !destino) {
             return res.status(400).json({ error: 'Por favor, proporciona tanto el origen como el destino.' });

@@ -1,11 +1,21 @@
 const { body, validationResult } = require('express-validator');
-const { DetalleReserva } = require('../models');
 
 const validarDetalleReserva = [
-  // Validar el nombre el operador * indica que esta validando el campo nombre de todo el array personas
+  // Validar el nombre
   body('personas.*.nombre')
     .notEmpty().withMessage('El nombre es requerido.')
     .isString().withMessage('El nombre debe ser un texto.'),
+
+  // Validar el apellido
+  body('personas.*.apellido')
+    .notEmpty().withMessage('El apellido es requerido.')
+    .isString().withMessage('El apellido debe ser un texto.'),
+
+  // Validar el DNI
+  body('personas.*.dni')
+    .notEmpty().withMessage('El DNI es requerido.')
+    .isNumeric().withMessage('El DNI debe ser un número.')
+    .isLength({ min: 7, max: 10 }).withMessage('El DNI debe tener entre 7 y 8 dígitos.'),
 
   // Validar la ubicación de origen
   body('personas.*.ubicacionOrigen')

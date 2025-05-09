@@ -1,10 +1,9 @@
-// controllers/reservaController.js
-const { Reserva,Pasajeros,Viaje } = require('../models/');
 const viajesController = require('../controllers/viajesController');
 const medioTransporteController = require('../controllers/medio_transporteController');
 const resrvaUsuario = require('../controllers/reservaViajesController');
+const { Reserva,Pasajeros,Viajes } = require('../models/');
 const { where } = require('sequelize');
-const { Where } = require('sequelize/lib/utils');
+
 
 
 
@@ -57,12 +56,12 @@ exports.obtenerReservaId = async (id) => {
 exports.crearReserva = async (req, res) => {
     try {
         const { usuarios_id, viajes_id, personas } = req.body;
-        console.log(req.body);
+        
 
         // Obtener el viaje y su medio de transporte
         const viaje = await viajesController.obtenerViajeId(viajes_id);
         if (!viaje) {
-            return res.status(404).json({ mensaje: 'Viaje no encontrado' });
+            return res.status(404).json({ mensaje: 'Viajee no encontrado' });
         }
 
         const medioTransporte = await medioTransporteController.obtenerTransporteId(viaje.medioTransporte_id);
@@ -304,3 +303,52 @@ exports.listarPasajerosPorReserva = async (req, res) => {
         res.status(500).json({ error: 'Error al obtener los pasajeros de la reserva' });
     }
 };
+
+
+
+//funcion para obtener reservas por uduario id
+// nuevo
+exports.obtenerReservasPorUsuario = async (req, res) => {
+    try {
+      const usuarioId = req.query.id;
+      console.log('EL ID QUE LE MANDO:',req.query.id);
+  
+      const reservas = await Reserva.findAll({
+        attributes:['id','fechaReserva','usuarios_id','viajes_id'],
+        where: { usuarios_id: usuarioId }
+        //order: [['fechaReserva', 'DESC']]
+      });
+
+      console.log('Datos de la reserva',reservas);
+       
+
+      const viajesIds = reservas.map(r => r.viajes_id);
+      console.log('los ids de viaje', viajesIds);
+
+      if (viajesIds.length === 0) {
+          return res.status(200).json([]);
+      }
+      const viajes = await Viajes.findAll({
+        where: { id:viajesIds },
+        attributes:['id','origenLocalidad','destinoLocalidad','horarioSalida','fechaViaje','precio','chofer','medioTransporte_id']
+        
+      })
+      
+
+      const reservasConViajes = reservas.map(reserva => {
+        const viajeRelacionado = viajes.find(v => v.id === reserva.viajes_id);
+        return {
+          id: reserva.id,
+          fechaReserva: reserva.fechaReserva,
+          viaje: viajeRelacionado
+        };
+      });
+      
+      res.status(201).json(reservasConViajes);
+    } catch (error) {
+      console.error('Error al obtener las reservas del usuario:', error);
+      res.status(500).json({ error: 'Error al obtener las reservas del usuario' });
+    }
+  };
+  
+  
