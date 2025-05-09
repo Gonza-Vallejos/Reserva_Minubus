@@ -1,9 +1,10 @@
 const jwt = require('jsonwebtoken');
+const { decodeJWT }= require('../decripJWT/decodificarJWT')
 
 const autenticarToken = (req, res, next) => {
   const authHeader = req.headers['authorization'];
   const token = authHeader && authHeader.split(' ')[1]; // "Bearer token"
-
+  
   if (!token) return res.status(401).json({ mensaje: 'Token no proporcionado' });
 
   jwt.verify(token, process.env.JWT_SECRET, (err, usuario) => {
@@ -14,16 +15,20 @@ const autenticarToken = (req, res, next) => {
   });
 };
 
+
+
 // Middleware que permite solo ciertos perfiles
 const permitirPerfiles = (...perfilesPermitidos) => {
   return (req, res, next) => {
-    console.log('Perfil en el token:', req.usuario.perfil);
-    console.log('Perfiles permitidos:', perfilesPermitidos);
-    if (!req.usuario || !perfilesPermitidos.includes(req.usuario.perfil)) {
+    const authHeader = req.headers['authorization'];
+    const token = authHeader && authHeader.split(' ')[1];
+    const decoded = decodeJWT(token);
+ 
+    if (!decoded || !perfilesPermitidos.includes(decoded.perfil)) {
       return res.status(403).json({ mensaje: 'Acceso denegado: perfil no autorizado' });
     }
+
     next();
   };
 };
-
 module.exports = { autenticarToken, permitirPerfiles };

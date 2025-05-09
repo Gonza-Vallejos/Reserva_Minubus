@@ -8,6 +8,8 @@ const validateDetalleReserva = require('../middlewares/validateDetalleReserva')
 
 const { autenticarToken, permitirPerfiles } = require('../middlewares/authMiddleware');
 
+
+
 router.get('/obtenerReserva',autenticarToken,permitirPerfiles('usuarioAdministrador', 'usuarioEmpresa','usuarioMostrador'), reservaController.obtenerReservas);
 
 router.get('/obtenerReservaId',autenticarToken,permitirPerfiles('usuarioAdministrador', 'usuarioCliente', 'usuarioEmpresa','usuarioMostrador'), reservaController.obtenerReservaPorId);
@@ -24,6 +26,8 @@ router.get('/listarPasajerosPorReserva/:id',autenticarToken,permitirPerfiles('us
 
 router.get('/listarPasajeros/',autenticarToken,permitirPerfiles('usuarioAdministrador'), reservaController.listarTodosLosPasajeros);
 
+//nuevo
+router.get('/listarPasajeroPorId/:id',autenticarToken,permitirPerfiles('usuarioAdministrador', 'usuarioMostrador'), reservaController.listarPasajeroPorId);
 
 
 

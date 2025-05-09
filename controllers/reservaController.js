@@ -304,3 +304,21 @@ exports.listarPasajerosPorReserva = async (req, res) => {
         res.status(500).json({ error: 'Error al obtener los pasajeros de la reserva' });
     }
 };
+
+//nuevo
+exports.listarPasajeroPorId= async (req, res) => {
+    try {
+        const pasajeros = await Pasajeros.findAll({
+            where: { id: req.params.id },
+            attributes: ['id', 'nombre', 'apellido', 'dni', 'ubicacionOrigen', 'ubicacionDestino']
+        });
+        if (!pasajeros) {
+            return res.status(404).json({ error: `No se encontro pasajero para ese id` });
+        }
+
+        res.status(200).json(pasajeros);
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: 'Error al obtener el pasajero por id' });
+    }
+};
