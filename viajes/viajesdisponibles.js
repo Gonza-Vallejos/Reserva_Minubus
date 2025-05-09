@@ -4,11 +4,6 @@ exports.obtenerViajesDisponibles = async (req, res) => {
     try {
         const fechaActual = new Date();
         
-        console.log('***ver fecha actual****', fechaActual.toLocaleString());
-        console.log('***ver fecha actual****', fechaActual.toLocaleDateString());
-        console.log('***ver fecha actual****', fechaActual.toISOString());
-        
-        
         const { origen, destino } = req.query;
        
         if (!origen || !destino) {
@@ -43,7 +38,7 @@ exports.obtenerViajesDisponibles = async (req, res) => {
         
        // Verificar y mostrar el campo `eliminado` en la consola
        viajesDisponibles.forEach(viaje => {
-        console.log('************ver eliminado********', viaje.eliminado);
+        
        
     });
 
