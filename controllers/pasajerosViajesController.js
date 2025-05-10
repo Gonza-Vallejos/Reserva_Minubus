@@ -23,7 +23,7 @@ exports.obtenerPasajerosPorViaje= async (req, res) => {
 
         const pasajeros = await Pasajeros.findAll({
             where: { reserva_id: reservasIds },
-            attributes: ['nombre', 'apellido', 'dni', 'ubicacionOrigen', 'ubicacionDestino', 'reserva_id']
+            attributes: ['id','nombre', 'apellido', 'dni', 'ubicacionOrigen', 'ubicacionDestino', 'reserva_id']
         });
 
         const plano = pasajeros.map(p => {
@@ -31,6 +31,7 @@ exports.obtenerPasajerosPorViaje= async (req, res) => {
             return {
                 ...viaje,
                 fechaReserva: reserva ? reserva.fechaReserva : null,
+                id: p.id,
                 nombre: p.nombre,
                 apellido: p.apellido,
                 dni: p.dni,

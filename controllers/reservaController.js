@@ -127,6 +127,7 @@ exports.actualizarReserva = async (req, res) => {
         
         const [actualizar] = await Pasajeros.update(
             {
+       
                 nombre: nombre,
                 apellido: apellido,
                 dni: dni,
@@ -152,8 +153,8 @@ exports.actualizarReserva = async (req, res) => {
             fields: ['fechaReserva']
         }
         )
-        if (!actualizar) {
-            return res.status(404).json({ error: 'Reserva no encontrada' });
+        if (actualizar === 0) {
+            return res.status(200).json({ message: 'No hubo cambios en los datos del pasajero' });
         }
 
         res.status(200).json({ message: 'Reserva actualizada' });
