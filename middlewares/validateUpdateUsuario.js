@@ -19,9 +19,9 @@ const validarActualizarUsuario = [
   .notEmpty().withMessage('El teléfono es requerido.')
   .isNumeric().withMessage('El teléfono debe contener solo números.')
   .isLength({ min: 10, max: 13 }).withMessage('El teléfono debe tener entre 10 y 13 dígitos.')
-  .custom(async (value) => {
+  .custom(async (value, { req }) => {
     const existeUsuario = await Usuario.findOne({ where: { telefono: value } });
-    if (existeUsuario) {
+    if (existeUsuario && existeUsuario.id !== parseInt(req.params.id)) {
       throw new Error('El teléfono ya está en uso.');
     }
     return true;
@@ -50,7 +50,7 @@ const validarActualizarUsuario = [
     .matches(/[@$!%*#_.?&]/).withMessage('debe contener al menos un carácter especial'),
 
     //validar el perfil 
-    body('perfil_id')
+   /* body('perfil_id')
     .isInt().withMessage('El perfil debe ser un número entero.')
     .notEmpty().withMessage('El perfil es requerido.')
     .custom(async (value, { req }) => {
@@ -64,7 +64,7 @@ const validarActualizarUsuario = [
 
       // Si el perfil es 1, permitimos la validación.
       return true;
-    }),
+    }),*/
 
 
 

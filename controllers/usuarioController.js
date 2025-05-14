@@ -18,7 +18,8 @@ exports.obtenerUsuarios = async (req, res) => {
 // Obtener un usuario por ID
 exports.obtenerUsuarioPorId = async (req, res) => {
     try {
-        const usuario = await Usuario.findByPk(req.query.id, {
+        const usuario = await Usuario.findAll( {
+            where: { id: req.params.id },
             attributes: ['id','nombre', 'apellido', 'dni','telefono', 'email','usuario','contrasenia', 'perfil_id']
         });
 
@@ -57,23 +58,35 @@ exports.crearUsuario = async (req, res) => {
     }
 };
 
+// nuevo
 // Actualizar un usuario existente
 exports.actualizarUsuario = async (req, res) => {
     try {
         // Especificar los campos que quieres actualizar
-        const camposActualizados = ['nombre','apellido', 'email', 'telefono', 'usuario', 'contrasenia', 'perfil_id']; 
-
+         const { nombre, apellido, email, telefono, usuario} = req.body;
+       // const camposActualizados = ['nombre','apellido', 'email', 'telefono', 'usuario', 'perfil_id']; 
+        console.log('ver log usuario', req.body)
         
-        const [actualizar] = await Usuario.update(req.body, {
-            where: { id: req.params.id },
-            fields: camposActualizados // Solo estos campos serán actualizados
-        });
+        const [actualizar] = await Usuario.update( {
+             nombre: nombre,
+             apellido: apellido,
+             email: email,
+             telefono: telefono,
+             usuario: usuario,
+             
+
+        },
+        {
+             where: { id: req.params.id },
+             fields: ['nombre','apellido', 'email', 'telefono', 'usuario']    
+                });
 
         if (!actualizar) {
             return res.status(404).json({ error: 'Usuario no encontrado' });
         }
         res.status(200).json({ message: 'Usuario actualizado' });
     } catch (error) {
+        console.log(req.body)
         res.status(500).json({ error: 'Error al actualizar el usuario' });
     }
 };

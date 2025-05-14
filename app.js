@@ -16,6 +16,7 @@ var reservaRouter = require('./routes/reserva');
 var ventasRouter = require('./routes/ventas');
 var viajesRouter = require('./routes/viajes');
 var detalleVentaRouter = require('./routes/detalleVenta');
+var ubicacionRouter = require('./routes/ubicacion');
 
 var app = express();
 //--------------
@@ -47,6 +48,7 @@ app.use('/reserva', reservaRouter);
 app.use('/ventas', ventasRouter);
 app.use('/viajes', viajesRouter);
 app.use('/detalleVenta', detalleVentaRouter);
+app.use('/ubicacion', ubicacionRouter);
 
 
 app.use(function(req, res, next) {
