@@ -4,6 +4,7 @@ const { listarPasajerosPorReserva } = require('./reservaController');
 const ventasController = require('../controllers/ventasController');
 const viajesController = require('../controllers/viajesController');
 const reservaController = require('../controllers/reservaController');
+const { where } = require('sequelize');
 
 // Obtener todas las ventas
 exports.obtenerVentas = async (req, res) => {
@@ -240,7 +241,11 @@ exports.obtenerDetalleId = async (id) => {
 
 exports.obtenerVentaDetalle = async (req, res) => {
     try {
-        const venta = await ventasController.obtenerVentasId(req.params.id);
+        const venta = await Ventas.findOne({
+            attributes:['id','fecha','hora','totalVentas','reserva_id'],
+             where: { reserva_id: req.params.id },
+        });
+        
         const detalle = await ventasController.obtenerDetalleId(venta.id);
 
         return res.status(200).json({
@@ -252,3 +257,32 @@ exports.obtenerVentaDetalle = async (req, res) => {
         res.status(500).json({ error: 'Error al obtener la venta detalle' });
     }
 };
+
+
+//
+exports.obtenerVentaDetalleGeneral = async (req, res) => {
+    try {
+
+        const reserva = reservaController.obtenerReservaPorId(req.params.id )
+        const viaje = viajesController.obtenerViajePorId(reserva.viajes_id)
+        const pasajeros = reservaController.listarPasajerosPorReserva(req.params.id)
+        const venta = await Ventas.findOne({
+            attributes:['id','fecha','hora','totalVentas','reserva_id'],
+             where: { reserva_id: req.params.id },
+        });
+        
+        const detalle = await ventasController.obtenerDetalleId(venta.id);
+
+        return res.status(200).json({
+            ...viaje.dataValues,
+            ...pasajeros.dataValues,
+            ...venta.dataValues,
+            ...detalle.dataValues 
+            
+        });
+    } catch (error) {
+        console.error('Error al obtener venta detalle:', error); 
+        res.status(500).json({ error: 'Error al obtener la venta detalle' });
+    }
+};
+

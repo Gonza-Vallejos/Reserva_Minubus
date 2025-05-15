@@ -63,7 +63,7 @@ exports.crearUsuario = async (req, res) => {
 exports.actualizarUsuario = async (req, res) => {
     try {
         // Especificar los campos que quieres actualizar
-         const { nombre, apellido, email, telefono, usuario} = req.body;
+         const { nombre, apellido, email, telefono, usuario,perfil_id} = req.body;
        // const camposActualizados = ['nombre','apellido', 'email', 'telefono', 'usuario', 'perfil_id']; 
         console.log('ver log usuario', req.body)
         
@@ -73,12 +73,13 @@ exports.actualizarUsuario = async (req, res) => {
              email: email,
              telefono: telefono,
              usuario: usuario,
+             perfil_id: perfil_id,
              
 
         },
         {
              where: { id: req.params.id },
-             fields: ['nombre','apellido', 'email', 'telefono', 'usuario']    
+             fields: ['nombre','apellido', 'email', 'telefono', 'usuario','perfil_id']    
                 });
 
         if (!actualizar) {

@@ -17,5 +17,6 @@ router.put('/eliminarVenta/:id', autenticarToken,permitirPerfiles('usuarioAdmini
 
 router.get('/obtenerVentaDetalle/:id', autenticarToken,permitirPerfiles('usuarioAdministrador', 'usuarioCliente','usuarioMostrador'),ventasController.obtenerVentaDetalle);
 
+router.get('/obtenerVentaDetalleGeneral/:id', autenticarToken,permitirPerfiles('usuarioAdministrador', 'usuarioCliente','usuarioMostrador'),ventasController.obtenerVentaDetalleGeneral);
 
 module.exports = router; 
