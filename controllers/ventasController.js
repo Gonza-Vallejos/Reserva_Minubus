@@ -263,9 +263,20 @@ exports.obtenerVentaDetalle = async (req, res) => {
 exports.obtenerVentaDetalleGeneral = async (req, res) => {
     try {
 
-        const reserva = reservaController.obtenerReservaPorId(req.params.id )
-        const viaje = viajesController.obtenerViajePorId(reserva.viajes_id)
-        const pasajeros = reservaController.listarPasajerosPorReserva(req.params.id)
+        
+        console.log('ver iddddd', req.params.id)
+        const reserva = await reservaController.obtenerReservaId(req.params.id )
+
+        console.log('ver iddddd', req.params.id)
+        console.log('ver reserva', reserva)
+        console.log('ver reserva.viaje', reserva.viajes_id)
+
+        const viaje = await viajesController.obtenerViajeId(reserva.viajes_id)
+
+        console.log('ver  viajes ', viaje)
+        const pasajeros = await reservaController.listarPasajerosReserva(req.params.id)
+    
+        console.log('ver  pasajeros',pasajeros)
         const venta = await Ventas.findOne({
             attributes:['id','fecha','hora','totalVentas','reserva_id'],
              where: { reserva_id: req.params.id },
@@ -275,7 +286,7 @@ exports.obtenerVentaDetalleGeneral = async (req, res) => {
 
         return res.status(200).json({
             ...viaje.dataValues,
-            ...pasajeros.dataValues,
+            pasajeros: pasajeros.map((p) => p.dataValues),
             ...venta.dataValues,
             ...detalle.dataValues 
             

@@ -24,7 +24,7 @@ exports.obtenerReservas = async (req, res) => {
 // Obtener una reserva por ID
 exports.obtenerReservaPorId = async (req, res) => {
     try {
-        const reserva = await Reserva.findByPk(req.query.id, {
+        const reserva = await Reserva.findByPk(req.params.id, {
             attributes:['id','fechaReserva','usuarios_id','viajes_id']
         });
         if (!reserva) {
@@ -305,6 +305,22 @@ exports.listarPasajerosPorReserva = async (req, res) => {
     }
 };
 
+exports.listarPasajerosReserva = async (id) => {
+    try {
+        const pasajeros = await Pasajeros.findAll({
+            where: { reserva_id: id },
+            attributes: ['id', 'nombre', 'apellido', 'dni', 'ubicacionOrigen', 'ubicacionDestino']
+        });
+        if (!pasajeros) {
+            return res.status(404).json({ error: `No se encontraron pasajeros para la reserva ` });
+        }
+
+        return pasajeros
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: 'Error al obtener los pasajeros de la reserva' });
+    }
+};
 //nuevo
 exports.listarPasajeroPorId= async (req, res) => {
     try {
