@@ -297,3 +297,17 @@ exports.obtenerVentaDetalleGeneral = async (req, res) => {
     }
 };
 
+exports.existeReservaVenta = async (req, res) => {
+  try {
+    const venta = await Ventas.findOne({
+      where: { reserva_id: req.params.id }
+    });
+
+    const existe = !!venta;
+
+    res.status(200).json({ existe }); // <-- aquí se envía como objeto
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: 'Error al verificar la venta' });
+  }
+};
