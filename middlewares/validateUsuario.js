@@ -59,9 +59,6 @@ const validarUsuario = [
     .matches(/[a-z]/).withMessage('debe contener al menos una letra minúscula')
     .matches(/[0-9]/).withMessage('debe contener al menos un número')
     .matches(/[@$!%*?#_.&]/).withMessage('debe contener al menos un carácter especial'),
-  body('perfil_id')
-    .isInt().withMessage('El perfil es requerido.')
-    .notEmpty().withMessage('El perfil es requerido.'),
   (req, res, next) => {
     const error = validationResult(req);
     if (!error.isEmpty()) {

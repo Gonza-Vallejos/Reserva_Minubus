@@ -37,7 +37,8 @@ exports.obtenerUsuarioPorId = async (req, res) => {
 //Crear un nuevo usuario
 exports.crearUsuario = async (req, res) => {
     try {
-        const { nombre, apellido, dni, telefono, email, usuario, contrasenia, perfil_id } = req.body;
+        const { nombre, apellido, dni, telefono, email, usuario, contrasenia } = req.body;
+        const perfil_id = 5;
         const saltRounds = 10;
         const hashedPassword = await bcrypt.hash(contrasenia, saltRounds);
         // Crear el usuario con los campos separados
@@ -64,8 +65,7 @@ exports.actualizarUsuario = async (req, res) => {
     try {
         // Especificar los campos que quieres actualizar
          const { nombre, apellido, email, telefono, usuario,perfil_id} = req.body;
-       // const camposActualizados = ['nombre','apellido', 'email', 'telefono', 'usuario', 'perfil_id']; 
-        console.log('ver log usuario', req.body)
+    
         
         const [actualizar] = await Usuario.update( {
              nombre: nombre,

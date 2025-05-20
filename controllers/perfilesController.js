@@ -1,4 +1,4 @@
-const { Perfil } = require('../models');
+const { Perfil, Usuario } = require('../models');
 
 exports.crearPerfil = async (req, res) => {
     try {
@@ -19,3 +19,31 @@ exports.crearPerfil = async (req, res) => {
     }
   };
   
+ exports.actualizarPerfil = async (req, res) => {
+  try {
+    const {  perfil_id } = req.body;
+
+    console.log('PERFIL_ID:', perfil_id);
+
+    const [actualizar] = await Usuario.update( {
+             
+             perfil_id: perfil_id,
+ 
+        },
+      {
+        where: { id: req.params.id },
+        fields: ['perfil_id'],
+      }
+    );
+
+    if (!actualizar) {
+      return res.status(404).json({ error: 'Usuario no encontrado' });
+    }
+
+    res.status(200).json({ message: 'Perfil actualizado' });
+  } catch (error) {
+    console.error('Error al actualizar el perfil:', error);
+    res.status(500).json({ error: 'Error al actualizar el perfil' });
+  }
+};
+

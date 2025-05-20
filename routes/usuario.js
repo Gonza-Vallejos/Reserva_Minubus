@@ -14,7 +14,7 @@ router.get('/obtenerUsuario',autenticarToken,permitirPerfiles('usuarioAdministra
 router.get('/obtenerUsuarioId/:id',autenticarToken,permitirPerfiles('usuarioAdministrador','usuarioMostrador','usuarioEmpresa'), usuarioController.obtenerUsuarioPorId);
 
 // Ruta para crear un nuevo usuario
-router.post('/crearUsuario', autenticarToken,permitirPerfiles('usuarioAdministrador'),validateUsuario, usuarioController.crearUsuario);
+router.post('/crearUsuario',validateUsuario, usuarioController.crearUsuario);
 
 // Ruta para actualizar un usuario existente
 router.put('/actualizarUsuario/:id',autenticarToken,permitirPerfiles('usuarioAdministrador','usuarioMostrador','usuarioEmpresa','usuarioCliente'), validateUpdateUsuario, usuarioController.actualizarUsuario);
@@ -25,5 +25,10 @@ router.put('/eliminarUsuario/:id',autenticarToken,permitirPerfiles('usuarioAdmin
 
 router.post('/crearPerfil',autenticarToken,permitirPerfiles('usuarioAdministrador'),  perfilController.crearPerfil);
 
+router.put('/actualizarPerfil/:id',  perfilController.actualizarPerfil);
+
+router.put( '/actualizarContrasenia/:id', autenticarToken,permitirPerfiles('usuarioAdministrador', 'usuarioMostrador', 'usuarioEmpresa', 'usuarioCliente'),validateUpdateContrasenia,usuarioController.actualizarContrasenia
+);
+ 
 
 module.exports = router;

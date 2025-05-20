@@ -85,3 +85,20 @@ exports.eliminarEmpresa = async (req, res) => {
         res.status(500).json({ error: 'Error al eliminar la empresa' });
     }
 };
+
+
+exports.obtenerEmpresaPorId = async (id) => {
+    try {
+        const empresa = await Empresa.findByPk(id, {
+            attributes: ['id','nombre', 'direccion', 'cuit','telefono', 'email','localidad_id'] 
+        });
+        
+        if (!empresa) {
+            return res.status(404).json({ error: 'Empresa no encontrada' });
+        }
+        return empresa;
+    } catch (error) {
+        console.error("Error al obtener la Empresa:", error);
+        throw error;
+    }
+};

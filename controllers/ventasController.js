@@ -260,7 +260,7 @@ exports.obtenerVentaDetalle = async (req, res) => {
 
 
 //
-exports.obtenerVentaDetalleGeneral = async (req, res) => {
+  exports.obtenerVentaDetalleGeneral = async (req, res) => {
     try {
 
         
@@ -275,39 +275,28 @@ exports.obtenerVentaDetalleGeneral = async (req, res) => {
 
         console.log('ver  viajes ', viaje)
         const pasajeros = await reservaController.listarPasajerosReserva(req.params.id)
+
+        const transporte = await medioTransporteController.obtenerTransporteId(viaje.medioTransporte_id);
+        const empresa = await empresaController.obtenerEmpresaPorId(transporte.empresa_id);
     
-        console.log('ver  pasajeros',pasajeros)
+        console.log('ver  EAMPRESA',empresa)
         const venta = await Ventas.findOne({
             attributes:['id','fecha','hora','totalVentas','reserva_id'],
              where: { reserva_id: req.params.id },
         });
         
         const detalle = await ventasController.obtenerDetalleId(venta.id);
-
+        // respuesta agrupada
         return res.status(200).json({
-            ...viaje.dataValues,
-            pasajeros: pasajeros.map((p) => p.dataValues),
-            ...venta.dataValues,
-            ...detalle.dataValues 
-            
+        ...viaje.dataValues,
+        pasajeros: pasajeros.map((p) => p.dataValues),
+        ...venta.dataValues,
+        ...detalle.dataValues,
+        empresa: empresa.dataValues, 
         });
+
     } catch (error) {
         console.error('Error al obtener venta detalle:', error); 
         res.status(500).json({ error: 'Error al obtener la venta detalle' });
     }
-};
-
-exports.existeReservaVenta = async (req, res) => {
-  try {
-    const venta = await Ventas.findOne({
-      where: { reserva_id: req.params.id }
-    });
-
-    const existe = !!venta;
-
-    res.status(200).json({ existe }); // <-- aquí se envía como objeto
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ error: 'Error al verificar la venta' });
-  }
 };
