@@ -13,6 +13,12 @@ module.exports = (sequelize, DataTypes) => {
       Empresa.hasMany(models.MedioTransporte, {
         foreignKey: 'empresa_id'
       });
+
+      Empresa.belongsToMany(models.Usuario, {
+        through: 'usuarioEmpresa',
+        foreignKey: 'id_empresa',
+        otherKey: 'id_usuario'
+      });
     }
   }
 
