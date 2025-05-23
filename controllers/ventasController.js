@@ -4,6 +4,8 @@ const { listarPasajerosPorReserva } = require('./reservaController');
 const ventasController = require('../controllers/ventasController');
 const viajesController = require('../controllers/viajesController');
 const reservaController = require('../controllers/reservaController');
+const empresaController = require('../controllers/empresaController');
+const medioTransporteController = require('../controllers/medio_transporteController')
 const { where } = require('sequelize');
 
 // Obtener todas las ventas
@@ -258,7 +260,20 @@ exports.obtenerVentaDetalle = async (req, res) => {
     }
 };
 
+exports.existeReservaVenta = async (req, res) => {
+  try {
+    const venta = await Ventas.findOne({
+      where: { reserva_id: req.params.id }
+    });
 
+    const existe = !!venta;
+
+    res.status(200).json({ existe }); // <-- aquí se envía como objeto
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: 'Error al verificar la venta' });
+  }
+};
 //
   exports.obtenerVentaDetalleGeneral = async (req, res) => {
     try {
@@ -300,3 +315,4 @@ exports.obtenerVentaDetalle = async (req, res) => {
         res.status(500).json({ error: 'Error al obtener la venta detalle' });
     }
 };
+

@@ -111,4 +111,31 @@ exports.eliminarUsuario = async (req, res) => {
 };
 
 
+exports.actualizarContrasenia = async (req, res) => {
+  const { contraseniaActual, nuevaContrasenia } = req.body;
+  const { id } = req.params;
 
+  try {
+    const usuario = await Usuario.findByPk(id);
+
+    if (!usuario) {
+      return res.status(404).json({ error: 'Usuario no encontrado' });
+    }
+
+    const coincide = await bcrypt.compare(contraseniaActual, usuario.contrasenia);
+
+    if (!coincide) {
+      return res.status(401).json({ error: 'La contraseña actual es incorrecta' });
+    }
+
+    const nuevaHash = await bcrypt.hash(nuevaContrasenia, 10);
+    usuario.contrasenia = nuevaHash;
+
+    await usuario.save();
+
+    res.status(200).json({ mensaje: 'Contraseña actualizada correctamente' });
+  } catch (error) {
+    console.error('Error al actualizar la contraseña', error);
+    res.status(500).json({ error: 'Error del servidor' });
+  }
+};

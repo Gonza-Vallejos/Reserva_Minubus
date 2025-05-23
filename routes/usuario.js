@@ -4,6 +4,7 @@ const usuarioController = require('../controllers/usuarioController');
 const validateUsuario = require('../middlewares/validateUsuario');
 const validateUpdateUsuario = require('../middlewares/validateUpdateUsuario');
 const perfilController = require('../controllers/perfilesController');
+const validateUpdateContrasenia =  require('../middlewares//validateUdateContrasenia');
 
 const { autenticarToken, permitirPerfiles } = require('../middlewares/authMiddleware');
 
@@ -27,8 +28,7 @@ router.post('/crearPerfil',autenticarToken,permitirPerfiles('usuarioAdministrado
 
 router.put('/actualizarPerfil/:id',  perfilController.actualizarPerfil);
 
-router.put( '/actualizarContrasenia/:id', autenticarToken,permitirPerfiles('usuarioAdministrador', 'usuarioMostrador', 'usuarioEmpresa', 'usuarioCliente'),validateUpdateContrasenia,usuarioController.actualizarContrasenia
-);
+router.put( '/actualizarContrasenia/:id', autenticarToken,permitirPerfiles('usuarioAdministrador', 'usuarioMostrador', 'usuarioEmpresa', 'usuarioCliente'),validateUpdateContrasenia,usuarioController.actualizarContrasenia);
  
 
 module.exports = router;
