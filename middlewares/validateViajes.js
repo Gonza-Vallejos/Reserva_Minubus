@@ -26,9 +26,6 @@ const validarViaje = [
   body('precio')
     .isFloat({ min: 0 }).withMessage('El precio debe ser un número positivo.')
     .notEmpty().withMessage('El precio es requerido.'),
-  body('chofer')
-    .trim()
-    .notEmpty().withMessage('El nombre del chofer es requerido.'),
   body('medioTransporte_id')
     .isInt().withMessage('El identificador del medio de transporte debe ser un número entero.')
     .notEmpty().withMessage('El identificador del medio de transporte es requerido.')

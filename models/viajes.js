@@ -3,15 +3,22 @@ const { Model } = require('sequelize');
 
 module.exports = (sequelize, DataTypes) => {
   class Viajes extends Model {
-
     static associate(models) {
-      // Definir asociaciones aquí
+      // Relación con MedioTransporte
       Viajes.belongsTo(models.MedioTransporte, {
         foreignKey: 'medioTransporte_id',
         targetKey: 'id'
       });
+
+      // Relación con Reserva
       Viajes.hasMany(models.Reserva, {
         foreignKey: 'viajes_id'
+      });
+
+      // Relación con usuarioEmpresa
+      Viajes.belongsTo(models.usuarioEmpresa, {
+        foreignKey: 'usuarioEmpresa_id',
+        targetKey: 'id'
       });
     }
   }
@@ -37,11 +44,11 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.FLOAT,
       allowNull: false
     },
-    chofer: {
-      type: DataTypes.STRING,
+    medioTransporte_id: {
+      type: DataTypes.INTEGER,
       allowNull: false
     },
-    medioTransporte_id: {
+    usuarioEmpresa_id: {  
       type: DataTypes.INTEGER,
       allowNull: false
     },
@@ -53,7 +60,7 @@ module.exports = (sequelize, DataTypes) => {
   }, {
     sequelize,
     modelName: 'Viajes',
-    tableName: 'viajes'  
+    tableName: 'viajes'
   });
 
   return Viajes;
