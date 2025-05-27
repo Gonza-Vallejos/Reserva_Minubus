@@ -8,6 +8,8 @@ const { autenticarToken, permitirPerfiles } = require('../middlewares/authMiddle
 
 router.get('/obtenerTransporte',autenticarToken,permitirPerfiles('usuarioAdministrador', 'usuarioEmpresa','usuarioMostrador'), transporteController.obtenerTransportes);
 
+router.get('/obtenerTransportePorEmpresa/:id',autenticarToken,permitirPerfiles('usuarioAdministrador', 'usuarioEmpresa','usuarioMostrador'), transporteController.obtenerTransportesPorEmpresa);
+
 router.post('/crearTransporte',autenticarToken,permitirPerfiles('usuarioAdministrador', 'usuarioMostrador'), validateMedioTransporte ,transporteController.crearTransporte);
 
 router.put('/eliminarTransporte/:id',autenticarToken,permitirPerfiles('usuarioAdministrador', 'usuarioMostrador'), transporteController.eliminarTransporte);

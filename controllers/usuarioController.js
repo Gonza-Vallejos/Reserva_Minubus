@@ -1,4 +1,4 @@
-const { Usuario } = require('../models');
+const { Usuario, UsuarioEmpresa, Empresa } = require('../models');
 const bcrypt = require('bcrypt');
 
 // Obtener todos los usuarios
@@ -138,4 +138,76 @@ exports.actualizarContrasenia = async (req, res) => {
     console.error('Error al actualizar la contraseña', error);
     res.status(500).json({ error: 'Error del servidor' });
   }
+};
+
+
+//  Obtener TODOS los choferes asociados a alguna empresa y que no estén eliminados
+exports.obtenerUsuariosChoferAsociados = async (req, res) => {
+    try {
+        const usuarios = await Usuario.findAll({
+            attributes: ['id', 'nombre', 'apellido', 'dni', 'telefono', 'email', 'usuario', 'perfil_id'],
+            where: {
+                perfil_id: 4, // Solo choferes
+                eliminado: 'no' // Solo los NO eliminados
+            },
+            include: [
+                {
+                    model: UsuarioEmpresa,
+                    attributes: ['id', 'id_empresa'],
+                    required: true, // Solo si están en usuarioEmpresa
+                    include: [
+                        {
+                            model: Empresa,
+                            attributes: ['id', 'nombre']
+                        }
+                    ]
+                }
+            ]
+        });
+
+        res.status(200).json(usuarios);
+    } catch (error) {
+        console.error("Error al obtener los usuarios chofer asociados:", error);
+        res.status(500).json({ error: 'Error al obtener los usuarios chofer asociados' });
+    }
+};
+
+//  Obtener choferes por ID de empresa (y no eliminados)
+exports.obtenerUsuariosChoferPorEmpresa = async (req, res) => {
+   
+
+    try {
+        const usuarios = await Usuario.findAll({
+            attributes: ['id', 'nombre', 'apellido', 'dni', 'telefono', 'email', 'usuario', 'perfil_id'],
+            where: {
+                perfil_id: 4, // Solo choferes
+                eliminado: 'no' // Solo los NO eliminados
+            },
+            include: [
+                {
+                    model: UsuarioEmpresa,
+                    attributes: ['id', 'id_empresa'],
+                    required: true, // Solo si están en usuarioEmpresa
+                    where: {
+                        id_empresa: req.params.id
+                    },
+                    include: [
+                        {
+                            model: Empresa,
+                            attributes: ['id', 'nombre']
+                        }
+                    ]
+                }
+            ]
+        });
+
+        if (usuarios.length === 0) {
+            return res.status(404).json({ message: 'No hay usuarios chofer asociados a esta empresa.' });
+        }
+
+        res.status(200).json(usuarios);
+    } catch (error) {
+        console.error("Error al obtener los choferes de la empresa:", error);
+        res.status(500).json({ error: 'Error al obtener los choferes de la empresa.' });
+    }
 };

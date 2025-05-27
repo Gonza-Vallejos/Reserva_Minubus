@@ -13,6 +13,31 @@ exports.obtenerTransportes = async (req, res) => {
     }
 };
 
+//obtener transporte por empresa
+exports.obtenerTransportesPorEmpresa = async (req, res) => {
+   
+
+    try {
+        const transportes = await MedioTransporte.findAll({
+            attributes: ['id', 'nombre', 'patente', 'marca', 'cantLugares', 'empresa_id'],
+            where: {
+                empresa_id: req.params.id,
+                eliminado: 'no' 
+            }
+        });
+
+        if (transportes.length === 0) {
+            return res.status(404).json({ message: 'No hay transportes activos asociados a esta empresa.' });
+        }
+
+        res.status(200).json(transportes);
+    } catch (error) {
+        console.error("Error al obtener los transportes:", error);
+        res.status(500).json({ error: 'Error al obtener los transportes.' });
+    }
+};
+
+
 // Obtener un transporte por ID
 exports.obtenerTransportePorId = async (req, res) => {
     try {

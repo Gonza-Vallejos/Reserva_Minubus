@@ -16,9 +16,10 @@ module.exports = (sequelize, DataTypes) => {
       });
 
       // Relación con usuarioEmpresa
-      Viajes.belongsTo(models.usuarioEmpresa, {
+      Viajes.belongsTo(models.UsuarioEmpresa, {
         foreignKey: 'usuarioEmpresa_id',
-        targetKey: 'id'
+        targetKey: 'id',
+       // as: 'usuarioEmpresa'
       });
     }
   }

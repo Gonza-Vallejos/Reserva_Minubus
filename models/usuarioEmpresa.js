@@ -2,27 +2,28 @@
 const { Model } = require('sequelize');
 
 module.exports = (sequelize, DataTypes) => {
-  class usuarioEmpresa extends Model {
+  class UsuarioEmpresa extends Model {
     static associate(models) {
-      usuarioEmpresa.belongsTo(models.Usuario, {
+      UsuarioEmpresa.belongsTo(models.Usuario, {
         foreignKey: 'id_usuario',
-        targetKey: 'id'
+        targetKey: 'id',
+       // as: 'usuario'
       });
 
-      usuarioEmpresa.belongsTo(models.Empresa, {
+      UsuarioEmpresa.belongsTo(models.Empresa, {
         foreignKey: 'id_empresa',
-        targetKey: 'id'
+        targetKey: 'id',
+       // as: 'empresa'
       });
 
-      // Relación inversa para Viajes 
-      usuarioEmpresa.hasMany(models.Viajes, {
+      UsuarioEmpresa.hasMany(models.Viajes, {
         foreignKey: 'usuarioEmpresa_id'
       });
     }
   }
 
-  usuarioEmpresa.init({
-    id: { // Nuevo campo id como clave primaria
+  UsuarioEmpresa.init({
+    id: { 
       type: DataTypes.INTEGER,
       primaryKey: true,
       autoIncrement: true
@@ -31,7 +32,7 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.INTEGER,
       allowNull: false,
       references: {
-        model: 'usuarios', // nombre de la tabla
+        model: 'usuarios',
         key: 'id'
       },
       onUpdate: 'CASCADE',
@@ -41,7 +42,7 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.INTEGER,
       allowNull: false,
       references: {
-        model: 'empresa', // nombre de la tabla
+        model: 'empresa',
         key: 'id'
       },
       onUpdate: 'CASCADE',
@@ -49,10 +50,10 @@ module.exports = (sequelize, DataTypes) => {
     }
   }, {
     sequelize,
-    modelName: 'usuarioEmpresa',
+    modelName: 'UsuarioEmpresa',
     tableName: 'usuarioEmpresa',
     timestamps: true
   });
 
-  return usuarioEmpresa;
+  return UsuarioEmpresa;
 };

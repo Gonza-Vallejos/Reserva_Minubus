@@ -41,3 +41,17 @@ exports.obtenerEmpresaDeUsuario = async (req, res) => {
         return res.status(500).json({ error: 'Error del servidor' });
     }
 };
+
+
+exports.obtenerUsuarioEmpresaId = async (id) => {
+    try {
+        const usuarioEmpresa = await UsuarioEmpresa.findByPk(id, {
+            attributes: ['id', 'id_usuario', 'id_empresa']
+        });
+        return usuarioEmpresa; // Retorna el objeto si existe o `null` si no se encuentra
+    } catch (error) {
+        console.error("Error al obtener el usuario empresa:", error);
+        throw error;
+    }
+};
+

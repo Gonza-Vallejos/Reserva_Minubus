@@ -1,6 +1,6 @@
 const viajesController = require('../controllers/viajesController');
 const medioTransporteController = require('../controllers/medio_transporteController');
-const resrvaUsuario = require('../controllers/reservaViajesController');
+const reservaUsuario = require('../controllers/reservaViajesController');
 const { Reserva,Pasajeros,Viajes } = require('../models/');
 const { where } = require('sequelize');
 
@@ -76,7 +76,7 @@ exports.crearReserva = async (req, res) => {
 
         
         // Verificar si el usuario ya tiene una reserva para este viaje
-        const usuarioReserva = await resrvaUsuario.obtenerReservaPorUsuarioYViaje(usuarios_id, viajes_id);
+        const usuarioReserva = await reservaUsuario.obtenerReservaPorUsuarioYViaje(usuarios_id, viajes_id);
         if (usuarioReserva) {
             return res.status(400).json({ mensaje: 'El usuario ya posee una reserva para este viaje' });
         } 

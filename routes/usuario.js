@@ -31,4 +31,10 @@ router.put('/actualizarPerfil/:id',  perfilController.actualizarPerfil);
 router.put( '/actualizarContrasenia/:id', autenticarToken,permitirPerfiles('usuarioAdministrador', 'usuarioMostrador', 'usuarioEmpresa', 'usuarioCliente'),validateUpdateContrasenia,usuarioController.actualizarContrasenia);
  
 
+// Ruta para obtener todos los usuarios choferes
+router.get('/obtenerUsuarioChoferAsociados',autenticarToken,permitirPerfiles('usuarioAdministrador','usuarioMostrador','usuarioEmpresa'), usuarioController.obtenerUsuariosChoferAsociados);
+
+// Ruta para obtener todos los usuarios choferes por empresa
+router.get('/obtenerUsuarioChoferPorEmpresa/:id',autenticarToken,permitirPerfiles('usuarioAdministrador','usuarioMostrador','usuarioEmpresa'), usuarioController.obtenerUsuariosChoferPorEmpresa);
+
 module.exports = router;

@@ -30,5 +30,8 @@ router.get('/obtenerVentasViajesId/:id', autenticarToken ,permitirPerfiles( 'usu
 router.get('/obtenerViajesPorEmpresa/:id', autenticarToken ,permitirPerfiles( 'usuarioAdministrador','usuarioEmpresa ' ), viajesController.obtenerViajesPorEmpresa);
 
 
+router.get('/obtenerViajesPorChofer/:id', autenticarToken ,permitirPerfiles( 'usuarioMostrador', 'usuarioAdministrador', 'usuarioChofer','usuarioEmpresa' ), viajesController.obtenerViajesPorChofer);
+
+
 module.exports = router;
 

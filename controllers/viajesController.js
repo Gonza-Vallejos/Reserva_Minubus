@@ -1,5 +1,8 @@
 // controllers/viajesController.js
-const { Viajes, MedioTransporte, Empresa, UsuarioEmpresa } = require('../models');
+const { Viajes, MedioTransporte, Empresa, UsuarioEmpresa, Usuario } = require('../models');
+const medioTransporteId = require('../controllers/medio_transporteController');
+const usuarioEmpresaId = require('../controllers/usuarioEmpresaController');
+const { sequelize } = require('../models');
 
 // Obtener todas los viajes
 exports.obtenerViajes = async (req, res) => {
@@ -43,29 +46,10 @@ exports.obtenerViajeId = async (id) => {
 };
 
 exports.obtenerViajesPorEmpresa = async (req, res) => {
-    //const empresaId = req.params.id;
-    
-   // const perfilUsuario = req.user.perfil;
+  
 
     try {
-       // const {usuarioId} = req.body;
-        // Validar si el usuario tiene el perfil correcto
-       // if (![1, 3].includes(perfilUsuario)) {
-         //   return res.status(403).json({ error: 'No tienes permisos para acceder a estos datos' });
-        //}
-
-        // Verificar si el usuario está asociado a la empresa
-      //  const asociacion = await UsuarioEmpresa.findOne({
-        //    where: {
-          //      usuario_id: usuarioId,
-            //    empresa_id: req.params.id
-           // }
-       // });
-
-        //if (!asociacion) {
-          //  return res.status(403).json({ error: 'No estás asociado a esta empresa' });
-        //}
-
+    
         // Obtener los viajes
         const viajes = await Viajes.findAll({
             attributes: ['id', 'origenLocalidad', 'destinoLocalidad', 'horarioSalida', 'fechaViaje', 'precio', 'chofer', 'medioTransporte_id'],
@@ -92,39 +76,100 @@ exports.obtenerViajesPorEmpresa = async (req, res) => {
 };
 
 
+//obtener viajes segun el chofer
+
+
+exports.obtenerViajesPorChofer = async (req, res) => {
+  
+
+  try {
+    const viajes = await Viajes.findAll({
+      attributes: ['id', 'origenLocalidad', 'destinoLocalidad', 'horarioSalida', 'fechaViaje', 'precio'],
+      include: [
+        {
+          model: UsuarioEmpresa,
+      
+          attributes: [],
+          where: { id_usuario: req.params.id }, 
+          include: [
+            {
+              model: Usuario,
+              attributes: [],
+              where: {
+                perfil_id: 4,
+                eliminado: 'no'
+              }
+            },
+            {
+              model: Empresa,
+              attributes: [ 'nombre']
+            }
+          ]
+        },
+        {
+          model: MedioTransporte,
+          attributes: ['id', 'nombre'],
+          include: [
+            {
+              model: Empresa,
+              attributes: ['nombre']
+            }
+          ]
+        }
+      ],
+     where: sequelize.where(
+                    sequelize.col('UsuarioEmpresa.id_empresa'),
+                    '=',
+                    sequelize.col('MedioTransporte.empresa_id')
+                    )
+
+    });
+
+    res.status(200).json(viajes);
+  } catch (error) {
+    console.error("Error al obtener los viajes del chofer:", error);
+    res.status(500).json({ error: 'Error al obtener los viajes del chofer' });
+  }
+};
+
+
 
 // Crear una nuevo Viaje
 exports.crearViaje = async (req, res) => {
   try {
     const { origenLocalidad, destinoLocalidad, horarioSalida, fechaViaje, precio, usuarioEmpresa_id, medioTransporte_id } = req.body;
 
+
+        // Obtener la empresa asociada al medioTransporte
+  
+    const transporte = await MedioTransporte.findOne({
+      where: { id: medioTransporte_id },
+      attributes: ['id', 'empresa_id']
+    });
+   
+    if (!transporte) {
+      return res.status(400).json({ error: 'El medioTransporte_id no es válido' });
+    }
+
+    const empresaTransporteId = transporte.empresa_id;
     // Verificar usuarioEmpresa_id y que sea chofer
-    const usuarioEmpresa = await db.usuarioEmpresa.findOne({ //el db NOOO!!! ANDA!!!
+   
+    const usuarioEmpresa = await UsuarioEmpresa.findOne({ 
       where: { id: usuarioEmpresa_id },
       include: [{
-        model: db.Usuario,//el db NOOO!!! ANDA!!!
+        model: Usuario,
         where: { perfil_id: 4 }, // Verifica que sea usuarioChofer
         attributes: ['id', 'nombre', 'perfil_id']
       }]
     });
-
+   
     if (!usuarioEmpresa) {
       return res.status(400).json({ error: 'El usuarioEmpresa_id no es válido o el usuario no tiene perfil de chofer' });
     }
 
     const empresaUsuarioId = usuarioEmpresa.id_empresa;
 
-    // Obtener la empresa asociada al medioTransporte
-    const medioTransporte = await db.MedioTransporte.findOne({//el db NOOO!!! ANDA!!!
-      where: { id: medioTransporte_id },
-      attributes: ['id', 'empresa_id']
-    });
 
-    if (!medioTransporte) {
-      return res.status(400).json({ error: 'El medioTransporte_id no es válido' });
-    }
-
-    const empresaTransporteId = medioTransporte.empresa_id;
 
     // Comparar ambas empresas
     if (empresaUsuarioId !== empresaTransporteId) {
@@ -132,7 +177,7 @@ exports.crearViaje = async (req, res) => {
     }
 
     // Si todo es válido, crear el viaje
-    const nuevoViaje = await db.Viajes.create({//el db NOOO!!! ANDA!!!
+    const nuevoViaje = await Viajes.create({//el db NOOO!!! ANDA!!!
       origenLocalidad: origenLocalidad,
       destinoLocalidad: destinoLocalidad,
       horarioSalida: horarioSalida,
