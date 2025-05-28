@@ -8,7 +8,7 @@ const { sequelize } = require('../models');
 exports.obtenerViajes = async (req, res) => {
     try {
         const viajes = await Viajes.findAll({
-            attributes:['id','origenLocalidad','destinoLocalidad','horarioSalida','fechaViaje','precio','chofer','medioTransporte_id']
+            attributes:['id','origenLocalidad','destinoLocalidad','horarioSalida','fechaViaje','precio','usuarioEmpresa_id','medioTransporte_id']
         });
         res.status(200).json(viajes);
     } catch (error) {
@@ -21,7 +21,7 @@ exports.obtenerViajePorId = async (req, res) => {
     try {
         console.log('ver id en viaje', req.params.id)
         const viaje = await Viajes.findByPk(req.params.id, {
-            attributes: ['id', 'origenLocalidad', 'destinoLocalidad', 'horarioSalida', 'fechaViaje', 'precio', 'chofer', 'medioTransporte_id']
+            attributes: ['id', 'origenLocalidad', 'destinoLocalidad', 'horarioSalida', 'fechaViaje', 'precio', 'usuarioEmpresa_id', 'medioTransporte_id']
         });
         if (!viaje) {
             return res.status(404).json({ error: 'Viaje no encontrado' });
@@ -36,7 +36,7 @@ exports.obtenerViajePorId = async (req, res) => {
 exports.obtenerViajeId = async (id) => {
     try {
         const viaje = await Viajes.findByPk(id, {
-            attributes: ['id', 'origenLocalidad', 'destinoLocalidad', 'horarioSalida', 'fechaViaje', 'precio', 'chofer', 'medioTransporte_id']
+            attributes: ['id', 'origenLocalidad', 'destinoLocalidad', 'horarioSalida', 'fechaViaje', 'precio', 'usuarioEmpresa_id', 'medioTransporte_id']
         });
         return viaje;
     } catch (error) {
@@ -52,7 +52,7 @@ exports.obtenerViajesPorEmpresa = async (req, res) => {
     
         // Obtener los viajes
         const viajes = await Viajes.findAll({
-            attributes: ['id', 'origenLocalidad', 'destinoLocalidad', 'horarioSalida', 'fechaViaje', 'precio', 'chofer', 'medioTransporte_id'],
+            attributes: ['id', 'origenLocalidad', 'destinoLocalidad', 'horarioSalida', 'fechaViaje', 'precio', 'usuarioEmpresa_id', 'medioTransporte_id'],
             include: [
                 {
                     model: MedioTransporte,

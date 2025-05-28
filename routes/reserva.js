@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const reservaController = require('../controllers/reservaController');
+const reservaViajeController = require('../controllers/reservaViajesController');
 const validateReserva =  require( '../middlewares/validateReserva');
 const validateUpdateReserva= require('../middlewares/validateUpdateReserva')
 const validateDetalleReserva = require('../middlewares/validateDetalleReserva')
@@ -30,6 +31,10 @@ router.get('/listarPasajeros/',autenticarToken,permitirPerfiles('usuarioAdminist
 
 //nuevo
 router.get('/listarPasajeroPorId/:id',autenticarToken,permitirPerfiles('usuarioAdministrador', 'usuarioMostrador'), reservaController.listarPasajeroPorId);
+
+router.get('/listarPasajeroPorViaje/:id',autenticarToken,permitirPerfiles('usuarioAdministrador', 'usuarioMostrador'), reservaController.listarPasajerosPorViaje);
+
+router.get('/listarReservasPorViaje/:id',autenticarToken,permitirPerfiles('usuarioAdministrador', 'usuarioMostrador'), reservaViajeController.listarReservasPorViaje);
 
 
 

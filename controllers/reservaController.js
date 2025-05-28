@@ -1,7 +1,7 @@
 const viajesController = require('../controllers/viajesController');
 const medioTransporteController = require('../controllers/medio_transporteController');
 const reservaUsuario = require('../controllers/reservaViajesController');
-const { Reserva,Pasajeros,Viajes } = require('../models/');
+const { Reserva,Pasajeros,Viajes} = require('../models/');
 const { where } = require('sequelize');
 
 
@@ -384,5 +384,33 @@ exports.obtenerReservasPorUsuario = async (req, res) => {
       res.status(500).json({ error: 'Error al obtener las reservas del usuario' });
     }
   };
+
+
+  // funcion para listar los pasajeros segun el viaje
+  exports.listarPasajerosPorViaje = async (req, res) => {
+    try {
+        const reservas = await Reserva.findAll({
+            where: { viajes_id: req.params.id },
+            attributes: ['id'],
+            include: {
+                model: Pasajeros,
+                attributes: ['id', 'nombre', 'apellido', 'dni', 'ubicacionOrigen', 'ubicacionDestino']
+            }
+        });
+
+        if (!reservas || reservas.length === 0) {
+            return res.status(404).json({ error: 'No se encontraron reservas para este viaje.' });
+        }
+
+        // Extraer los pasajeros de las reservas
+        const pasajeros = reservas.flatMap(reserva => reserva.Pasajeros || []);
+
+        res.status(200).json(pasajeros);
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: 'Error al obtener los pasajeros del viaje.' });
+    }
+};
+
   
   
