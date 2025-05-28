@@ -42,6 +42,24 @@ exports.obtenerEmpresaDeUsuario = async (req, res) => {
     }
 };
 
+exports.obtenerEmpresaIdDeUsuario = async (id) => {
+    const usuarioId = id; // ID del usuario recibido por parámetro
+
+    try {
+        const asociacion = await UsuarioEmpresa.findOne({
+            where: { id_usuario: usuarioId }
+        });
+
+        if (!asociacion) {
+            return ({ mensaje: 'El usuario no está asociado a ninguna empresa' });
+        }
+
+        return ({ empresa_id: asociacion.id_empresa });
+    } catch (error) {
+        console.error('Error al verificar asociación del usuario:', error);
+       throw error;
+    }
+};
 
 exports.obtenerUsuarioEmpresaId = async (id) => {
     try {

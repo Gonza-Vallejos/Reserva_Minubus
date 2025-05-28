@@ -32,7 +32,7 @@ router.get('/listarPasajeros/',autenticarToken,permitirPerfiles('usuarioAdminist
 //nuevo
 router.get('/listarPasajeroPorId/:id',autenticarToken,permitirPerfiles('usuarioAdministrador', 'usuarioMostrador'), reservaController.listarPasajeroPorId);
 
-router.get('/listarPasajeroPorViaje/:id',autenticarToken,permitirPerfiles('usuarioAdministrador', 'usuarioMostrador'), reservaController.listarPasajerosPorViaje);
+router.get('/listarPasajeroPorViaje/:id',autenticarToken,permitirPerfiles('usuarioAdministrador', 'usuarioMostrador', 'usuarioChofer'), reservaController.listarPasajerosPorViaje);
 
 router.get('/listarReservasPorViaje/:id',autenticarToken,permitirPerfiles('usuarioAdministrador', 'usuarioMostrador'), reservaViajeController.listarReservasPorViaje);
 
