@@ -27,7 +27,7 @@ router.get('/obtenerPasajerosViajesId/:id', autenticarToken ,permitirPerfiles('u
 router.get('/obtenerVentasViajesId/:id', autenticarToken ,permitirPerfiles( 'usuarioAdministrador','usuarioEmpresa ' ), ventasViajes.obtenerVentasPorViaje);
 
 
-router.get('/obtenerViajesPorEmpresa/:id', autenticarToken ,permitirPerfiles( 'usuarioAdministrador','usuarioEmpresa ' ), viajesController.obtenerViajesPorEmpresa);
+router.get('/obtenerViajesPorEmpresa/:id', autenticarToken ,permitirPerfiles( 'usuarioAdministrador','usuarioEmpresa' ), viajesController.obtenerViajesPorEmpresa);
 
 
 router.get('/obtenerViajesPorChofer/:id', autenticarToken ,permitirPerfiles( 'usuarioMostrador', 'usuarioAdministrador', 'usuarioChofer','usuarioEmpresa' ), viajesController.obtenerViajesPorChofer);

@@ -34,7 +34,9 @@ router.get('/listarPasajeroPorId/:id',autenticarToken,permitirPerfiles('usuarioA
 
 router.get('/listarPasajeroPorViaje/:id',autenticarToken,permitirPerfiles('usuarioAdministrador', 'usuarioMostrador', 'usuarioChofer'), reservaController.listarPasajerosPorViaje);
 
-router.get('/listarReservasPorViaje/:id',autenticarToken,permitirPerfiles('usuarioAdministrador', 'usuarioMostrador'), reservaViajeController.listarReservasPorViaje);
+router.get('/listarReservasPorViaje/:id',autenticarToken,permitirPerfiles('usuarioAdministrador', 'usuarioMostrador', 'usuarioEmpresa'), reservaViajeController.listarReservasPorViaje);
+
+router.get('/obtenerReservasPorEmpresa/:id',autenticarToken,permitirPerfiles('usuarioAdministrador', 'usuarioMostrador','usuarioEmpresa'), reservaController.obtenerReservasPorEmpresa);
 
 
 

@@ -1,7 +1,7 @@
 const viajesController = require('../controllers/viajesController');
 const medioTransporteController = require('../controllers/medio_transporteController');
 const reservaUsuario = require('../controllers/reservaViajesController');
-const { Reserva,Pasajeros,Viajes} = require('../models/');
+const { Reserva, Pasajeros, Viajes, MedioTransporte, Empresa} = require('../models/');
 const { where } = require('sequelize');
 
 
@@ -19,6 +19,42 @@ exports.obtenerReservas = async (req, res) => {
         console.error('Error al obtener reservas:', error); 
         res.status(500).json({ error: 'Error al obtener las reservas' });
     }
+};
+
+
+
+exports.obtenerReservasPorEmpresa = async (req, res) => {
+  try {
+    const reservas = await Reserva.findAll({
+      attributes: ['id', 'fechaReserva', 'usuarios_id', 'viajes_id'],
+      include: [
+        {
+          model: Viajes,
+          required: true,
+          attributes: ['id', 'origenLocalidad', 'destinoLocalidad', 'horarioSalida', 'fechaViaje', 'precio'],
+          include: [
+            {
+              model: MedioTransporte,
+              required: true,
+              attributes: ['id', 'nombre', 'patente', 'marca', 'cantLugares'],
+              where: { empresa_id: req.params.id }, 
+              include: [
+                {
+                  model: Empresa,
+                  attributes: ['id', 'nombre']
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    });
+
+    res.status(200).json(reservas);
+  } catch (error) {
+    console.error('Error al obtener reservas por empresa:', error);
+    res.status(500).json({ error: 'Error al obtener las reservas por empresa' });
+  }
 };
 
 // Obtener una reserva por ID
