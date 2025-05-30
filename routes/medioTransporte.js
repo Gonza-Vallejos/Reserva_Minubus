@@ -12,9 +12,12 @@ router.get('/obtenerTransportePorEmpresa/:id',autenticarToken,permitirPerfiles('
 
 router.post('/crearTransporte',autenticarToken,permitirPerfiles('usuarioAdministrador', 'usuarioMostrador'), validateMedioTransporte ,transporteController.crearTransporte);
 
-router.put('/eliminarTransporte/:id',autenticarToken,permitirPerfiles('usuarioAdministrador', 'usuarioMostrador'), transporteController.eliminarTransporte);
 
 router.get('/obtenerTransporteId/:id',autenticarToken,permitirPerfiles('usuarioAdministrador', 'usuarioEmpresa', 'usuarioMostrador'),transporteController.obtenerTransportePorId);
 
 router.put('/actualizarTransporte/:id', autenticarToken,permitirPerfiles('usuarioAdministrador', 'usuarioMostrador'),validateUpdateTransporte ,transporteController.actualizarTransporte);
+
+router.put('/eliminarTransporte/:id',autenticarToken,permitirPerfiles('usuarioAdministrador', 'usuarioMostrador'), transporteController.eliminarTransporte);
+
+
 module.exports = router;

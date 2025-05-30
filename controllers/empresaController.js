@@ -14,9 +14,10 @@ exports.obtenerEmpresas = async (req, res) => {
 };
 
 // Obtener una Empresa por ID
-exports.obtenerEmpresaPorId = async (req, res) => {
+exports.obtenerEmpresaId = async (req, res) => {
     try {
-        const empresa = await Empresa.findByPk(req.query.id, {
+        const empresa = await Empresa.findAll( {
+             where: { id: req.params.id },
             attributes: ['id','nombre', 'direccion', 'cuit','telefono', 'email','localidad_id'] 
         });
         
@@ -25,8 +26,8 @@ exports.obtenerEmpresaPorId = async (req, res) => {
         }
         res.status(200).json(empresa);
     } catch (error) {
-        res.status(500).json({ error: 'Error al obtener la empresa' });
-    }
+        res.status(500).json({ error: 'Error al obtener la empresa' });
+    }
 };
 
 // Crear una nueva empresa

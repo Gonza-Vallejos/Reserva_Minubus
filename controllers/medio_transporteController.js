@@ -1,5 +1,5 @@
 // controllers/medio_trasporteController.js
-const { MedioTransporte } = require('../models');
+const { MedioTransporte, Empresa, Viajes } = require('../models');
 
 // Obtener todos los transportes
 exports.obtenerTransportes = async (req, res) => {
@@ -23,7 +23,13 @@ exports.obtenerTransportesPorEmpresa = async (req, res) => {
             where: {
                 empresa_id: req.params.id,
                 eliminado: 'no' 
-            }
+            },
+             include: [{
+                        model: Empresa, 
+                        as: 'Empresa',
+                        attributes: ['nombre']
+                    }]
+            
         });
 
         if (transportes.length === 0) {
@@ -113,20 +119,42 @@ exports.crearTransporte = async (req, res) => {
 
 
 // Eliminar un transporte
+
+
 exports.eliminarTransporte = async (req, res) => {
-    
     try {
-        // Actualizar el campo 'eliminado' a 'si'
-        const [eliminar] = await MedioTransporte.update({ eliminado: 'si' }, {
-            where: { id: req.params.id },
-            fields: ['eliminado']
+       const {data} = req.body
+        
+        // Verificar si el transporte tiene algún viaje asociado
+        const viajesAsociados = await Viajes.findOne({
+            where: { medioTransporte_id: req.params.id }
         });
+
+        if (viajesAsociados) {
+
+            console.log('llego a viajes asociados')
+            return res.status(400).json({
+                error: 'No se puede eliminar el transporte porque tiene viajes asignados.'
+            });
+        }
+
+        // Marcar el transporte como eliminado
+        const [eliminar] = await MedioTransporte.update(
+            { eliminado: 'si' },
+            {
+                where: { id: req.params.id },
+                fields: ['eliminado']
+            }
+        );
 
         if (!eliminar) {
             return res.status(404).json({ error: 'Transporte no encontrado' });
         }
-        res.status(200).json({ message: 'Transporte eliminado' });
+
+        res.status(200).json({ message: 'Transporte eliminado correctamente' });
     } catch (error) {
+        console.error('Error al eliminar el Transporte:', error);
         res.status(500).json({ error: 'Error al eliminar el Transporte' });
     }
 };
+
