@@ -22,7 +22,7 @@ router.put('/actualizarUsuario/:id',autenticarToken,permitirPerfiles('usuarioAdm
 
 
 // Ruta para eliminar un usuario lógicamente
-router.put('/eliminarUsuario/:id',autenticarToken,permitirPerfiles('usuarioAdministrador'), usuarioController.eliminarUsuario);
+router.put('/eliminarUsuario/:id',autenticarToken,permitirPerfiles('usuarioAdministrador','usuarioEmpresa'), usuarioController.eliminarUsuario);
 
 router.post('/crearPerfil',autenticarToken,permitirPerfiles('usuarioAdministrador'),  perfilController.crearPerfil);
 

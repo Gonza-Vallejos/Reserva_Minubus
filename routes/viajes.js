@@ -12,7 +12,7 @@ const { autenticarToken, permitirPerfiles } = require('../middlewares/authMiddle
 //  Solo cliente puede ver viajes disponibles
 router.get('/viajesDisponible', autenticarToken,permitirPerfiles('usuarioAdministrador', 'usuarioEmpresa', 'usuarioCliente','usuarioMostrador'),viajesdisponibles.obtenerViajesDisponibles);
 
-router.get('/obtenerViajesId/:id', autenticarToken ,permitirPerfiles('usuarioMostrador', 'usuarioAdministrador','usuarioEmpresa '), viajesController.obtenerViajePorId);
+router.get('/obtenerViajesId/:id', autenticarToken ,permitirPerfiles('usuarioMostrador', 'usuarioAdministrador','usuarioEmpresa','usuarioCliente'), viajesController.obtenerViajePorId);
 
 router.get('/obtenerViajes', autenticarToken, permitirPerfiles('usuarioMostrador', 'usuarioAdministrador','usuarioEmpresa '), viajesController.obtenerViajes);
 

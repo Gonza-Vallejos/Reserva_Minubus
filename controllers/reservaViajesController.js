@@ -6,9 +6,10 @@ exports.obtenerReservaPorUsuarioYViaje = async (usuarios_id, viajes_id) => {
         const reserva = await Reserva.findOne({          
             where: {
                 usuarios_id: usuarios_id,
-                viajes_id: viajes_id
+                viajes_id: viajes_id,
+                eliminado: 'no'
             },
-            attributes:['id','fechaReserva','usuarios_id','viajes_id'],
+            attributes:['id','fechaReserva','usuarios_id','viajes_id','eliminado'],
         });
         return reserva;// Retorna la reserva si existe, de lo contrario, retorna null
     } catch (error) {

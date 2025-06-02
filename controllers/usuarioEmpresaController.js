@@ -61,9 +61,9 @@ exports.obtenerEmpresaIdDeUsuario = async (id) => {
     }
 };
 
-exports.obtenerUsuarioEmpresaId = async (id) => {
+exports.obtenerUsuarioEmpresaId = async (req, res) => {
     try {
-        const usuarioEmpresa = await UsuarioEmpresa.findByPk(id, {
+        const usuarioEmpresa = await UsuarioEmpresa.findByPk(req.params.id, {
             attributes: ['id', 'id_usuario', 'id_empresa']
         });
         return usuarioEmpresa; // Retorna el objeto si existe o `null` si no se encuentra
@@ -73,3 +73,33 @@ exports.obtenerUsuarioEmpresaId = async (id) => {
     }
 };
 
+//Listar todos los usuarios de una empresa 
+
+exports.obtenerUsuariosPorEmpresa = async (req, res) => {
+  const empresa_id = req.params.id;
+
+  try {
+        const usuariosEmpresa = await UsuarioEmpresa.findAll({
+        where: { id_empresa: empresa_id},
+        include: [
+            {
+            model: Usuario,
+            where: { eliminado: 'no'},
+            attributes: ['id', 'nombre', 'apellido','email', 'telefono', 'perfil_id']
+            }
+        ]
+        });
+
+
+    if (!usuariosEmpresa || usuariosEmpresa.length === 0) {
+      return res.status(404).json({ mensaje: 'No hay usuarios asociados a la empresa' });
+    }
+
+    const usuariosFinales = usuariosEmpresa.map((registro) => registro.Usuario); // con mayúscula
+
+    return res.status(200).json(usuariosFinales);
+  } catch (error) {
+    console.error('Error al obtener los usuarios de la empresa:', error);
+    return res.status(500).json({ error: 'Error del servidor' });
+  }
+};

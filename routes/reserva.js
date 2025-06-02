@@ -21,7 +21,7 @@ router.post('/crearReserva',autenticarToken,permitirPerfiles('usuarioAdministrad
 
 router.put('/actualizarReserva/:id',autenticarToken,permitirPerfiles('usuarioAdministrador', 'usuarioCliente'), validateUpdateReserva,reservaController.actualizarReserva);
 
-router.put('/eliminarReserva/:id',autenticarToken,permitirPerfiles('usuarioAdministrador', 'usuarioMostrador'), reservaController.eliminarReserva);
+router.put('/eliminarReserva/:id',autenticarToken,permitirPerfiles('usuarioAdministrador', 'usuarioMostrador', 'usuarioCliente'), reservaController.eliminarReserva);
 
 router.put('/eliminarPasajero/:id',autenticarToken,permitirPerfiles('usuarioAdministrador', 'usuarioMostrador'), reservaController.eliminarPasajero);
 

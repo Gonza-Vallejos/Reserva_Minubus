@@ -376,7 +376,7 @@ exports.listarPasajeroPorId= async (req, res) => {
 };
 
 
-//funcion para obtener reservas por uduario id
+//funcion para obtener reservas por uduario id y que esas reservas no esten eliminadas 
 // nuevo
 exports.obtenerReservasPorUsuario = async (req, res) => {
     try {
@@ -385,7 +385,9 @@ exports.obtenerReservasPorUsuario = async (req, res) => {
   
       const reservas = await Reserva.findAll({
         attributes:['id','fechaReserva','usuarios_id','viajes_id'],
-        where: { usuarios_id: usuarioId }
+        where: { usuarios_id: usuarioId,
+                 eliminado: 'no'
+                }
         //order: [['fechaReserva', 'DESC']]
       });
 
@@ -400,7 +402,7 @@ exports.obtenerReservasPorUsuario = async (req, res) => {
       }
       const viajes = await Viajes.findAll({
         where: { id:viajesIds },
-        attributes:['id','origenLocalidad','destinoLocalidad','horarioSalida','fechaViaje','precio','chofer','medioTransporte_id']
+        attributes:['id','origenLocalidad','destinoLocalidad','horarioSalida','fechaViaje','precio','usuarioEmpresa_id','medioTransporte_id']
         
       })
       
