@@ -45,6 +45,10 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.FLOAT,
       allowNull: false
     },
+    cantPasajeros: {
+    type: DataTypes.INTEGER,
+    allowNull: false
+    },
     medioTransporte_id: {
       type: DataTypes.INTEGER,
       allowNull: false

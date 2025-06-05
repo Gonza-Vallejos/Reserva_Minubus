@@ -106,8 +106,8 @@ exports.crearReserva = async (req, res) => {
         }
 
         // Verificar si hay suficientes lugares disponibles antes de crear la reserva
-        if (medioTransporte.cantLugares < personas.length) {
-            return res.status(400).json({ mensaje: 'No hay suficientes lugares disponibles en este medio de transporte' });
+        if (viaje.cantPasajeros < personas.length) {
+            return res.status(400).json({ mensaje: 'No hay suficientes lugares disponibles en este viaje' });
         }
 
         
@@ -141,8 +141,8 @@ exports.crearReserva = async (req, res) => {
         }
 
         // Descontar los lugares correspondientes
-        medioTransporte.cantLugares -= personas.length;
-        await medioTransporte.save();
+        viaje.cantPasajeros -= personas.length;
+        await viaje.save();
 
         res.status(201).json({ message: 'Reserva creada exitosamente', reserva: nuevaReserva });
 
@@ -240,10 +240,10 @@ exports.eliminarReserva = async (req, res) => {
         const cantidadPersonas = pasajeros.length;
 
         // Sumar los lugares correspondientes al medio de transporte
-        medioTransporte.cantLugares += cantidadPersonas;
+        viaje.cantPasajeros += cantidadPersonas;
 
         // Guardar los cambios realizados en el medio de transporte
-        await medioTransporte.save();
+        await viaje.save();
 
         // Responder con éxito
         res.status(200).json({ message: 'Reserva eliminada' });
@@ -280,10 +280,10 @@ exports.eliminarPasajero = async (req, res) => {
         }
 
         // Sumar los lugares correspondientes al medio de transporte
-        medioTransporte.cantLugares += 1;
+        viaje.cantPasajeros += 1;
 
         // Guardar los cambios realizados en la base de datos
-        await medioTransporte.save();
+        await viaje.save();
 
         //evaluo si el pasajero eliminado es el ultimo
         const totalpasajeros = await Pasajeros.findAll({ where:
@@ -381,7 +381,7 @@ exports.listarPasajeroPorId= async (req, res) => {
 exports.obtenerReservasPorUsuario = async (req, res) => {
     try {
       const usuarioId = req.query.id;
-      console.log('EL ID QUE LE MANDO:',req.query.id);
+     
   
       const reservas = await Reserva.findAll({
         attributes:['id','fechaReserva','usuarios_id','viajes_id'],
@@ -391,7 +391,7 @@ exports.obtenerReservasPorUsuario = async (req, res) => {
         //order: [['fechaReserva', 'DESC']]
       });
 
-      console.log('Datos de la reserva',reservas);
+    
        
 
       const viajesIds = reservas.map(r => r.viajes_id);

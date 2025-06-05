@@ -147,8 +147,7 @@ exports.crearDetalleVenta= async (req, res) =>{
 
     try {
         const { formaPago, descuento, ventas_id } = req.body;
-        console.log('los datos:',req.body)
-
+       
         const ventas = await ventasController.obtenerVentasId(ventas_id);
         if (!ventas) {
             return res.status(404).json({ mensaje: 'venta no encontrado' });
@@ -168,12 +167,8 @@ exports.crearDetalleVenta= async (req, res) =>{
 
 
         const subTotal = (viaje.precio * ventas.totalVentas);
-        console.log('ver precio', subTotal);
-
         
         const precioFinal = (subTotal - descuento);
-
-        console.log('ver precio final', precioFinal);
 
         // Crear detalle venta con los campos necesarios
         const nuevoDetalleVenta = await DetalleVenta.create({

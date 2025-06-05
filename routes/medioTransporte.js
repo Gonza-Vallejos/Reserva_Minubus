@@ -19,5 +19,6 @@ router.put('/actualizarTransporte/:id', autenticarToken,permitirPerfiles('usuari
 
 router.put('/eliminarTransporte/:id',autenticarToken,permitirPerfiles('usuarioAdministrador', 'usuarioMostrador'), transporteController.eliminarTransporte);
 
+router.get('/obtenerViajesPorTransporte/:id',autenticarToken,permitirPerfiles('usuarioAdministrador', 'usuarioMostrador'), transporteController.obtenerViajesPorTransporte);
 
 module.exports = router;

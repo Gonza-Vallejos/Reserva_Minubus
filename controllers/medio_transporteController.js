@@ -48,7 +48,7 @@ exports.obtenerTransportesPorEmpresa = async (req, res) => {
 exports.obtenerTransportePorId = async (req, res) => {
     try {
         const transporte = await MedioTransporte.findByPk(req.params.id, {
-            attributes: ['id', 'nombre', 'patente', 'marca', 'cantLugares', 'empresa_id']
+            attributes: ['nombre', 'patente', 'marca', 'cantLugares']
         });
         res.status(200).json(transporte); // Retorna el objeto si existe o `null` si no se encuentra
     } catch (error) {
@@ -112,7 +112,7 @@ exports.crearTransporte = async (req, res) => {
       res.status(201).json({ message: 'Transporte creado' });
     } catch (error) {
       
-        res.status(500).json({ error: 'Error al crear el transporte' });
+        res.status(500).json({ error: 'Errorr al crear el transporte' });
       }
     };
  
@@ -123,7 +123,6 @@ exports.crearTransporte = async (req, res) => {
 
 exports.eliminarTransporte = async (req, res) => {
     try {
-       const {data} = req.body
         
         // Verificar si el transporte tiene algún viaje asociado
         const viajesAsociados = await Viajes.findOne({
@@ -132,10 +131,8 @@ exports.eliminarTransporte = async (req, res) => {
 
         if (viajesAsociados) {
 
-            console.log('llego a viajes asociados')
-            return res.status(400).json({
-                error: 'No se puede eliminar el transporte porque tiene viajes asignados.'
-            });
+            
+            return res.status(400).json({ error: 'No se puede eliminar el transporte porque tiene viajes asignados.' });
         }
 
         // Marcar el transporte como eliminado
@@ -153,8 +150,31 @@ exports.eliminarTransporte = async (req, res) => {
 
         res.status(200).json({ message: 'Transporte eliminado correctamente' });
     } catch (error) {
-        console.error('Error al eliminar el Transporte:', error);
+       
         res.status(500).json({ error: 'Error al eliminar el Transporte' });
+    }
+};
+
+
+exports.obtenerViajesPorTransporte = async (req, res) => {
+    // ID del transporte recibido por la URL
+
+    try {
+        const viajes = await Viajes.findAll({
+            where: {
+                medioTransporte_id: req.params.id
+            },
+            attributes: [ 'origenLocalidad', 'destinoLocalidad', 'fechaViaje', 'horarioSalida','medioTransporte_id']
+        });
+
+        if (viajes.length === 0) {
+            return res.status(200).json({ message: 'No hay viajes asignados a este transporte.', viajes });
+        }
+
+        res.status(200).json({message: 'El transporte posse viaje', viajes});
+    } catch (error) {
+        console.error("Error al obtener los viajes del transporte:", error);
+        res.status(500).json({ error: 'Error al obtener los viajes del transporte.' });
     }
 };
 

@@ -124,14 +124,17 @@ exports.obtenerViajesPorChofer = async (req, res) => {
                     )
 
     });
+    if (viajes.length === 0) {
+          return res.status(200).json({ message: 'El chofer no posee viajes', viajes: [] });
+        }
 
-    res.status(200).json(viajes);
+    res.status(200).json({ message: 'El chofer posee un viaje', viajes });
+
   } catch (error) {
     console.error("Error al obtener los viajes del chofer:", error);
     res.status(500).json({ error: 'Error al obtener los viajes del chofer' });
   }
 };
-
 
 
 // Crear una nuevo Viaje
@@ -144,7 +147,7 @@ exports.crearViaje = async (req, res) => {
   
     const transporte = await MedioTransporte.findOne({
       where: { id: medioTransporte_id },
-      attributes: ['id', 'empresa_id']
+      attributes: ['id', 'empresa_id', 'cantLugares']
     });
    
     if (!transporte) {
@@ -169,7 +172,8 @@ exports.crearViaje = async (req, res) => {
 
     const empresaUsuarioId = usuarioEmpresa.id_empresa;
 
-
+    
+    
 
     // Comparar ambas empresas
     if (empresaUsuarioId !== empresaTransporteId) {
@@ -177,12 +181,13 @@ exports.crearViaje = async (req, res) => {
     }
 
     // Si todo es válido, crear el viaje
-    const nuevoViaje = await Viajes.create({//el db NOOO!!! ANDA!!!
+    const nuevoViaje = await Viajes.create({
       origenLocalidad: origenLocalidad,
       destinoLocalidad: destinoLocalidad,
       horarioSalida: horarioSalida,
       fechaViaje: fechaViaje,
       precio: precio,
+      cantPasajeros: transporte.cantLugares,
       usuarioEmpresa_id: usuarioEmpresa_id,
       medioTransporte_id: medioTransporte_id
     });
@@ -230,7 +235,8 @@ exports.eliminarViajes= async (req, res) => {
         res.status(500).json({ error: 'Error al eliminar el viaje' });
     }
 
-
-
-
 };
+
+//obtener viajes segun el chofer
+
+
