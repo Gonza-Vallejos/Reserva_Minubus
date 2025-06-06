@@ -126,7 +126,8 @@ exports.eliminarTransporte = async (req, res) => {
         
         // Verificar si el transporte tiene algún viaje asociado
         const viajesAsociados = await Viajes.findOne({
-            where: { medioTransporte_id: req.params.id }
+            where: { medioTransporte_id: req.params.id,
+                 eliminado: 'no' }
         });
 
         if (viajesAsociados) {

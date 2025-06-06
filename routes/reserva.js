@@ -25,12 +25,11 @@ router.put('/eliminarReserva/:id',autenticarToken,permitirPerfiles('usuarioAdmin
 
 router.put('/eliminarPasajero/:id',autenticarToken,permitirPerfiles('usuarioAdministrador', 'usuarioMostrador'), reservaController.eliminarPasajero);
 
-router.get('/listarPasajerosPorReserva/:id',autenticarToken,permitirPerfiles('usuarioAdministrador', 'usuarioMostrador'), reservaController.listarPasajerosPorReserva);
+router.get('/listarPasajerosPorReserva/:id',autenticarToken,permitirPerfiles('usuarioAdministrador', 'usuarioMostrador','usuarioCliente'), reservaController.listarPasajerosPorReserva);
 
 router.get('/listarPasajeros/',autenticarToken,permitirPerfiles('usuarioAdministrador'), reservaController.listarTodosLosPasajeros);
 
-//nuevo
-router.get('/listarPasajeroPorId/:id',autenticarToken,permitirPerfiles('usuarioAdministrador', 'usuarioMostrador'), reservaController.listarPasajeroPorId);
+router.get('/listarPasajeroPorId/:id',autenticarToken,permitirPerfiles('usuarioAdministrador', 'usuarioMostrador','usuarioCliente'), reservaController.listarPasajeroPorId);
 
 router.get('/listarPasajeroPorViaje/:id',autenticarToken,permitirPerfiles('usuarioAdministrador', 'usuarioMostrador', 'usuarioChofer'), reservaController.listarPasajerosPorViaje);
 

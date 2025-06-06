@@ -36,7 +36,7 @@ exports.obtenerViajePorId = async (req, res) => {
 exports.obtenerViajeId = async (id) => {
     try {
         const viaje = await Viajes.findByPk(id, {
-            attributes: ['id', 'origenLocalidad', 'destinoLocalidad', 'horarioSalida', 'fechaViaje', 'precio', 'usuarioEmpresa_id', 'medioTransporte_id']
+            attributes: ['id', 'origenLocalidad', 'destinoLocalidad', 'horarioSalida', 'fechaViaje', 'precio','cantPasajeros', 'usuarioEmpresa_id', 'medioTransporte_id']
         });
         return viaje;
     } catch (error) {
@@ -46,13 +46,12 @@ exports.obtenerViajeId = async (id) => {
 };
 
 exports.obtenerViajesPorEmpresa = async (req, res) => {
-  
-
     try {
     
         // Obtener los viajes
         const viajes = await Viajes.findAll({
-            attributes: ['id', 'origenLocalidad', 'destinoLocalidad', 'horarioSalida', 'fechaViaje', 'precio', 'usuarioEmpresa_id', 'medioTransporte_id'],
+            attributes: ['id', 'origenLocalidad', 'destinoLocalidad', 'horarioSalida', 'fechaViaje', 'precio', 'cantPasajeros','usuarioEmpresa_id', 'medioTransporte_id']
+            ,where: { eliminado: 'no' },
             include: [
                 {
                     model: MedioTransporte,
@@ -67,7 +66,7 @@ exports.obtenerViajesPorEmpresa = async (req, res) => {
                 }
             ]
         });
-
+        console.log('viajes de la empresa',viajes)
         res.status(200).json(viajes);
     } catch (error) {
         console.error(error);
@@ -135,7 +134,6 @@ exports.obtenerViajesPorChofer = async (req, res) => {
     res.status(500).json({ error: 'Error al obtener los viajes del chofer' });
   }
 };
-
 
 // Crear una nuevo Viaje
 exports.crearViaje = async (req, res) => {

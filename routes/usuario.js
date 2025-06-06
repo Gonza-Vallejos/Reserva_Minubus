@@ -12,7 +12,7 @@ const { autenticarToken, permitirPerfiles } = require('../middlewares/authMiddle
 router.get('/obtenerUsuario',autenticarToken,permitirPerfiles('usuarioAdministrador','usuarioMostrador','usuarioEmpresa'), usuarioController.obtenerUsuarios);
 
 // Ruta para obtener un usuario por ID 
-router.get('/obtenerUsuarioId/:id',autenticarToken,permitirPerfiles('usuarioAdministrador','usuarioMostrador','usuarioEmpresa'), usuarioController.obtenerUsuarioPorId);
+router.get('/obtenerUsuarioId/:id',autenticarToken,permitirPerfiles('usuarioAdministrador','usuarioMostrador','usuarioEmpresa','usuarioCliente'), usuarioController.obtenerUsuarioPorId);
 
 // Ruta para crear un nuevo usuario
 router.post('/crearUsuario',validateUsuario, usuarioController.crearUsuario);

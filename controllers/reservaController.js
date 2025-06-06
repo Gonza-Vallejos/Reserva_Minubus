@@ -1,7 +1,7 @@
 const viajesController = require('../controllers/viajesController');
 const medioTransporteController = require('../controllers/medio_transporteController');
 const reservaUsuario = require('../controllers/reservaViajesController');
-const { Reserva, Pasajeros, Viajes, MedioTransporte, Empresa} = require('../models/');
+const { Reserva, Pasajeros, Viajes, MedioTransporte, Empresa, Usuario} = require('../models/');
 const { where } = require('sequelize');
 
 
@@ -29,6 +29,17 @@ exports.obtenerReservasPorEmpresa = async (req, res) => {
       attributes: ['id', 'fechaReserva', 'usuarios_id', 'viajes_id'],
       include: [
         {
+          model: Pasajeros, // Agregado para incluir los pasajeros de la reserva
+          attributes: ['nombre', 'apellido', 'dni', 'ubicacionOrigen', 'ubicacionDestino'],
+          where: { eliminado: 'no' }, // Si querés filtrar solo los no eliminados
+          required: false // Para que igual traiga la reserva si no hay pasajeros
+        },
+         {
+          model: Usuario, 
+          attributes: ['id', 'nombre', 'apellido', 'email'], 
+          required: true
+        },
+        {
           model: Viajes,
           required: true,
           attributes: ['id', 'origenLocalidad', 'destinoLocalidad', 'horarioSalida', 'fechaViaje', 'precio'],
@@ -37,7 +48,7 @@ exports.obtenerReservasPorEmpresa = async (req, res) => {
               model: MedioTransporte,
               required: true,
               attributes: ['id', 'nombre', 'patente', 'marca', 'cantLugares'],
-              where: { empresa_id: req.params.id }, 
+              where: { empresa_id: req.params.id },
               include: [
                 {
                   model: Empresa,
@@ -56,6 +67,7 @@ exports.obtenerReservasPorEmpresa = async (req, res) => {
     res.status(500).json({ error: 'Error al obtener las reservas por empresa' });
   }
 };
+
 
 // Obtener una reserva por ID
 exports.obtenerReservaPorId = async (req, res) => {
@@ -104,7 +116,8 @@ exports.crearReserva = async (req, res) => {
         if (!medioTransporte) {
             return res.status(404).json({ mensaje: 'Medio de transporte no encontrado' });
         }
-
+        console.log('viaje cantodad de pasajeros',viaje.cantPasajeros)
+         console.log('personas length',personas.length);
         // Verificar si hay suficientes lugares disponibles antes de crear la reserva
         if (viaje.cantPasajeros < personas.length) {
             return res.status(400).json({ mensaje: 'No hay suficientes lugares disponibles en este viaje' });
@@ -362,7 +375,7 @@ exports.listarPasajeroPorId= async (req, res) => {
     try {
         const pasajeros = await Pasajeros.findAll({
             where: { id: req.params.id },
-            attributes: ['id', 'nombre', 'apellido', 'dni', 'ubicacionOrigen', 'ubicacionDestino']
+            attributes: ['id', 'nombre', 'apellido', 'dni', 'reserva_id','ubicacionOrigen', 'ubicacionDestino']
         });
         if (!pasajeros) {
             return res.status(404).json({ error: `No se encontro pasajero para ese id` });

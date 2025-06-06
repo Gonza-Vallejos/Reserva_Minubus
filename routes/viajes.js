@@ -22,7 +22,7 @@ router.put('/eliminarViaje/:id',autenticarToken,permitirPerfiles('usuarioMostrad
 
 router.post('/crearViaje',autenticarToken,permitirPerfiles('usuarioMostrador', 'usuarioAdministrador'),validateViaje,viajesController.crearViaje);
 
-router.get('/obtenerPasajerosViajesId/:id', autenticarToken ,permitirPerfiles('usuarioMostrador', 'usuarioAdministrador', 'usuarioChofer'), pasajerosViajes.obtenerPasajerosPorViaje);
+router.get('/obtenerPasajerosViajesId/:id', autenticarToken ,permitirPerfiles('usuarioMostrador', 'usuarioAdministrador', 'usuarioChofer','usuarioCliente'), pasajerosViajes.obtenerPasajerosPorViaje);
 
 router.get('/obtenerVentasViajesId/:id', autenticarToken ,permitirPerfiles( 'usuarioAdministrador','usuarioEmpresa ' ), ventasViajes.obtenerVentasPorViaje);
 
