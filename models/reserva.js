@@ -12,7 +12,8 @@ module.exports = (sequelize, DataTypes) => {
       });
       Reserva.belongsTo(models.Viajes, {
         foreignKey: 'viajes_id',
-        targetKey: 'id'
+        targetKey: 'id',
+
       });
       Reserva.hasMany(models.Pasajeros, {
          foreignKey: 'reserva_id' 
