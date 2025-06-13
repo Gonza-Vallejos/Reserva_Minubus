@@ -12,7 +12,7 @@ const { autenticarToken, permitirPerfiles } = require('../middlewares/authMiddle
 router.get('/obtenerUsuario',autenticarToken,permitirPerfiles('usuarioAdministrador','usuarioMostrador','usuarioEmpresa'), usuarioController.obtenerUsuarios);
 
 // Ruta para obtener un usuario por ID 
-router.get('/obtenerUsuarioId/:id',autenticarToken,permitirPerfiles('usuarioAdministrador','usuarioMostrador','usuarioEmpresa','usuarioCliente'), usuarioController.obtenerUsuarioPorId);
+router.get('/obtenerUsuarioId/:id',autenticarToken,permitirPerfiles('usuarioAdministrador','usuarioMostrador','usuarioEmpresa','usuarioCliente', 'usuarioChofer'), usuarioController.obtenerUsuarioPorId);
 
 // Ruta para crear un nuevo usuario
 router.post('/crearUsuario',validateUsuario, usuarioController.crearUsuario);
@@ -28,7 +28,7 @@ router.post('/crearPerfil',autenticarToken,permitirPerfiles('usuarioAdministrado
 
 router.put('/actualizarPerfil/:id',  perfilController.actualizarPerfil);
 
-router.put( '/actualizarContrasenia/:id', autenticarToken,permitirPerfiles('usuarioAdministrador', 'usuarioMostrador', 'usuarioEmpresa', 'usuarioCliente'),validateUpdateContrasenia,usuarioController.actualizarContrasenia);
+router.put( '/actualizarContrasenia/:id', autenticarToken,permitirPerfiles('usuarioAdministrador', 'usuarioMostrador', 'usuarioEmpresa', 'usuarioCliente','usuarioChofer'),validateUpdateContrasenia,usuarioController.actualizarContrasenia);
  
 
 // Ruta para obtener todos los usuarios choferes
