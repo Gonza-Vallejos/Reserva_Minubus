@@ -3,6 +3,7 @@ const { Viajes, MedioTransporte, Empresa, UsuarioEmpresa, Usuario } = require('.
 const medioTransporteId = require('../controllers/medio_transporteController');
 const usuarioEmpresaId = require('../controllers/usuarioEmpresaController');
 const { sequelize } = require('../models');
+const { Op, col, where } = require('sequelize');
 
 // Obtener todas los viajes
 exports.obtenerViajes = async (req, res) => {
@@ -115,13 +116,12 @@ exports.obtenerViajesPorChofer = async (req, res) => {
             }
           ]
         }
-      ],
-     where: sequelize.where(
-                    sequelize.col('UsuarioEmpresa.id_empresa'),
-                    '=',
-                    sequelize.col('MedioTransporte.empresa_id')
-                    )
-
+      ], where: {
+        [Op.and]: [
+          { eliminado: 'no' },
+          where(col('UsuarioEmpresa.id_empresa'), '=', col('MedioTransporte.empresa_id'))
+        ]
+      }
     });
     if (viajes.length === 0) {
           return res.status(200).json({ message: 'El chofer no posee viajes', viajes: [] });
