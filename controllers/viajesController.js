@@ -1,5 +1,5 @@
 // controllers/viajesController.js
-const { Viajes, MedioTransporte, Empresa, UsuarioEmpresa, Usuario } = require('../models');
+const { Viajes, MedioTransporte, Empresa, UsuarioEmpresa, Usuario, Reserva} = require('../models');
 const medioTransporteId = require('../controllers/medio_transporteController');
 const usuarioEmpresaId = require('../controllers/usuarioEmpresaController');
 const { sequelize } = require('../models');
@@ -219,9 +219,21 @@ exports.actualizarViajes = async (req, res) => {
 // Eliminar un Viaje
 exports.eliminarViajes= async (req, res) => {
     try {
+
+ const reservasAsociados = await Reserva.findOne({
+            where: { viajes_id: req.params.id,
+                 eliminado: 'no' }
+        });
+
+        if (reservasAsociados) {
+
+            
+            return res.status(400).json({ error: 'No se puede eliminar el viaje porque tiene reservas asignadas.' });
+        }
+
         // Actualizar el campo 'eliminado' a 'si'
         const [eliminar] = await Viajes.update({ eliminado: 'si' }, {
-            where: { id: req.params.id },
+            where: { id: req.params.id, eliminado: 'no'},
             fields: ['eliminado']
         });
 
