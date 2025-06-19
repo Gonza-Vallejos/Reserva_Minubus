@@ -1,6 +1,8 @@
-const { Pasajeros, Reserva, Viajes , MedioTransporte, UsuarioEmpresa} = require('../models');
+const { Pasajeros, Reserva, Viajes , MedioTransporte, UsuarioEmpresa, Usuario, DetalleVenta, Ventas, Empresa} = require('../models');
 const { Sequelize } = require('sequelize');
 
+
+///viajes reportes
 exports.obtenerPasajerosPorViaje = async (req, res) => {
     try {
         const pasajeros = await Pasajeros.findAll({
@@ -172,7 +174,7 @@ exports.obtenerViajesPorTransporteDeEmpresa = async (req, res) => {
   }
 };
 
-
+///pasajeros reportes
 exports.obtenerPasajerosPorEmpresa = async (req, res) => {
   try {
     const pasajeros = await Pasajeros.findAll({
@@ -235,4 +237,235 @@ exports.obtenerPasajerosPorEmpresa = async (req, res) => {
     res.status(500).json({ error: 'Error al obtener los pasajeros por empresa' });
   }
 };
+
+
+///reserva Reportes
+exports.obtenerClientesConMasReservasPorEmpresa = async (req, res) => {
+  try {
+    const topClientes = await Reserva.findAll({
+      attributes: [
+        'usuarios_id',
+        [Sequelize.fn('COUNT', Sequelize.col('Reserva.id')), 'cantidadReservas']
+      ],
+      include: [
+        {
+          model: Usuario,
+          attributes: ['nombre', 'apellido', 'email'] // ajustá los campos necesarios
+        },
+        {
+          model: Viajes,
+          attributes: [],
+          where: { eliminado: 'no' },
+          include: [
+            {
+              model: UsuarioEmpresa,
+              attributes: [],
+              where: { id_empresa: req.params.id }
+            }
+          ]
+        }
+      ],
+      where: { eliminado: 'no' },
+      group: ['usuarios_id', 'Usuario.id'],
+      order: [[Sequelize.literal('cantidadReservas'), 'DESC']],
+     
+    });
+
+    res.status(200).json({ topClientes });
+  } catch (error) {
+    console.error('Error al obtener top de clientes:', error);
+    res.status(500).json({ error: 'Error al obtener top de clientes' });
+  }
+};
+
+
+///ventas Reportes
+exports.obtenerClientesConVentasConfirmadasPorEmpresa = async (req, res) => {
+  try {
+    const topClientes = await Reserva.findAll({
+      attributes: [
+        'usuarios_id',
+        [Sequelize.fn('COUNT', Sequelize.col('Reserva.id')), 'cantidadReservas']
+      ],
+      include: [
+        {
+          model: Usuario,
+          attributes: ['nombre', 'apellido', 'email']
+        },
+        {
+          model: Viajes,
+          attributes: [],
+          where: { eliminado: 'no' },
+          include: [
+            {
+              model: UsuarioEmpresa,
+              attributes: [],
+              where: { id_empresa: req.params.id }
+            }
+          ]
+        },
+        {
+          model: Ventas,
+          required: true,
+          attributes: [],
+          include: [
+            {
+              model: DetalleVenta,
+              required: true,
+              attributes: []
+            }
+          ]
+        }
+      ],
+      where: {
+        eliminado: 'no'
+      },
+      group: ['Reserva.usuarios_id'], 
+      order: [[Sequelize.literal('cantidadReservas'), 'DESC']],
+      limit: 10
+    });
+
+    res.status(200).json({ topClientes });
+  } catch (error) {
+    console.error('Error al obtener top de clientes con ventas confirmadas:', error);
+    res.status(500).json({ error: 'Error al obtener top de clientes con ventas confirmadas' });
+  }
+};
+
+
+
+exports.obtenerGananciaTotalPorEmpresa = async (req, res) => {
+  const idEmpresa = req.params.id;
+
+  try {
+    const viajes = await Viajes.findAll({
+      attributes: ['id', 'origenLocalidad', 'destinoLocalidad'],
+      where: { eliminado: 'no' },
+      include: [
+        {
+          model: MedioTransporte,
+          attributes: ['id', 'nombre', 'patente', 'cantLugares'],
+          where: { empresa_id: idEmpresa }
+        },
+        {
+          model: Reserva,
+          attributes: ['id', 'usuarios_id'],
+          where: { eliminado: 'no' },
+          include: [
+            {
+              model: Ventas,
+              attributes: ['id', 'fecha', 'hora', 'totalVentas'],
+              where: { eliminado: 'no' },
+              include: [
+                {
+                  model: DetalleVenta,
+                  attributes: ['id', 'formaPago', 'subTotal', 'descuento', 'precioFinal'],
+                  where: { eliminado: 'no' }
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    });
+
+    // Sumar el total de todas las ganancias
+    let totalGanancia = 0;
+    viajes.forEach(viaje => {
+      viaje.Reservas.forEach(reserva => {
+        reserva.Ventas.forEach(venta => {
+          venta.DetalleVenta.forEach(detalle => {
+            totalGanancia += detalle.precioFinal;
+          });
+        });
+      });
+    });
+
+    res.json({ totalGanancia, viajes });
+  } catch (error) {
+    console.error('Error al obtener ganancia total por empresa:', error);
+    res.status(500).json({ error: 'Error al obtener ganancia total por empresa' });
+  }
+};
+
+
+
+
+
+exports.obtenerGananciasPorViajePorEmpresa = async (req, res) => {
+  const idEmpresa = req.params.id;
+
+  try {
+    const viajes = await Viajes.findAll({
+      attributes: ['id', 'origenLocalidad', 'destinoLocalidad', 'fechaViaje', 'precio','horarioSalida'],
+      where: { eliminado: 'no' },
+      include: [
+        {
+          model: MedioTransporte,
+          attributes: ['id', 'nombre', 'patente', 'cantLugares', 'empresa_id'],
+          where: { empresa_id: idEmpresa }
+        },
+        {
+          model: Reserva,
+          attributes: ['id'],
+          where: { eliminado: 'no' },
+          required: false,
+          include: [
+            {
+              model: Ventas,
+              attributes: ['id', 'totalVentas'],
+              where: { eliminado: 'no' },
+              required: false,
+              include: [
+                {
+                  model: DetalleVenta,
+                  attributes: ['precioFinal'],
+                  where: { eliminado: 'no' },
+                  required: false
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    });
+
+    const resultados = viajes.map(viaje => {
+      let totalGanancia = 0;
+       const ventas = [];
+
+      viaje.Reservas?.forEach(reserva => {
+        reserva.Ventas?.forEach(venta => {
+          venta.DetalleVenta?.forEach(detalle => {
+            totalGanancia += detalle?.precioFinal || 0;
+          });
+           ventas.push({
+            id: venta.id,
+            totalVentas: venta.totalVentas
+          });
+        });
+      });
+
+      return {
+        viaje: {
+          id: viaje.id,
+          origenLocalidad: viaje.origenLocalidad,
+          destinoLocalidad: viaje.destinoLocalidad,
+          fechaViaje: viaje.fechaViaje,
+          precio: viaje.precio,
+          horarioSalida: viaje.horarioSalida,
+          medioTransporte: viaje.MedioTransporte
+        },
+         ventas,
+        totalGanancia
+      };
+    });
+
+    res.json({ resultados });
+  } catch (error) {
+    console.error('Error al obtener ganancias por viaje por empresa:', error);
+    res.status(500).json({ error: 'Error al obtener ganancias por viaje por empresa' });
+  }
+};
+
 
