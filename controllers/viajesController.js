@@ -1,9 +1,8 @@
 // controllers/viajesController.js
-const { Viajes, MedioTransporte, Empresa, UsuarioEmpresa, Usuario, Reserva} = require('../models');
+const { Viajes, MedioTransporte, Empresa, UsuarioEmpresa, Usuario } = require('../models');
 const medioTransporteId = require('../controllers/medio_transporteController');
 const usuarioEmpresaId = require('../controllers/usuarioEmpresaController');
 const { sequelize } = require('../models');
-const { Op, col, where } = require('sequelize');
 
 // Obtener todas los viajes
 exports.obtenerViajes = async (req, res) => {
@@ -116,12 +115,13 @@ exports.obtenerViajesPorChofer = async (req, res) => {
             }
           ]
         }
-      ], where: {
-        [Op.and]: [
-          { eliminado: 'no' },
-          where(col('UsuarioEmpresa.id_empresa'), '=', col('MedioTransporte.empresa_id'))
-        ]
-      }
+      ],
+     where: sequelize.where(
+                    sequelize.col('UsuarioEmpresa.id_empresa'),
+                    '=',
+                    sequelize.col('MedioTransporte.empresa_id')
+                    )
+
     });
     if (viajes.length === 0) {
           return res.status(200).json({ message: 'El chofer no posee viajes', viajes: [] });
@@ -233,7 +233,7 @@ exports.eliminarViajes= async (req, res) => {
 
         // Actualizar el campo 'eliminado' a 'si'
         const [eliminar] = await Viajes.update({ eliminado: 'si' }, {
-            where: { id: req.params.id, eliminado: 'no'},
+            where: { id: req.params.id },
             fields: ['eliminado']
         });
 

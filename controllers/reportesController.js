@@ -1,8 +1,6 @@
-const { Pasajeros, Reserva, Viajes , MedioTransporte, UsuarioEmpresa, Usuario, DetalleVenta, Ventas, Empresa} = require('../models');
+const { Pasajeros, Reserva, Viajes , MedioTransporte, UsuarioEmpresa} = require('../models');
 const { Sequelize } = require('sequelize');
 
-
-///viajes reportes
 exports.obtenerPasajerosPorViaje = async (req, res) => {
     try {
         const pasajeros = await Pasajeros.findAll({
@@ -174,7 +172,7 @@ exports.obtenerViajesPorTransporteDeEmpresa = async (req, res) => {
   }
 };
 
-///pasajeros reportes
+
 exports.obtenerPasajerosPorEmpresa = async (req, res) => {
   try {
     const pasajeros = await Pasajeros.findAll({
