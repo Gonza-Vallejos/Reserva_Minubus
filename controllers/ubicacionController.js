@@ -12,7 +12,7 @@ exports.obtenerLocalidades = async (req, res) => {
     }
 };
 
-exports.obtenerProvincias = async (req, res) => {
+exports.obtenerProvincias = async (req, res) => { 
     try {
         const provincias = await Provincia.findAll({
             attributes: ['id','nombre','pais_id'] 
