@@ -37,7 +37,7 @@ router.get('/listarReservasPorViaje/:id',autenticarToken,permitirPerfiles('usuar
 
 router.get('/obtenerReservasPorEmpresa/:id',autenticarToken,permitirPerfiles('usuarioAdministrador', 'usuarioMostrador','usuarioEmpresa'), reservaController.obtenerReservasPorEmpresa);
 
-
+router.get('/listarReservasYPasajerosPorViaje/:id',autenticarToken,permitirPerfiles('usuarioAdministrador', 'usuarioMostrador', 'usuarioChofer'), reservaController.listarReservasYPasajerosPorViaje);
 
 
 module.exports = router; 

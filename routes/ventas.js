@@ -9,7 +9,7 @@ router.get('/obtenerVentas',autenticarToken,permitirPerfiles('usuarioAdministrad
 
 router.get('/obtenerVentasId/:id', autenticarToken,permitirPerfiles('usuarioAdministrador','usuarioEmpresa','usuarioMostrador'),ventasController.obtenerVentasPorId);
 
-router.post('/crearVenta', autenticarToken,permitirPerfiles('usuarioAdministrador','usuarioMostrador', 'usuarioCliente'),ventasController.crearVenta);
+router.post('/crearVenta', autenticarToken,permitirPerfiles('usuarioAdministrador','usuarioMostrador', 'usuarioCliente','usuarioChofer'),ventasController.crearVenta);
 
 router.put('/actualizarVenta/:id', autenticarToken,permitirPerfiles('usuarioAdministrador'), ventasController.actualizarVentas);
 
@@ -17,10 +17,10 @@ router.put('/eliminarVenta/:id', autenticarToken,permitirPerfiles('usuarioAdmini
 
 router.get('/obtenerVentaDetalle/:id', autenticarToken,permitirPerfiles('usuarioAdministrador', 'usuarioCliente','usuarioMostrador'),ventasController.obtenerVentaDetalle);
 
-router.get('/obtenerVentaDetalleGeneral/:id', autenticarToken,permitirPerfiles('usuarioAdministrador', 'usuarioCliente','usuarioMostrador'),ventasController.obtenerVentaDetalleGeneral);
+router.get('/obtenerVentaDetalleGeneral/:id', autenticarToken,permitirPerfiles('usuarioAdministrador', 'usuarioCliente','usuarioMostrador','usuarioChofer'),ventasController.obtenerVentaDetalleGeneral);
 
 
-router.get('/existeReservaVenta/:id', autenticarToken,permitirPerfiles('usuarioAdministrador', 'usuarioCliente','usuarioMostrador'),ventasController.existeReservaVenta);
+router.get('/existeReservaVenta/:id', autenticarToken,permitirPerfiles('usuarioAdministrador', 'usuarioCliente','usuarioMostrador','usuarioChofer'),ventasController.existeReservaVenta);
 
 
 

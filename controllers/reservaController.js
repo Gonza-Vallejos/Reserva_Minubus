@@ -465,3 +465,33 @@ exports.obtenerReservasPorUsuario = async (req, res) => {
 
   
   
+// Función para listar reservas y sus pasajeros según el viaje para usuario chofer
+exports.listarReservasYPasajerosPorViaje = async (req, res) => {
+  try {
+    const reservas = await Reserva.findAll({
+      where: { viajes_id: req.params.id, eliminado: 'no' },
+      attributes: ['id', 'fechaReserva',], // agregá los atributos de reserva que quieras mostrar
+      include: {
+        model: Pasajeros,
+        attributes: ['id', 'nombre', 'apellido', 'dni', 'ubicacionOrigen', 'ubicacionDestino']
+      }
+    });
+
+    if (!reservas || reservas.length === 0) {
+      return res.status(404).json({ error: 'No se encontraron reservas para este viaje.' });
+    }
+
+    // Transformar las reservas para incluir sus pasajeros en el mismo objeto
+    const resultado = reservas.map(reserva => ({
+      reservaId: reserva.id,
+      fechaReserva: reserva.fechaReserva,
+      estado: reserva.estado,
+      pasajeros: reserva.Pasajeros // esto puede ser un array con 1 o más pasajeros
+    }));
+
+    res.status(200).json(resultado);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: 'Error al obtener las reservas y pasajeros del viaje.' });
+  }
+};

@@ -8,7 +8,7 @@ const { autenticarToken, permitirPerfiles } = require('../middlewares/authMiddle
 
 //router.get('/obtenerDetalleVentaId', ventasController.obtenerDetalleVentaPorId);
 
-router.post('/crearDetalleVenta', autenticarToken,permitirPerfiles('usuarioAdministrador', 'usuarioCliente'),ventasController.crearDetalleVenta);
+router.post('/crearDetalleVenta', autenticarToken,permitirPerfiles('usuarioAdministrador', 'usuarioCliente','usuarioChofer'),ventasController.crearDetalleVenta);
 
 //router.put('/actualizarDetalleVenta/:id', ventasController.actualizarDetalleVenta);
 
