@@ -68,7 +68,64 @@ const verificarEmail = async (req, res) => {
     const usuario = await Usuario.findOne({ where: { tokenVerificacion: token } });
 
     if (!usuario) {
-      return res.status(400).send('Token inválido o expirado.');
+      return res.send('<h2>Token inválido o expirado.</h2>');
+    }
+
+    // Verificamos al usuario
+    usuario.verificado = true;
+    usuario.tokenVerificacion = null;
+    usuario.fechaVerificacion = new Date();
+    await usuario.save();
+
+    // Redirigimos según plataforma (app o web)
+    return res.send(`
+      <html>
+        <head>
+          <title>Verificando cuenta...</title>
+          <script>
+            // Intenta abrir la app
+            const deepLink = 'myapp://login';
+            const fallbackWeb = 'http://localhost:8081';
+
+            function isMobile() {
+              return /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
+            }
+
+            if (isMobile()) {
+              // Abrir app con deep link
+              window.location.href = deepLink;
+
+              // Por si falla (no está instalada), redirigimos a la web después de 2 segundos
+              setTimeout(() => {
+                window.location.href = fallbackWeb;
+              }, 2000);
+            } else {
+              // Usuario desde PC -> ir al login web
+              window.location.href = fallbackWeb;
+            }
+          </script>
+        </head>
+        <body>
+          <p>Redirigiendo...</p>
+        </body>
+      </html>
+    `);
+  } catch (error) {
+    console.error('Error al verificar cuenta:', error);
+    return res.status(500).send('Error al verificar la cuenta.');
+  }
+};
+
+
+
+const verificarFinal = async (req, res) => {
+  try {
+    const { token } = req.params;
+
+    const usuario = await Usuario.findOne({ where: { tokenVerificacion: token } });
+
+    if (!usuario) {
+      return res.status(400).json({ error: 'Token inválido o expirado.' });
     }
 
     usuario.verificado = true;
@@ -76,12 +133,13 @@ const verificarEmail = async (req, res) => {
     usuario.fechaVerificacion = new Date();
     await usuario.save();
 
-    return res.send('¡Tu cuenta fue verificada con éxito!');
+    return res.status(200).json({ message: 'Cuenta verificada con éxito.' });
   } catch (error) {
     console.error('Error al verificar cuenta:', error);
-    return res.status(500).send('Ocurrió un error al verificar tu cuenta.');
+    return res.status(500).json({ error: 'Error interno del servidor.' });
   }
 };
+
 
 
 const transporter = nodemailer.createTransport({
@@ -94,8 +152,9 @@ const transporter = nodemailer.createTransport({
   }
 });
 
+
+
 const enviarCorreoVerificacion = async (email, token) => {
-    console.log('email y contraseña:',process.env.EMAIL_USER,process.env.EMAIL_PASS)
   const link = `http://localhost:3000/api/auth/verificar/${token}`;
 
   await transporter.sendMail({
@@ -104,16 +163,26 @@ const enviarCorreoVerificacion = async (email, token) => {
     subject: 'Verificá tu cuenta',
     html: `
       <h3>¡Gracias por registrarte!</h3>
-      <p>Hacé clic en el siguiente enlace para verificar tu cuenta:</p>
-      <a href="${link}">${link}</a>
+      <p>Hacé clic en el botón para verificar tu cuenta:</p>
+      <a href="${link}" style="
+        display: inline-block;
+        padding: 10px 20px;
+        background-color: #007bff;
+        color: white;
+        text-decoration: none;
+        border-radius: 5px;
+      ">
+        Verificar cuenta
+      </a>
     `
   });
 };
 
 
+
 module.exports = { 
   login, 
   enviarCorreoVerificacion,
-  verificarEmail
+  verificarEmail,verificarFinal
 };
 

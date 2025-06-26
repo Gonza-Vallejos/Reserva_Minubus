@@ -10,6 +10,11 @@ router.get('/decodificar', autenticarToken,permitirPerfiles('usuarioAdministrado
 // Verificación
 router.get('/verificar/:token', authController.verificarEmail);
 
+
+
+router.post('/verificar-final/:token', authController.verificarFinal);
+
+
 module.exports = router;
 
 
