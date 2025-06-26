@@ -1,5 +1,7 @@
 const { Usuario, UsuarioEmpresa, Empresa } = require('../models');
 const bcrypt = require('bcrypt');
+const { v4: uuidv4 } = require('uuid');
+const { enviarCorreoVerificacion } = require('../controllers/authController'); 
 
 // Obtener todos los usuarios
 exports.obtenerUsuarios = async (req, res) => {
@@ -41,6 +43,9 @@ exports.crearUsuario = async (req, res) => {
         const perfil_id = 5;
         const saltRounds = 10;
         const hashedPassword = await bcrypt.hash(contrasenia, saltRounds);
+
+         // Generar token de verificación
+        const tokenVerificacion = uuidv4();
         // Crear el usuario con los campos separados
         const nuevoUsuario = await Usuario.create({
             nombre: nombre,
@@ -50,14 +55,33 @@ exports.crearUsuario = async (req, res) => {
             email:email,
             usuario:usuario,
             contrasenia:hashedPassword,
-            perfil_id:perfil_id
+            perfil_id:perfil_id,
+            verificado: false,
+            tokenVerificacion:tokenVerificacion
         });
 
-        res.status(201).json(nuevoUsuario);
+        // Enviar email con el token
+         await enviarCorreoVerificacion(email, tokenVerificacion);
+        res.status(201).json({
+      mensaje: 'Usuario registrado. Se envió un email de verificación.',
+      emailVerificacionEnviada: true
+    });
     } catch (error) {
-        res.status(500).json({ error: 'Error al crear el usuario' });
-    }
+  console.error('Error al crear el usuario:', error);
+  res.status(500).json({ error: 'Error al crear el usuario' });
+}
 };
+
+
+
+
+
+
+
+
+
+
+
 
 // nuevo
 // Actualizar un usuario existente

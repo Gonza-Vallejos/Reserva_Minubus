@@ -2,19 +2,25 @@ const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
 const { Usuario, Perfil  } = require('../models'); 
 const usuarioEmpresaController = require('../controllers/usuarioEmpresaController');
+const nodemailer = require('nodemailer');
+require('dotenv').config()
 
 const login = async (req, res) => {
   const { usuario, contrasenia } = req.body;
 
   try {
+
     const usuarios = await Usuario.findOne({ where: { usuario }, include: {
         model: Perfil,
         attributes: ['tipo'] 
       } });
-
+        console.log('usuario',usuario)
     if (!usuarios) {
       return res.status(404).json({ mensaje: 'Usuario no encontrado' });
     }
+    if (!usuarios.verificado) {
+    return res.status(401).json({ mensaje: 'Debes verificar tu email antes de iniciar sesión.' });
+     }
    
     const contraseniaValido = await bcrypt.compare(contrasenia, usuarios.contrasenia);
    
@@ -54,4 +60,60 @@ const login = async (req, res) => {
   }
 };
 
-module.exports = { login };
+
+const verificarEmail = async (req, res) => {
+  try {
+    const { token } = req.params;
+
+    const usuario = await Usuario.findOne({ where: { tokenVerificacion: token } });
+
+    if (!usuario) {
+      return res.status(400).send('Token inválido o expirado.');
+    }
+
+    usuario.verificado = true;
+    usuario.tokenVerificacion = null;
+    usuario.fechaVerificacion = new Date();
+    await usuario.save();
+
+    return res.send('¡Tu cuenta fue verificada con éxito!');
+  } catch (error) {
+    console.error('Error al verificar cuenta:', error);
+    return res.status(500).send('Ocurrió un error al verificar tu cuenta.');
+  }
+};
+
+
+const transporter = nodemailer.createTransport({
+
+  
+  service: 'gmail',
+  auth: {
+    user: process.env.EMAIL_USER,
+    pass: process.env.EMAIL_PASS
+  }
+});
+
+const enviarCorreoVerificacion = async (email, token) => {
+    console.log('email y contraseña:',process.env.EMAIL_USER,process.env.EMAIL_PASS)
+  const link = `http://localhost:3000/api/auth/verificar/${token}`;
+
+  await transporter.sendMail({
+    from: '"Reservas 🚌" <vyvreservas25@gmail.com>',
+    to: email,
+    subject: 'Verificá tu cuenta',
+    html: `
+      <h3>¡Gracias por registrarte!</h3>
+      <p>Hacé clic en el siguiente enlace para verificar tu cuenta:</p>
+      <a href="${link}">${link}</a>
+    `
+  });
+};
+
+
+module.exports = { 
+  login, 
+  enviarCorreoVerificacion,
+  verificarEmail
+};
+
