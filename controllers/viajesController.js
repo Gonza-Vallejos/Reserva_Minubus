@@ -202,7 +202,7 @@ exports.crearViaje = async (req, res) => {
 // Actualizar un viaje existente
 exports.actualizarViajes = async (req, res) => {
     try {
-        const camposActualizados = ['origenLocalidad','destinoLocalidad','orarioSalida','fechaViaje','precio','usuarioEmpresa_id','medioTransporte_id'];
+        const camposActualizados = ['origenLocalidad','destinoLocalidad','horarioSalida','fechaViaje','precio','usuarioEmpresa_id','medioTransporte_id'];
         const [actualizarViaje] = await Viajes.update(req.body, {
             where: { id: req.params.id },
             fields: camposActualizados

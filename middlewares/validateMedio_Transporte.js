@@ -3,17 +3,31 @@ const { MedioTransporte } = require('../models');
 
 const validarMedioTransporte = [
   // Validar nombre
-  body('nombre')
-    .notEmpty().withMessage('El nombre es requerido.')
-    .isString().withMessage('El nombre debe ser un string.')
-    
-    .custom(async (nombre, { req }) => {
-      const transporte = await MedioTransporte.findOne({ where: { nombre } });
-      if (transporte && transporte.id !== parseInt(req.params.id)) {
-        throw new Error('El nombre ya está en uso por otro medio de transporte');
+ body('nombre')
+  .notEmpty().withMessage('El nombre es requerido.')
+  .isString().withMessage('El nombre debe ser un string.')
+  .custom(async (nombre, { req }) => {
+    const empresaId = req.body.empresa_id; 
+
+    if (!empresaId) {
+      throw new Error('El ID de la empresa es requerido para validar el nombre del transporte.');
+    }
+
+    const transporteExistente = await MedioTransporte.findOne({
+      where: {
+        nombre,
+        empresa_id: empresaId
       }
-      return true;
-    }),
+    });
+
+    // Si estás editando, asegurate de excluir el actual transporte
+    if (transporteExistente && transporteExistente.id !== parseInt(req.params.id)) {
+      throw new Error('Ya existe un transporte con ese nombre en la misma empresa.');
+    }
+
+    return true;
+  }),
+
 
   // Validar patente
   body('patente')

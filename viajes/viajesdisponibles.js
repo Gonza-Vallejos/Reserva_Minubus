@@ -16,19 +16,64 @@ exports.obtenerViajesDisponibles = async (req, res) => {
 
         const viajesDisponibles = todosLosViajes.filter(viaje => {
             const fechaViaje = new Date(viaje.fechaViaje);
-            const horariosalida = new Date(viaje.horarioSalida);
-            
-            
+            const horariosalida = viaje.horarioSalida;
+
+            const horaActualMinutos = fechaActual.getHours() * 60 + fechaActual.getMinutes();
+
+            const [h, m, s] = horariosalida.split(':').map(Number);
+            const horaStrMinutos = h * 60 + m;
+
+
+          function limpiarHoraUTC(fecha) {
+                const isoStr = fecha.toISOString(); // ejemplo: "2025-06-27T00:00:00.000Z"
+                const [anio, mes, dia] = isoStr.substring(0, 10).split('-');
+                return new Date(Number(anio), Number(mes) - 1, Number(dia));
+                }
+
+
+                const fechaActualLimpia = limpiarHoraUTC(new Date());
+                const fechaViajeLimpia = limpiarHoraUTC(new Date(viaje.fechaViaje));
+
+             const fechaActualSoloFecha = new Date(
+                    fechaActual.getFullYear(),
+                    fechaActual.getMonth(),
+                    fechaActual.getDate()
+                    );
+
+                const fechaViajeSoloFecha = new Date(
+                fechaViaje.getFullYear(),
+                fechaViaje.getMonth(),
+                fechaViaje.getDate()
+                );
+
+        console.log('ver fecha actual convertida',fechaActualSoloFecha);
+        console.log('ver fecha viaje convertida', fechaViajeSoloFecha)
+        console.log('ver fecha viaje', fechaViaje)
+
+         console.log('ver fecha actual limpia',fechaActualLimpia);
+        console.log('ver fecha viaje limpia', fechaViajeLimpia)
+    // console.log('ver tipo de dato horaActualMinutos',typeof fechaViaje);
+      //   console.log('ver hora salidad en minutos',horaStrMinutos);
+        //  console.log('ver hora actual en minutos',horaActualMinutos);
+
+           
+            const horaActualAdelantada = horaActualMinutos + 120
+           // console.log('ver hora actual adelantada en minutos',horaActualAdelantada);
+           // console.log('ver tipo de dato hora salidad',typeof viaje.horarioSalida);
+            //console.log('ver viajes viaje', fechaViaje)
+             // console.log('ver viajes actual', fechaActual)
+              // console.log('ver viajes fecha actual hours', fechaActual.getHours())
+              // console.log('ver viajes horario minutes', horariosalida.getMinutes())
+                 //  console.log('ver viajes horario.salida', viaje.horarioSalida)
+
            
             // Filtrar por fecha actual o posterior y por coincidencia de origen y destino
-            return fechaViaje >= fechaActual &&
+            return fechaViajeLimpia >= fechaActualLimpia &&
             viaje.origenLocalidad === origen &&
             viaje.destinoLocalidad === destino &&
             viaje.eliminado === "no" && 
-            (fechaViaje > fechaActual || // Si la fecha es futura, pasa automáticamente
-            (horariosalida.getHours() > fechaActual.getHours() || // Si la hora es mayor, pasa
-            (horariosalida.getHours() === fechaActual.getHours() && // Si la hora es igual, compara los minutos
-            horariosalida.getMinutes() >= fechaActual.getMinutes())));
+            (fechaViajeLimpia > fechaActualLimpia || // Si la fecha es futura, pasa automáticamente
+            (horaStrMinutos >= horaActualAdelantada ));
  });
        
 
