@@ -1,4 +1,4 @@
-const { Viajes } = require('../models');  
+const { Viajes, MedioTransporte, Empresa } = require('../models');  
 
 exports.obtenerViajesDisponibles = async (req, res) => {
     try {
@@ -11,8 +11,23 @@ exports.obtenerViajesDisponibles = async (req, res) => {
         }
 
         const todosLosViajes = await Viajes.findAll({
-            attributes: ['id', 'origenLocalidad', 'destinoLocalidad', 'horarioSalida', 'fechaViaje', 'precio', 'usuarioEmpresa_id', 'medioTransporte_id', 'eliminado' ]
+        attributes: ['id', 'origenLocalidad', 'destinoLocalidad', 'horarioSalida', 'fechaViaje', 'precio', 'usuarioEmpresa_id', 'medioTransporte_id', 'eliminado'],
+        include: [
+            {
+            model: MedioTransporte,
+            attributes: ['id'],
+            include: [
+                {
+                model: Empresa,
+                attributes: ['nombre'], // solo necesitas el nombre
+                }
+            ]
+            }
+        ]
         });
+
+       
+
 
         const viajesDisponibles = todosLosViajes.filter(viaje => {
             const fechaViaje = new Date(viaje.fechaViaje);
@@ -81,12 +96,13 @@ exports.obtenerViajesDisponibles = async (req, res) => {
             return res.status(404).json({ error: 'No hay viajes disponibles para el origen y destino especificados.' });
         }
         
-       // Verificar y mostrar el campo `eliminado` en la consola
+       // Verificar y mostrar el campo eliminado en la consola
        viajesDisponibles.forEach(viaje => {
         
        
     });
-
+       
+        
         res.status(200).json(viajesDisponibles);
     } catch (error) {
         res.status(500).json({ error: 'Error al obtener los viajes disponibles' });

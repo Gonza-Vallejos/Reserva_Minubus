@@ -161,7 +161,7 @@ exports.crearReserva = async (req, res) => {
 
     } catch (error) {
         console.error(error);
-        res.status(500).json({ error: 'Error al crear la reserva' });
+        res.status(500).json({ error: 'Error al crear la reservaa' });
     }
 };
 

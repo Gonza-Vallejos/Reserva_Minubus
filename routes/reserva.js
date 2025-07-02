@@ -5,6 +5,8 @@ const reservaViajeController = require('../controllers/reservaViajesController')
 const validateReserva =  require( '../middlewares/validateReserva');
 const validateUpdateReserva= require('../middlewares/validateUpdateReserva')
 const validateDetalleReserva = require('../middlewares/validateDetalleReserva')
+const validatePasajero= require('../middlewares/validatePasajero')
+const validateUpdatePasajero= require('../middlewares/validarUpdatePasajero')
 
 
 const { autenticarToken, permitirPerfiles } = require('../middlewares/authMiddleware');
@@ -17,9 +19,9 @@ router.get('/obtenerReservaId',autenticarToken,permitirPerfiles('usuarioAdminist
 //nuevo para obtener reserva por usuario
 router.get('/obtenerReservasPorUsuario',autenticarToken,permitirPerfiles('usuarioAdministrador', 'usuarioCliente', 'usuarioEmpresa','usuarioMostrador'), reservaController.obtenerReservasPorUsuario);
 
-router.post('/crearReserva',autenticarToken,permitirPerfiles('usuarioAdministrador', 'usuarioCliente'),  validateReserva,validateDetalleReserva,reservaController.crearReserva);
+router.post('/crearReserva',autenticarToken,permitirPerfiles('usuarioAdministrador', 'usuarioCliente'),  validateReserva,validatePasajero, reservaController.crearReserva);
 
-router.put('/actualizarReserva/:id',autenticarToken,permitirPerfiles('usuarioAdministrador', 'usuarioCliente'), validateUpdateReserva,reservaController.actualizarReserva);
+router.put('/actualizarReserva/:id',autenticarToken,permitirPerfiles('usuarioAdministrador', 'usuarioCliente'),validateUpdatePasajero, reservaController.actualizarReserva);
 
 router.put('/eliminarReserva/:id',autenticarToken,permitirPerfiles('usuarioAdministrador', 'usuarioMostrador', 'usuarioCliente'), reservaController.eliminarReserva);
 
