@@ -340,7 +340,7 @@ exports.listarTodosLosPasajeros = async (req, res) => {
 exports.listarPasajerosPorReserva = async (req, res) => {
     try {
         const pasajeros = await Pasajeros.findAll({
-            where: { reserva_id: req.params.id },
+            where: { reserva_id: req.params.id, eliminado: 'no'},
             attributes: ['id', 'nombre', 'apellido', 'dni', 'ubicacionOrigen', 'ubicacionDestino']
         });
         if (!pasajeros) {
@@ -445,7 +445,8 @@ exports.obtenerReservasPorUsuario = async (req, res) => {
             attributes: ['id'],
             include: {
                 model: Pasajeros,
-                attributes: ['id', 'nombre', 'apellido', 'dni', 'ubicacionOrigen', 'ubicacionDestino']
+                attributes: ['id', 'nombre', 'apellido', 'dni', 'ubicacionOrigen', 'ubicacionDestino'],
+                where: {eliminado: 'no'}
             }
         });
 
@@ -473,7 +474,8 @@ exports.listarReservasYPasajerosPorViaje = async (req, res) => {
       attributes: ['id', 'fechaReserva',], // agregá los atributos de reserva que quieras mostrar
       include: {
         model: Pasajeros,
-        attributes: ['id', 'nombre', 'apellido', 'dni', 'ubicacionOrigen', 'ubicacionDestino']
+        attributes: ['id', 'nombre', 'apellido', 'dni', 'ubicacionOrigen', 'ubicacionDestino'],
+         where: {eliminado: 'no' },
       }
     });
 
