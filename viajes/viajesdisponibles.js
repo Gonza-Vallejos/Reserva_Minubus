@@ -11,7 +11,7 @@ exports.obtenerViajesDisponibles = async (req, res) => {
         }
 
         const todosLosViajes = await Viajes.findAll({
-        attributes: ['id', 'origenLocalidad', 'destinoLocalidad', 'horarioSalida', 'fechaViaje', 'precio', 'usuarioEmpresa_id', 'medioTransporte_id', 'eliminado'],
+        attributes: ['id', 'origenLocalidad', 'destinoLocalidad', 'horarioSalida', 'fechaViaje', 'precio', 'usuarioEmpresa_id','cantPasajeros','medioTransporte_id', 'eliminado'],
         include: [
             {
             model: MedioTransporte,

@@ -269,6 +269,36 @@ exports.existeReservaVenta = async (req, res) => {
     res.status(500).json({ error: 'Error al verificar la venta' });
   }
 };
+exports.existeVentaPorPasajero = async (req, res) => {
+  try {
+    const idPasajero = req.params.id;
+
+    // 1. Buscar el pasajero
+    const pasajero = await Pasajeros.findByPk(idPasajero);
+
+    if (!pasajero) {
+      return res.status(404).json({ error: 'Pasajero no encontrado' });
+    }
+
+    // 2. Buscar si existe una venta vinculada a la reserva del pasajero
+    const venta = await Ventas.findOne({
+      where: { reserva_id: pasajero.reserva_id },
+    });
+
+    const existe = !!venta;
+
+    // 3. Devolver si existe una venta para ese pasajero (vía su reserva)
+    res.status(200).json({
+      existe,
+      pasajeroId: pasajero.id,
+      reservaId: pasajero.reserva_id,
+    });
+  } catch (error) {
+    console.error('Error al verificar venta del pasajero:', error);
+    res.status(500).json({ error: 'Error al verificar la venta del pasajero' });
+  }
+};
+
 //
   exports.obtenerVentaDetalleGeneral = async (req, res) => {
     try {

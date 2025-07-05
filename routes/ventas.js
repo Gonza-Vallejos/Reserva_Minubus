@@ -23,6 +23,8 @@ router.get('/obtenerVentaDetalleGeneral/:id', autenticarToken,permitirPerfiles('
 router.get('/existeReservaVenta/:id', autenticarToken,permitirPerfiles('usuarioAdministrador', 'usuarioCliente','usuarioMostrador','usuarioChofer'),ventasController.existeReservaVenta);
 
 
+router.get('/existePasajeroVenta/:id', autenticarToken,permitirPerfiles('usuarioAdministrador', 'usuarioCliente','usuarioMostrador','usuarioChofer'),ventasController.existeVentaPorPasajero);
+
 
 
 module.exports = router; 
