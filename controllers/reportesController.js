@@ -1,5 +1,7 @@
 const { Pasajeros, Reserva, Viajes , MedioTransporte,Usuario,Ventas,DetalleVenta, UsuarioEmpresa} = require('../models');
-const { Sequelize } = require('sequelize');
+const { Sequelize, where } = require('sequelize');
+const { Op } = require('sequelize');
+
 
 exports.obtenerPasajerosPorViaje = async (req, res) => {
     try {
@@ -466,4 +468,54 @@ exports.obtenerGananciasPorViajePorEmpresa = async (req, res) => {
   }
 };
 
+/// Reporte de usuarios con reservas sin ventas confirmadas en viajes ya realizados
+exports.obtenerUsuariosConReservasSinVenta = async (req, res) => {
+  try {
+    const usuariosSinVenta = await Reserva.findAll({
+      attributes: ['id', 'usuarios_id', 'viajes_id'],
+      include: [
+        {
+          model: Usuario,
+          attributes: ['nombre', 'apellido', 'email'],
+        },
+        {
+          model: Viajes,
+          attributes: ['fechaViaje'],
+          where: {
+            eliminado: 'no',
+            fechaViaje: { [Op.lt]: new Date() }, // Solo viajes pasados
+          },
+          include: [
+            {
+              model: UsuarioEmpresa,
+              attributes: [],
+              where: { id_empresa: req.params.id }, // Filtrar por empresa
+            },
+          ],
+        },
+        {
+          model: Ventas,
+          required: false, // LEFT JOIN
+          attributes: ['id'],
+        },
+        {
+          model: Pasajeros,
+          attributes: ['nombre', 'apellido', 'dni'],
+          where:{eliminado: 'no'},
+        },
+      ],
+      where: {
+        eliminado: 'no',
+      },
+    });
+
+    // Filtrar reservas que NO tienen venta asociada
+    const sinVentaConfirmada = usuariosSinVenta.filter(r => !r.Venta);
+
+    res.status(200).json({ usuariosSinVenta: sinVentaConfirmada });
+  } catch (error) {
+    console.error('Error al obtener usuarios con reservas sin venta:', error);
+    res.status(500).json({ error: 'Error al obtener usuarios con reservas sin venta' });
+  }
+};
 

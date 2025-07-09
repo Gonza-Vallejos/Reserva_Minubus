@@ -1,5 +1,6 @@
 // controllers/medio_trasporteController.js
 const { MedioTransporte, Empresa, Viajes } = require('../models');
+const { Op } = require('sequelize');
 
 // Obtener todos los transportes
 exports.obtenerTransportes = async (req, res) => {
@@ -48,7 +49,7 @@ exports.obtenerTransportesPorEmpresa = async (req, res) => {
 exports.obtenerTransportePorId = async (req, res) => {
     try {
         const transporte = await MedioTransporte.findByPk(req.params.id, {
-            attributes: ['nombre', 'patente', 'marca', 'cantLugares']
+            attributes: ['id','nombre', 'patente', 'marca', 'cantLugares']
         });
         res.status(200).json(transporte); // Retorna el objeto si existe o `null` si no se encuentra
     } catch (error) {
@@ -70,7 +71,7 @@ exports.obtenerTransporteId = async (id) => {
 };
 
 // Actualizar un transporte existente
-exports.actualizarTransporte = async (req, res) => {
+/*exports.actualizarTransporte = async (req, res) => {
     try {
         // Especificar los campos que quieres actualizar
         const {nombre, cantLugares, empresa_id} = req.body
@@ -91,7 +92,53 @@ exports.actualizarTransporte = async (req, res) => {
     } catch (error) {
         res.status(500).json({ error: 'Error al actualizar el transporte' });
     }
+};*/
+
+
+exports.actualizarTransporte = async (req, res) => {
+  try {
+    const { nombre, cantLugares } = req.body;
+    const transporteId = req.params.id;
+
+    // 1. Actualizar el transporte
+    const [actualizado] = await MedioTransporte.update(
+      { nombre, cantLugares },
+      {
+        where: { id: transporteId },
+        fields: ['nombre', 'cantLugares'],
+      }
+    );
+
+    if (!actualizado) {
+      return res.status(404).json({ error: 'Transporte no encontrado' });
+    }
+
+    // 2. Obtener la fecha actual
+    const hoy = new Date();
+    hoy.setHours(0, 0, 0, 0); // Ignorar hora para comparar solo fecha
+
+    // 3. Actualizar cantPasajeros SOLO en los viajes futuros
+    await Viajes.update(
+      { cantPasajeros: cantLugares },
+      {
+        where: {
+          medioTransporte_id: transporteId,
+          fechaViaje: {
+            [Op.gte]: hoy,//ver que onda la hora de salida
+          },
+        },
+      }
+    );
+
+    res.status(200).json({
+      message: 'Transporte actualizado y viajes futuros modificados correctamente',
+    });
+  } catch (error) {
+    console.error('Error al actualizar transporte y viajes:', error);
+    res.status(500).json({ error: 'Error al actualizar el transporte y sus viajes futuros' });
+  }
 };
+
 
 
 
@@ -165,7 +212,7 @@ exports.obtenerViajesPorTransporte = async (req, res) => {
             where: {
                 medioTransporte_id: req.params.id
             },
-            attributes: [ 'origenLocalidad', 'destinoLocalidad', 'fechaViaje', 'horarioSalida','medioTransporte_id']
+            attributes: [ 'origenLocalidad', 'destinoLocalidad', 'fechaViaje', 'horarioSalida','medioTransporte_id', 'cantPasajeros']
         });
 
         if (viajes.length === 0) {
@@ -179,3 +226,97 @@ exports.obtenerViajesPorTransporte = async (req, res) => {
     }
 };
 
+/*
+exports.verificarTransporteSinReservas = async (req, res) => {
+  try {
+    const transporteId = req.params.id;
+
+    const viajes = await Viajes.findAll({
+      where: { medioTransporte_id: transporteId },
+      attributes: ['id', 'cantPasajeros'],
+      include: {
+        model: MedioTransporte,
+        attributes: ['cantLugares'],
+      },
+    });
+
+    if (viajes.length === 0) {
+      return res.status(200).json({
+        sinReservas: false,
+        message: 'No hay viajes asignados a este transporte.',
+      });
+    }
+
+    // Verificar que todos los viajes tengan cantPasajeros igual a cantLugares
+    const todosIguales = viajes.every(
+      (viaje) => viaje.cantPasajeros === viaje.MedioTransporte.cantLugares
+    );
+
+    return res.status(200).json({ sinReservas: todosIguales });
+  } catch (error) {
+    console.error('Error al verificar si el transporte no tiene reservas:', error);
+    return res.status(500).json({
+      error: 'Error interno al verificar reservas del transporte.',
+    });
+  }
+};
+*/
+
+
+//función devuelva true en 2 casos:
+
+//Cuando los viajes futuros o actuales (fecha+hora ≥ ahora) tienen cantPasajeros === cantLugares.
+
+//O cuando no hay viajes futuros ni actuales (es decir, todos los viajes son pasados o ya finalizaron).
+
+
+exports.verificarTransporteSinReservas = async (req, res) => {
+  try {
+    const transporteId = req.params.id;
+    const ahora = new Date();
+
+    // Traemos todos los viajes del transporte con fecha >= hoy
+    const viajes = await Viajes.findAll({
+      where: {
+        medioTransporte_id: transporteId,
+        fechaViaje: { [Op.gte]: new Date(ahora.toDateString()) },
+      },
+      attributes: ['id', 'cantPasajeros', 'fechaViaje', 'horarioSalida'],
+      include: {
+        model: MedioTransporte,
+        attributes: ['cantLugares'],
+      },
+    });
+
+    // Filtrar viajes futuros o actuales comparando fecha + hora
+    const viajesFuturos = viajes.filter(viaje => {
+      const fecha = viaje.fechaViaje;
+      const [hora, minutos, segundos] = viaje.horarioSalida.split(':').map(Number);
+
+      const fechaHoraViaje = new Date(fecha);
+      fechaHoraViaje.setHours(hora, minutos, segundos || 0, 0);
+
+      return fechaHoraViaje >= ahora;
+    });
+
+    if (viajesFuturos.length === 0) {
+      // No hay viajes futuros → devolvemos true
+      return res.status(200).json({
+        sinReservas: true,
+        message: 'No hay viajes futuros, todos ya finalizaron.',
+      });
+    }
+
+    // Para los viajes futuros, verificamos que cantPasajeros === cantLugares
+    const todosIguales = viajesFuturos.every(
+      (viaje) => viaje.cantPasajeros === viaje.MedioTransporte.cantLugares
+    );
+
+    return res.status(200).json({ sinReservas: todosIguales });
+  } catch (error) {
+    console.error('Error al verificar si el transporte no tiene reservas:', error);
+    return res.status(500).json({
+      error: 'Error interno al verificar reservas del transporte.',
+    });
+  }
+};

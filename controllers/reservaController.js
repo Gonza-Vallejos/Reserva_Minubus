@@ -471,7 +471,7 @@ exports.listarReservasYPasajerosPorViaje = async (req, res) => {
   try {
     const reservas = await Reserva.findAll({
       where: { viajes_id: req.params.id, eliminado: 'no' },
-      attributes: ['id', 'fechaReserva',], // agregá los atributos de reserva que quieras mostrar
+      attributes: ['id', 'fechaReserva','usuarios_id'], // agregá los atributos de reserva que quieras mostrar
       include: {
         model: Pasajeros,
         attributes: ['id', 'nombre', 'apellido', 'dni', 'ubicacionOrigen', 'ubicacionDestino'],
@@ -487,7 +487,7 @@ exports.listarReservasYPasajerosPorViaje = async (req, res) => {
     const resultado = reservas.map(reserva => ({
       reservaId: reserva.id,
       fechaReserva: reserva.fechaReserva,
-      estado: reserva.estado,
+      usuarios_id: reserva.usuarios_id,
       pasajeros: reserva.Pasajeros // esto puede ser un array con 1 o más pasajeros
     }));
 

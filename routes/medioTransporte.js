@@ -21,4 +21,7 @@ router.put('/eliminarTransporte/:id',autenticarToken,permitirPerfiles('usuarioAd
 
 router.get('/obtenerViajesPorTransporte/:id',autenticarToken,permitirPerfiles('usuarioAdministrador', 'usuarioMostrador'), transporteController.obtenerViajesPorTransporte);
 
+
+router.get('/verificarTransporteSinReservas/:id',autenticarToken,permitirPerfiles('usuarioAdministrador', 'usuarioMostrador'), transporteController.verificarTransporteSinReservas);
+
 module.exports = router;

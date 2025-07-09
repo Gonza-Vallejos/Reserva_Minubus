@@ -1,5 +1,5 @@
 // controllers/viajesController.js
-const { Viajes, MedioTransporte, Empresa, UsuarioEmpresa, Usuario } = require('../models');
+const { Viajes, MedioTransporte, Empresa, UsuarioEmpresa, Usuario, Reserva } = require('../models');
 const medioTransporteId = require('../controllers/medio_transporteController');
 const usuarioEmpresaId = require('../controllers/usuarioEmpresaController');
 const { sequelize } = require('../models');
@@ -217,36 +217,54 @@ exports.actualizarViajes = async (req, res) => {
 };
 
 // Eliminar un Viaje
-exports.eliminarViajes= async (req, res) => {
-    try {
 
- const reservasAsociados = await Reserva.findOne({
-            where: { viajes_id: req.params.id,
-                 eliminado: 'no' }
-        });
+exports.eliminarViajes = async (req, res) => {
+  try {
+    // Buscar el viaje primero
+    const viaje = await Viajes.findByPk(req.params.id);
 
-        if (reservasAsociados) {
-
-            
-            return res.status(400).json({ error: 'No se puede eliminar el viaje porque tiene reservas asignadas.' });
-        }
-
-        // Actualizar el campo 'eliminado' a 'si'
-        const [eliminar] = await Viajes.update({ eliminado: 'si' }, {
-            where: { id: req.params.id },
-            fields: ['eliminado']
-        });
-
-        if (!eliminar) {
-            return res.status(404).json({ error: 'Viaje no encontrado' });
-        }
-        res.status(200).json({ message: 'Viaje eliminado' });
-    } catch (error) {
-        res.status(500).json({ error: 'Error al eliminar el viaje' });
+    if (!viaje) {
+      return res.status(404).json({ error: 'Viaje no encontrado' });
     }
 
-};
+    // Validar si la fecha del viaje ya pasó
+    const fechaActual = new Date();
+    if (new Date(viaje.fechaViaje) < fechaActual) {
+      return res
+        .status(400)
+        .json({ error: 'No se puede eliminar un viaje que ya ocurrió' });
+    }
 
+    // Verificar reservas asociadas (solo si el viaje es futuro)
+    const reservasAsociados = await Reserva.findOne({
+      where: { viajes_id: req.params.id, eliminado: 'no' },
+    });
+
+    if (reservasAsociados) {
+      return res
+        .status(400)
+        .json({ error: 'No se puede eliminar el viaje porque tiene reservas asignadas.' });
+    }
+
+    // Actualizar el campo 'eliminado' a 'si'
+    const [eliminar] = await Viajes.update(
+      { eliminado: 'si' },
+      {
+        where: { id: req.params.id },
+        fields: ['eliminado'],
+      }
+    );
+
+    if (!eliminar) {
+      return res.status(404).json({ error: 'Viaje no encontrado' });
+    }
+
+    res.status(200).json({ message: 'Viaje eliminado' });
+  } catch (error) {
+    console.error('Error en eliminarViajes:', error);
+    res.status(500).json({ error: 'Error al eliminar el viaje' });
+  }
+};
 //obtener viajes segun el chofer
 
 

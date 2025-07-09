@@ -25,6 +25,9 @@ router.get('/obtenerGananciaTotalPorEmpresa/:id',autenticarToken,permitirPerfile
 router.get('/obtenerGananciasPorViajePorEmpresa/:id',autenticarToken,permitirPerfiles('usuarioAdministrador', 'usuarioEmpresa'), reportesController.obtenerGananciasPorViajePorEmpresa);
 
 
+router.get('/obtenerUsuariosConReservasSinVenta/:id',autenticarToken,permitirPerfiles('usuarioAdministrador', 'usuarioEmpresa'), reportesController.obtenerUsuariosConReservasSinVenta);
+
+
 
 
 module.exports = router;
