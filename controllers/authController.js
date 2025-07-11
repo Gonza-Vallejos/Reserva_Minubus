@@ -3,7 +3,10 @@ const bcrypt = require('bcrypt');
 const { Usuario, Perfil  } = require('../models'); 
 const usuarioEmpresaController = require('../controllers/usuarioEmpresaController');
 const nodemailer = require('nodemailer');
+const crypto = require('crypto');
+const { Op } = require('sequelize');
 require('dotenv').config()
+
 
 const login = async (req, res) => {
   const { usuario, contrasenia } = req.body;
@@ -182,9 +185,129 @@ const enviarCorreoVerificacion = async (email, token) => {
 
 
 
+const solicitarRecuperacion = async (req, res) => {
+  const { email, plataforma} = req.body;
+
+  try {
+    const usuario = await Usuario.findOne({ where: { email } });
+
+    // Seguridad: siempre responder igual aunque no exista el email
+    if (!usuario) {
+      return res.status(200).json({
+        mensaje: 'Si el correo está registrado, recibirás un enlace para restablecer tu contraseña.',
+      });
+    }
+
+    // Generar token y expiración (1 hora)
+    const token = crypto.randomBytes(32).toString('hex');
+    const expiracion = new Date(Date.now() + 60 * 60 * 1000); // 1 hora
+
+    usuario.recuperacionToken = token;
+    usuario.recuperacionTokenExpira = expiracion;
+    await usuario.save();
+
+
+    //  REEMPLAZÁ ESTA IP CON LA DE TU PC 
+
+       const ipLocal = '192.168.1.107'; //  PONÉ ACÁ TU IP
+       let enlace = ''
+    if (plataforma == 'web') {
+       enlace = `http://${ipLocal}:8081/resetear/${token}`;
+      
+    }else{
+
+       enlace = `exp://${ipLocal}:19000/resetear/${token}`;
+    }
+ 
+      console.log('valor de enlace:', enlace);
+    // Enlace para web (React o web normal)
+   // const enlaceWeb = `http://${ipLocal}:8081/resetear/${token}`;
+
+    // Enlace para la app Expo Go (deep linking)
+   // const enlaceApp = `exp://${ipLocal}:19000/resetear/${token}`;
+
+    // Email con ambos enlaces
+    await transporter.sendMail({
+      from: '"Reservas 🚌" <vyvreservas25@gmail.com>',
+      to: usuario.email,
+      subject: 'Restablecer contraseña',
+      html: `
+        <h3>¿Olvidaste tu contraseña?</h3>
+        <p>Podés restablecerla desde la web o la app:</p>
+
+    
+        <a href="${enlace}" style="padding: 10px 20px; background-color: #007bff; color: white; text-decoration: none; border-radius: 5px;">Restablecer desde la Web</a>
+        
+       
+        <p style="margin-top: 20px;">Este enlace expirará en 1 hora.</p>
+      `
+    });
+
+    return res.json({
+      mensaje: 'Si el correo está registrado, recibirás un enlace para restablecer tu contraseña.',
+    });
+
+  } catch (error) {
+    console.error('Error en recuperación:', error);
+    return res.status(500).json({ mensaje: 'Error al procesar la solicitud.' });
+  }
+};
+
+
+const resetearContrasenia = async (req, res) => {
+  const { token } = req.params;
+  const { nuevaContrasenia } = req.body;
+
+  try {
+    const usuario = await Usuario.findOne({
+      where: {
+        recuperacionToken: token,
+        recuperacionTokenExpira: { [Op.gt]: new Date() },
+      },
+    });
+
+    if (!usuario) {
+      return res.status(400).json({ mensaje: 'Token inválido o expirado.' });
+    }
+
+    const hash = await bcrypt.hash(nuevaContrasenia, 10);
+    usuario.contrasenia = hash;
+    usuario.recuperacionToken = null;
+    usuario.recuperacionTokenExpira = null;
+    await usuario.save();
+
+    res.json({ mensaje: 'Contraseña actualizada correctamente.' });
+  } catch (error) {
+    console.error('Error al restablecer contraseña:', error);
+    res.status(500).json({ mensaje: 'Error al actualizar contraseña.' });
+  }
+};
+
+const redirigirReset = (req, res) => {
+  const { token } = req.params;
+  const userAgent = req.headers['user-agent'];
+
+  const esMobile = /Android|iPhone|iPad|iPod/i.test(userAgent);
+  const plataforma = esMobile ? 'mobile' : 'web';
+
+  console.log('Redirección desde:', plataforma);
+
+  const url = plataforma === 'mobile'
+    ? `myapp://resetear/${token}`                     //  Cambiá esto según tu esquema de deep link
+    : `http://localhost:8081/resetear/${token}`;      // Ruta frontend web
+
+  return res.redirect(url);
+};
+
+
 module.exports = { 
   login, 
   enviarCorreoVerificacion,
-  verificarEmail,verificarFinal
+  verificarEmail,
+  verificarFinal,
+  solicitarRecuperacion,
+  resetearContrasenia,
+  redirigirReset 
+
 };
 

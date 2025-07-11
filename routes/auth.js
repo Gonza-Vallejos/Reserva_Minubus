@@ -7,12 +7,21 @@ const { autenticarToken, permitirPerfiles } = require('../middlewares/authMiddle
 
 router.post('/login', authController.login);
 router.get('/decodificar', autenticarToken,permitirPerfiles('usuarioAdministrador'),decodificar);
+
 // Verificación
 router.get('/verificar/:token', authController.verificarEmail);
 
-
-
 router.post('/verificar-final/:token', authController.verificarFinal);
+
+router.post('/recuperar', authController.solicitarRecuperacion);
+
+router.post('/resetear/:token', authController.resetearContrasenia);
+
+// Redirección según plataforma (web o mobile)
+router.get('/resetear/:token', authController.redirigirReset);
+
+
+
 
 
 module.exports = router;

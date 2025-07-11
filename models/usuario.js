@@ -79,6 +79,14 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.DATE,
       allowNull: true
     },
+    recuperacionToken: {
+      type: DataTypes.STRING,
+      allowNull: true,
+    },
+    recuperacionTokenExpira: {
+      type: DataTypes.DATE,
+      allowNull: true,
+    },
     eliminado: {
       type: DataTypes.STRING,
       allowNull: false,
