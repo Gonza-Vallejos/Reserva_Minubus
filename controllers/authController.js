@@ -209,7 +209,7 @@ const solicitarRecuperacion = async (req, res) => {
 
     //  REEMPLAZÁ ESTA IP CON LA DE TU PC 
 
-       const ipLocal = '192.168.1.107'; //  PONÉ ACÁ TU IP
+       const ipLocal = '192.168.0.20'; //  PONÉ ACÁ TU IP
        let enlace = ''
     if (plataforma == 'web') {
        enlace = `http://${ipLocal}:8081/resetear/${token}`;
