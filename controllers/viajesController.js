@@ -265,6 +265,24 @@ exports.eliminarViajes = async (req, res) => {
     res.status(500).json({ error: 'Error al eliminar el viaje' });
   }
 };
-//obtener viajes segun el chofer
+
+
+exports.existeReservaParaViaje = async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    const reserva = await Reserva.findOne({
+      where: { viajes_id: id },
+    });
+
+    const existe = !!reserva;
+
+    res.status(200).json({ existe });
+  } catch (error) {
+    console.error('Error al verificar la reserva del viaje:', error);
+    res.status(500).json({ error: 'Error al verificar la reserva del viaje' });
+  }
+};
+
 
 
