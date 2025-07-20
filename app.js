@@ -23,6 +23,18 @@ var reportesRouter = require('./routes/reportes');
 var app = express();
 //--------------
 require('dotenv').config();
+//nuevo 
+// Conexión con Sequelize-------------------------------------------------------
+const db = require('./models');
+
+db.sequelize.authenticate()
+  .then(() => {
+    console.log('✅ Conexión a la base de datos exitosa');
+  })
+  .catch((error) => {
+    console.error('❌ Error al conectar con la base de datos:', error);
+  });
+//--------------------------------------------------------------
 
 app.use(express.json());
 app.use(cors());
