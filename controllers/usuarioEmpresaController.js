@@ -127,7 +127,7 @@ exports.obtenerUsuariosPorEmpresa = async (req, res) => {
             {
             model: Usuario,
             where: { eliminado: 'no'},
-            attributes: ['id', 'nombre', 'apellido','email', 'telefono', 'perfil_id']
+            attributes: ['id', 'nombre', 'apellido','email', 'usuario', 'telefono', 'perfil_id']
             }
         ]
         });

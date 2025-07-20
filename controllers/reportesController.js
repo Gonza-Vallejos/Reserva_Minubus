@@ -250,7 +250,7 @@ exports.obtenerClientesConMasReservasPorEmpresa = async (req, res) => {
       include: [
         {
           model: Usuario,
-          attributes: ['nombre', 'apellido', 'email'] // ajustá los campos necesarios
+          attributes: ['id','nombre', 'apellido', 'email', 'usuario'] 
         },
         {
           model: Viajes,
@@ -290,7 +290,7 @@ exports.obtenerClientesConVentasConfirmadasPorEmpresa = async (req, res) => {
       include: [
         {
           model: Usuario,
-          attributes: ['nombre', 'apellido', 'email']
+          attributes: ['id','nombre', 'apellido', 'email', 'usuario']
         },
         {
           model: Viajes,
@@ -476,7 +476,7 @@ exports.obtenerUsuariosConReservasSinVenta = async (req, res) => {
       include: [
         {
           model: Usuario,
-          attributes: ['nombre', 'apellido', 'email'],
+          attributes: ['id','nombre', 'apellido', 'email', 'usuario'],
         },
         {
           model: Viajes,
