@@ -3,7 +3,7 @@
   "version": "0.0.0",
   "private": true,
   "scripts": {
-    "start": "nodemon ./app.js"
+    "start": "node ./app.js" 
   },
   "dependencies": {
     "bcrypt": "^5.1.1",
@@ -26,5 +26,8 @@
   "devDependencies": {
     "sequelize": "^6.37.3",
     "sequelize-cli": "^6.6.2"
+  },
+    "engines": {
+    "node": "20.x"
   }
 }
