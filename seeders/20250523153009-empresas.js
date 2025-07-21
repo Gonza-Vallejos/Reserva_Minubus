@@ -2,7 +2,7 @@
 
 module.exports = {
   async up (queryInterface, Sequelize) {
-    await queryInterface.bulkInsert('empresa', [
+    await queryInterface.bulkInsert('Empresa', [
       {
         nombre: 'Transportes Vargas S.A.',
         direccion: 'Av. Corrientes 1234',
@@ -29,6 +29,6 @@ module.exports = {
   },
 
   async down (queryInterface, Sequelize) {
-    await queryInterface.bulkDelete('empresa', null, {});
+    await queryInterface.bulkDelete('Empresa', null, {});
   }
 };

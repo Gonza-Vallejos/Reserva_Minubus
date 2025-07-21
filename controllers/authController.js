@@ -158,7 +158,7 @@ const transporter = nodemailer.createTransport({
 
 
 const enviarCorreoVerificacion = async (email, token) => {
-  const link = `http://localhost:3000/api/auth/verificar/${token}`;
+  const link = `https://reserva-minubus.onrender.com/api/auth/verificar/${token}`;
 
   await transporter.sendMail({
     from: '"Reservas 🚌" <vyvreservas25@gmail.com>',
