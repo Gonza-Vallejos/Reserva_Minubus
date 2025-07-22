@@ -339,7 +339,7 @@ exports.obtenerGananciaTotalPorEmpresa = async (req, res) => {
 
   try {
     const viajes = await Viajes.findAll({
-      attributes: ['id', 'origenLocalidad', 'destinoLocalidad'],
+      attributes: ['id', 'origenLocalidad', 'destinoLocalidad', 'fechaViaje', 'horarioSalida'],
       where: { eliminado: 'no' },
       include: [
         {

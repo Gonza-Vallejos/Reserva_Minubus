@@ -32,6 +32,7 @@ const validarActualizarEmpresa = [
   body('cuit')
     .optional()
     .isInt().withMessage('El CUIT debe ser un número entero.')
+    .isNumeric().withMessage('El CUIT  debe contener solo números.')
     .isLength({ min: 1, max: 11 }).withMessage('El CUIT debe tener entre 1 y 11 dígitos.')
     .custom(async (cuit, { req }) => {
       const empresa = await Empresa.findOne({ where: { cuit } });
@@ -45,6 +46,9 @@ const validarActualizarEmpresa = [
   body('telefono')
     .optional()
     .isInt().withMessage('El teléfono debe ser un número entero.')
+     .notEmpty().withMessage('El teléfono es requerido.')
+    .isNumeric().withMessage('El teléfono debe contener solo números.')
+    .isLength({ min: 10, max: 13 }).withMessage('El teléfono debe tener entre 10 y 13 dígitos.')
     .custom(async (telefono, { req }) => {
       const empresa = await Empresa.findOne({ where: { telefono } });
       if (empresa && empresa.id !== parseInt(req.params.id)) {

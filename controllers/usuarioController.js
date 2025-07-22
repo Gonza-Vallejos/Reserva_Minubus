@@ -8,6 +8,7 @@ exports.obtenerUsuarios = async (req, res) => {
     try {
         const usuarios = await Usuario.findAll({
             // Solo los campos a utilizar
+            where: {eliminado:'no'},
             attributes: ['id','nombre', 'apellido', 'dni','telefono', 'email','usuario','contrasenia', 'perfil_id'] 
         });
         res.status(200).json(usuarios);

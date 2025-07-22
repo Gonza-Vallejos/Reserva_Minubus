@@ -27,6 +27,7 @@ const validarEmpresa = [
     }),
 
   body('cuit')
+   .isNumeric().withMessage('El CUIT  debe contener solo números.')
     .isInt({ min: 1, max: 99999999999 }).withMessage('El CUIT debe ser un número entero de hasta 11 dígitos.')
     .notEmpty().withMessage('El CUIT es requerido.')
     .custom(async (value) => {
@@ -38,6 +39,9 @@ const validarEmpresa = [
     }),
 
   body('telefono')
+   .notEmpty().withMessage('El teléfono es requerido.')
+    .isNumeric().withMessage('El teléfono debe contener solo números.')
+    .isLength({ min: 10, max: 13 }).withMessage('El teléfono debe tener entre 10 y 13 dígitos.')
     .isInt().withMessage('El teléfono debe ser un número entero.')
     .notEmpty().withMessage('El teléfono es requerido.')
     .custom(async (value) => {
