@@ -41,6 +41,17 @@ module.exports = (sequelize, DataTypes) => {
       allowNull: false,
       unique: true
     },
+    /*cuit: {
+      type: DataTypes.STRING, // <== CAMBIO
+      allowNull: false,
+      unique: true
+    },
+    telefono: {
+      type: DataTypes.STRING, // <== CAMBIO
+      allowNull: false,
+      unique: true
+    },
+    */
     email: {
       type: DataTypes.STRING,
       allowNull: false,
