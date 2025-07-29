@@ -212,11 +212,11 @@ const solicitarRecuperacion = async (req, res) => {
        const ipLocal = 'reserva-minubus-m39k.onrender.com'; //  PONÉ ACÁ TU IP
        let enlace = ''
     if (plataforma == 'web') {
-       enlace = `https://${ipLocal}:8081/resetear/${token}`;
+       enlace = `https://${ipLocal}/resetear/${token}`;
       
     }else{
 
-       enlace = `exp://${ipLocal}:19000/resetear/${token}`;
+       enlace = `https://${ipLocal}/resetear/${token}`;
     }
  
       console.log('valor de enlace:', enlace);
@@ -293,7 +293,7 @@ const redirigirReset = (req, res) => {
   console.log('Redirección desde:', plataforma);
 
   const url = plataforma === 'mobile'
-    ? `myapp://resetear/${token}`                     //  Cambiá esto según tu esquema de deep link
+    ? `https://reserva-minubus-m39k.onrender.com/resetear/${token}`                     //  Cambiá esto según tu esquema de deep link
     : `https://reserva-minubus-m39k.onrender.com/resetear/${token}`;      // Ruta frontend web
 
   return res.redirect(url);

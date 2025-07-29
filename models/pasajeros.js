@@ -47,7 +47,7 @@ module.exports = (sequelize, DataTypes) => {
   }, {
     sequelize,
     modelName: 'Pasajeros',
-    tableName: 'Pasajeros',
+    tableName: 'pasajeros',
     timestamps: false
   });
 
