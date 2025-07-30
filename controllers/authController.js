@@ -88,7 +88,7 @@ const verificarEmail = async (req, res) => {
           <script>
             // Intenta abrir la app
             const deepLink = 'myapp://login';
-            const fallbackWeb = 'http://localhost:8081';
+            const fallbackWeb = 'https://reserva-minubus-m39k.onrender.com';
 
             function isMobile() {
               return /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
@@ -158,7 +158,7 @@ const transporter = nodemailer.createTransport({
 
 
 const enviarCorreoVerificacion = async (email, token) => {
-  const link = `https://reserva-minubus.onrender.com/api/auth/verificar/${token}`;
+  const link = `https://reserva-minubus-m39k.onrender.com/api/auth/verificar/${token}`;
 
   await transporter.sendMail({
     from: '"Reservas 🚌" <vyvreservas25@gmail.com>',
@@ -209,14 +209,14 @@ const solicitarRecuperacion = async (req, res) => {
 
     //  REEMPLAZÁ ESTA IP CON LA DE TU PC 
 
-       const ipLocal = '192.168.0.20'; //  PONÉ ACÁ TU IP
+       const ipLocal = 'reserva-minubus-m39k.onrender.com'; //  PONÉ ACÁ TU IP
        let enlace = ''
     if (plataforma == 'web') {
-       enlace = `http://${ipLocal}:8081/resetear/${token}`;
+       enlace = `https://${ipLocal}/resetear/${token}`;
       
     }else{
 
-       enlace = `exp://${ipLocal}:19000/resetear/${token}`;
+       enlace = `https://${ipLocal}/resetear/${token}`;
     }
  
       console.log('valor de enlace:', enlace);
@@ -293,8 +293,8 @@ const redirigirReset = (req, res) => {
   console.log('Redirección desde:', plataforma);
 
   const url = plataforma === 'mobile'
-    ? `myapp://resetear/${token}`                     //  Cambiá esto según tu esquema de deep link
-    : `http://localhost:8081/resetear/${token}`;      // Ruta frontend web
+    ? `https://reserva-minubus-m39k.onrender.com/resetear/${token}`                     //  Cambiá esto según tu esquema de deep link
+    : `https://reserva-minubus-m39k.onrender.com/resetear/${token}`;      // Ruta frontend web
 
   return res.redirect(url);
 };
