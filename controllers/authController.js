@@ -206,43 +206,22 @@ const solicitarRecuperacion = async (req, res) => {
     usuario.recuperacionTokenExpira = expiracion;
     await usuario.save();
 
+    const enlaceLanding = `https://reserva-minubus-m39k.onrender.com/abrir-app/${token}`;
+    const enlaceAppScheme = `minubus://reset/${token}`; // para referencia
 
-    //  REEMPLAZÁ ESTA IP CON LA DE TU PC 
-
-       const ipLocal = 'reserva-minubus-m39k.onrender.com'; //  PONÉ ACÁ TU IP
-       let enlace = ''
-    if (plataforma == 'web') {
-       enlace = `https://${ipLocal}/resetear/${token}`;
-      
-    }else{
-
-       enlace = `https://${ipLocal}/resetear/${token}`;
-    }
- 
-      console.log('valor de enlace:', enlace);
-    // Enlace para web (React o web normal)
-   // const enlaceWeb = `http://${ipLocal}:8081/resetear/${token}`;
-
-    // Enlace para la app Expo Go (deep linking)
-   // const enlaceApp = `exp://${ipLocal}:19000/resetear/${token}`;
-
-    // Email con ambos enlaces
     await transporter.sendMail({
       from: '"Reservas 🚌" <vyvreservas25@gmail.com>',
       to: usuario.email,
       subject: 'Restablecer contraseña',
       html: `
         <h3>¿Olvidaste tu contraseña?</h3>
-        <p>Podés restablecerla desde la web o la app:</p>
+        <p>Al presionar el botón se intentará abrir la app. Si no la tenés instalada, se abrirá la versión web.</p>
+        <a href="${enlaceLanding}" style="padding: 10px 20px; background-color: #007bff; color: white; text-decoration: none; border-radius: 5px;">Restablecer contraseña</a>
 
-    
-        <a href="${enlace}" style="padding: 10px 20px; background-color: #007bff; color: white; text-decoration: none; border-radius: 5px;">Restablecer desde la Web</a>
-        
-       
-        <p style="margin-top: 20px;">Este enlace expirará en 1 hora.</p>
+        <p style="margin-top: 20px;">Si preferís abrir manualmente con la app instalada: <code>${enlaceAppScheme}</code></p>
+        <p style="margin-top: 10px; font-size: 0.9em;">Este enlace expirará en 1 hora.</p>
       `
     });
-
     return res.json({
       mensaje: 'Si el correo está registrado, recibirás un enlace para restablecer tu contraseña.',
     });
@@ -293,11 +272,95 @@ const redirigirReset = (req, res) => {
   console.log('Redirección desde:', plataforma);
 
   const url = plataforma === 'mobile'
-    ? `https://reserva-minubus-m39k.onrender.com/resetear/${token}`                     //  Cambiá esto según tu esquema de deep link
+    ? `https://reserva-minubus-m39k.onrender.com/resetear/${token}`        //  Cambiá esto según tu esquema de deep link
     : `https://reserva-minubus-m39k.onrender.com/resetear/${token}`;      // Ruta frontend web
 
   return res.redirect(url);
 };
+
+
+
+
+//-------------------
+const abrirApp = (req, res) => {
+  const { token } = req.params;
+
+  // Esquema de la app (expo scheme)
+  const esquemaApp = `minibus://reset/${token}`;
+  // Fallback web al formulario
+  const fallbackWeb = `https://reserva-minubus-m39k.onrender.com/resetear-web/${token}`;
+
+  // HTML que intenta abrir el esquema y, si no se abre, redirige al fallback
+  res.send(`
+    <!doctype html>
+    <html>
+      <head>
+        <meta name="viewport" content="width=device-width,initial-scale=1"/>
+        <title>Abrir app Reservas</title>
+        <style>
+          body { font-family: Arial, sans-serif; text-align: center; padding: 40px; }
+          .btn { display:inline-block; padding:12px 20px; background:#007bff; color:white; text-decoration:none; border-radius:6px; }
+          p { color: #333; }
+        </style>
+      </head>
+      <body>
+        <h2>Abrir la app Reservas</h2>
+        <p>Estamos intentando abrir la app para restablecer tu contraseña. Si no ocurre nada, serás redirigido automáticamente a la versión web.</p>
+        <a id="openApp" href="${esquemaApp}" class="btn">Abrir en la app</a>
+        <p style="margin-top:16px;"><a href="${fallbackWeb}">Ir a la versión web</a></p>
+
+        <script>
+          // Intento automático
+          (function() {
+            // Primer intento: navegar al esquema
+            window.location = "${esquemaApp}";
+
+            // Si en 1s no se abrió la app, redirigimos al fallback web
+            setTimeout(function() {
+              // Para evitar loops si ya estamos en la app, comprobamos document.visibilityState
+              if (document.visibilityState === 'visible') {
+                window.location = "${fallbackWeb}";
+              }
+            }, 1000);
+          })();
+        </script>
+      </body>
+    </html>
+  `);
+};
+
+// Mostrar formulario simple en la web (fallback)
+const formResetWeb = (req, res) => {
+  const { token } = req.params;
+  res.send(`
+    <!doctype html>
+    <html>
+      <head>
+        <meta charset="utf-8"/>
+        <meta name="viewport" content="width=device-width,initial-scale=1"/>
+        <title>Restablecer contraseña</title>
+        <style>
+          body { font-family: Arial, sans-serif; display:flex; align-items:center; justify-content:center; height:100vh; margin:0; }
+          .card { width: 100%; max-width:420px; padding:20px; box-shadow:0 2px 10px rgba(0,0,0,0.1); border-radius:8px; }
+          input, button { width:100%; padding:10px; margin-top:10px; }
+          button { background:#007bff; color:white; border:none; border-radius:6px; }
+        </style>
+      </head>
+      <body>
+        <div class="card">
+          <h3>Restablecer contraseña</h3>
+          <form method="POST" action="/resetear/${token}">
+            <label>Nueva contraseña</label>
+            <input name="nuevaContrasenia" type="password" required minlength="6" />
+            <button type="submit">Cambiar contraseña</button>
+          </form>
+          <p style="font-size:0.9em; color:#666; margin-top:12px;">Si la app está instalada, usá el link del mail para abrirla directamente.</p>
+        </div>
+      </body>
+    </html>
+  `);
+};
+
 
 
 module.exports = { 
@@ -307,7 +370,9 @@ module.exports = {
   verificarFinal,
   solicitarRecuperacion,
   resetearContrasenia,
-  redirigirReset 
+  redirigirReset ,
+  formResetWeb,
+  abrirApp
 
 };
 

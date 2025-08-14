@@ -22,6 +22,17 @@ router.get('/resetear/:token', authController.redirigirReset);
 
 
 
+// Landing que intenta abrir la app y hace fallback
+router.get('/abrir-app/:token', authController.abrirApp);
+
+// Form web para restablecer contraseña (fallback)
+router.get('/resetear-web/:token', authController.formResetWeb);
+
+// opcional: si querías mantener redirigirReset, podés commentarla o eliminarla
+// router.get('/resetear/:token', authController.redirigirReset);
+
+
+
 
 
 module.exports = router;
