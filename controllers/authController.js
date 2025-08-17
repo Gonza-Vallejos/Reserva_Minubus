@@ -206,20 +206,28 @@ const solicitarRecuperacion = async (req, res) => {
     usuario.recuperacionTokenExpira = expiracion;
     await usuario.save();
 
-    const enlaceLanding = `https://reserva-minubus-m39k.onrender.com/api/auth/abrir-app/${token}`;
+    const link = `https://reserva-minubus-m39k.onrender.com/api/auth/abrir-app/${token}`;
 
     await transporter.sendMail({
       from: '"Reservas 🚌" <vyvreservas25@gmail.com>',
       to: usuario.email,
       subject: 'Restablecer contraseña',
-      html: `
-        <h3>¿Olvidaste tu contraseña?</h3>
-        <p>Al presionar el botón se intentará abrir la app. Si no la tenés instalada, se abrirá la versión web.</p>
-        <a href="${enlaceLanding}" style="padding: 10px 20px; background-color: #007bff; color: white; text-decoration: none; border-radius: 5px;">Restablecer contraseña</a>
+      html:`
+      <h3></h3>
+      <p>Hacé clic en el botón para verificar tu cuenta:</p>
+      <a href="${link}" style="
+        display: inline-block;
+        padding: 10px 20px;
+        background-color: #007bff;
+        color: white;
+        text-decoration: none;
+        border-radius: 5px;
+      ">
+        restablecer contraseña
+      </a>
 
-        <p style="margin-top: 20px;">Si preferís abrir manualmente con la app instalada: <code>${enlaceAppScheme}</code></p>
-        <p style="margin-top: 10px; font-size: 0.9em;">Este enlace expirará en 1 hora.</p>
-      `
+      <p>ignora este correo si no te corresponde</p>
+    `
     });
     return res.json({
       mensaje: 'Si el correo está registrado, recibirás un enlace para restablecer tu contraseña.',
