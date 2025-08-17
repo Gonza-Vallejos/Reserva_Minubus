@@ -87,7 +87,7 @@ const verificarEmail = async (req, res) => {
           <title>Verificando cuenta...</title>
           <script>
             // Intenta abrir la app
-            const deepLink = 'myapp://login';
+            const deepLink = 'minibus://login';
             const fallbackWeb = 'https://reserva-minubus-m39k.onrender.com';
 
             function isMobile() {
@@ -186,7 +186,7 @@ const enviarCorreoVerificacion = async (email, token) => {
 
 
 const solicitarRecuperacion = async (req, res) => {
-  const { email, plataforma} = req.body;
+  const { email} = req.body;
 
   try {
     const usuario = await Usuario.findOne({ where: { email } });
@@ -206,8 +206,7 @@ const solicitarRecuperacion = async (req, res) => {
     usuario.recuperacionTokenExpira = expiracion;
     await usuario.save();
 
-    const enlaceLanding = `https://reserva-minubus-m39k.onrender.com/abrir-app/${token}`;
-    const enlaceAppScheme = `minubus://reset/${token}`; // para referencia
+    const enlaceLanding = `https://reserva-minubus-m39k.onrender.com/api/auth/abrir-app/${token}`;
 
     await transporter.sendMail({
       from: '"Reservas 🚌" <vyvreservas25@gmail.com>',
@@ -279,87 +278,50 @@ const redirigirReset = (req, res) => {
 };
 
 
-
-
-//-------------------
 const abrirApp = (req, res) => {
-  const { token } = req.params;
+   try {
+    const { token } = req.params;
 
-  // Esquema de la app (expo scheme)
-  const esquemaApp = `minibus://reset/${token}`;
-  // Fallback web al formulario
-  const fallbackWeb = `https://reserva-minubus-m39k.onrender.com/resetear-web/${token}`;
+    // Redirigimos según plataforma (app o web)
+    return res.send(`
+      <html>
+        <head>
+          <title>Recuperar contraseña...</title>
+          <script>
+            // Intenta abrir la app
+            const deepLink = 'minibus://recuperarContrasenia';
+            const fallbackWeb = 'https://reserva-minubus-m39k.onrender/recuperarContrasenia.com';
 
-  // HTML que intenta abrir el esquema y, si no se abre, redirige al fallback
-  res.send(`
-    <!doctype html>
-    <html>
-      <head>
-        <meta name="viewport" content="width=device-width,initial-scale=1"/>
-        <title>Abrir app Reservas</title>
-        <style>
-          body { font-family: Arial, sans-serif; text-align: center; padding: 40px; }
-          .btn { display:inline-block; padding:12px 20px; background:#007bff; color:white; text-decoration:none; border-radius:6px; }
-          p { color: #333; }
-        </style>
-      </head>
-      <body>
-        <h2>Abrir la app Reservas</h2>
-        <p>Estamos intentando abrir la app para restablecer tu contraseña. Si no ocurre nada, serás redirigido automáticamente a la versión web.</p>
-        <a id="openApp" href="${esquemaApp}" class="btn">Abrir en la app</a>
-        <p style="margin-top:16px;"><a href="${fallbackWeb}">Ir a la versión web</a></p>
+            function isMobile() {
+              return /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
+            }
 
-        <script>
-          // Intento automático
-          (function() {
-            // Primer intento: navegar al esquema
-            window.location = "${esquemaApp}";
+            if (isMobile()) {
+              // Abrir app con deep link
+              window.location.href = deepLink;
 
-            // Si en 1s no se abrió la app, redirigimos al fallback web
-            setTimeout(function() {
-              // Para evitar loops si ya estamos en la app, comprobamos document.visibilityState
-              if (document.visibilityState === 'visible') {
-                window.location = "${fallbackWeb}";
-              }
-            }, 1000);
-          })();
-        </script>
-      </body>
-    </html>
-  `);
+              // Por si falla (no está instalada), redirigimos a la web después de 2 segundos
+              setTimeout(() => {
+                window.location.href = fallbackWeb;
+              }, 2000);
+            } else {
+              // Usuario desde PC -> ir al login web
+              window.location.href = fallbackWeb;
+            }
+          </script>
+        </head>
+        <body>
+          <p>Redirigiendo...</p>
+        </body>
+      </html>
+    `);
+  } catch (error) {
+    console.error('Error al recuperar la contraseña cuenta:', error);
+    return res.status(500).send('Error al verificar la cuenta.');
+  }
 };
 
-// Mostrar formulario simple en la web (fallback)
-const formResetWeb = (req, res) => {
-  const { token } = req.params;
-  res.send(`
-    <!doctype html>
-    <html>
-      <head>
-        <meta charset="utf-8"/>
-        <meta name="viewport" content="width=device-width,initial-scale=1"/>
-        <title>Restablecer contraseña</title>
-        <style>
-          body { font-family: Arial, sans-serif; display:flex; align-items:center; justify-content:center; height:100vh; margin:0; }
-          .card { width: 100%; max-width:420px; padding:20px; box-shadow:0 2px 10px rgba(0,0,0,0.1); border-radius:8px; }
-          input, button { width:100%; padding:10px; margin-top:10px; }
-          button { background:#007bff; color:white; border:none; border-radius:6px; }
-        </style>
-      </head>
-      <body>
-        <div class="card">
-          <h3>Restablecer contraseña</h3>
-          <form method="POST" action="/resetear/${token}">
-            <label>Nueva contraseña</label>
-            <input name="nuevaContrasenia" type="password" required minlength="6" />
-            <button type="submit">Cambiar contraseña</button>
-          </form>
-          <p style="font-size:0.9em; color:#666; margin-top:12px;">Si la app está instalada, usá el link del mail para abrirla directamente.</p>
-        </div>
-      </body>
-    </html>
-  `);
-};
+
 
 
 
@@ -371,7 +333,6 @@ module.exports = {
   solicitarRecuperacion,
   resetearContrasenia,
   redirigirReset ,
-  formResetWeb,
   abrirApp
 
 };
