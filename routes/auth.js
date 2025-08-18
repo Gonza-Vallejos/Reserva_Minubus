@@ -17,8 +17,6 @@ router.post('/recuperar', authController.solicitarRecuperacion);
 
 router.post('/resetear/:token', authController.resetearContrasenia);
 
-// Redirección según plataforma (web o mobile)
-//router.get('/resetear/:token', authController.redirigirReset);
 
 
 
@@ -26,9 +24,6 @@ router.post('/resetear/:token', authController.resetearContrasenia);
 router.get('/abrir-app/:token', authController.abrirApp);
 
 
-
-// opcional: si querías mantener redirigirReset, podés commentarla o eliminarla
-// router.get('/resetear/:token', authController.redirigirReset);
 
 
 
