@@ -5,6 +5,7 @@ const { Empresa } = require('../models');
 exports.obtenerEmpresas = async (req, res) => {
     try {
         const empresas = await Empresa.findAll({
+            where: { eliminado: 'no' },
             attributes: ['id','nombre', 'direccion', 'cuit','telefono', 'email','localidad_id'] 
         });
         res.status(200).json(empresas);
