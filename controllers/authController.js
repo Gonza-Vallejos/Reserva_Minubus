@@ -297,8 +297,8 @@ const abrirApp = (req, res) => {
           <title>Recuperar contraseña...</title>
           <script>
             // Intenta abrir la app
-            const deepLink = 'minibus://recuperarContrasenia';
-            const fallbackWeb = 'https://reserva-minubus-m39k.onrender/recuperarContrasenia.com';
+            const deepLink = 'minibus://resetear/${token}';
+            const fallbackWeb = 'https://reserva-minubus-m39k.onrender/resetear/${token}';
 
             function isMobile() {
               return /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
