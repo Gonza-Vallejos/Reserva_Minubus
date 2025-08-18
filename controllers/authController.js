@@ -327,7 +327,6 @@ module.exports = {
   verificarFinal,
   solicitarRecuperacion,
   resetearContrasenia,
-  redirigirReset ,
   abrirApp
 
 };
