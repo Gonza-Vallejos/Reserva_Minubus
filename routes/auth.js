@@ -18,7 +18,7 @@ router.post('/recuperar', authController.solicitarRecuperacion);
 router.post('/resetear/:token', authController.resetearContrasenia);
 
 // Redirección según plataforma (web o mobile)
-router.get('/resetear/:token', authController.redirigirReset);
+//router.get('/resetear/:token', authController.redirigirReset);
 
 
 

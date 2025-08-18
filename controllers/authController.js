@@ -244,6 +244,8 @@ const resetearContrasenia = async (req, res) => {
   const { token } = req.params;
   const { nuevaContrasenia } = req.body;
 
+  console.log('llego al back el token:',token)
+
   try {
     const usuario = await Usuario.findOne({
       where: {
@@ -258,6 +260,7 @@ const resetearContrasenia = async (req, res) => {
 
     const hash = await bcrypt.hash(nuevaContrasenia, 10);
     usuario.contrasenia = hash;
+    console.log('el usuario ya tiene la nueva contraseña')
     usuario.recuperacionToken = null;
     usuario.recuperacionTokenExpira = null;
     await usuario.save();
@@ -265,24 +268,8 @@ const resetearContrasenia = async (req, res) => {
     res.json({ mensaje: 'Contraseña actualizada correctamente.' });
   } catch (error) {
     console.error('Error al restablecer contraseña:', error);
-    res.status(500).json({ mensaje: 'Error al actualizar contraseña.' });
+    res.status(500).json({ mensaje:'Error al actualizar contraseña.' });
   }
-};
-
-const redirigirReset = (req, res) => {
-  const { token } = req.params;
-  const userAgent = req.headers['user-agent'];
-
-  const esMobile = /Android|iPhone|iPad|iPod/i.test(userAgent);
-  const plataforma = esMobile ? 'mobile' : 'web';
-
-  console.log('Redirección desde:', plataforma);
-
-  const url = plataforma === 'mobile'
-    ? `https://reserva-minubus-m39k.onrender.com/resetear/${token}`        //  Cambiá esto según tu esquema de deep link
-    : `https://reserva-minubus-m39k.onrender.com/resetear/${token}`;      // Ruta frontend web
-
-  return res.redirect(url);
 };
 
 
