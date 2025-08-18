@@ -87,7 +87,7 @@ const verificarEmail = async (req, res) => {
           <title>Verificando cuenta...</title>
           <script>
             // Intenta abrir la app
-            const deepLink = 'myapp://login';
+            const deepLink = 'minibus://login';
             const fallbackWeb = 'https://reserva-minubus-m39k.onrender.com';
 
             function isMobile() {
@@ -186,7 +186,7 @@ const enviarCorreoVerificacion = async (email, token) => {
 
 
 const solicitarRecuperacion = async (req, res) => {
-  const { email, plataforma} = req.body;
+  const { email} = req.body;
 
   try {
     const usuario = await Usuario.findOne({ where: { email } });
@@ -206,43 +206,29 @@ const solicitarRecuperacion = async (req, res) => {
     usuario.recuperacionTokenExpira = expiracion;
     await usuario.save();
 
+    const link = `https://reserva-minubus-m39k.onrender.com/api/auth/abrir-app/${token}`;
 
-    //  REEMPLAZÁ ESTA IP CON LA DE TU PC 
-
-       const ipLocal = 'reserva-minubus-m39k.onrender.com'; //  PONÉ ACÁ TU IP
-       let enlace = ''
-    if (plataforma == 'web') {
-       enlace = `https://${ipLocal}/resetear/${token}`;
-      
-    }else{
-
-       enlace = `https://${ipLocal}/resetear/${token}`;
-    }
- 
-      console.log('valor de enlace:', enlace);
-    // Enlace para web (React o web normal)
-   // const enlaceWeb = `http://${ipLocal}:8081/resetear/${token}`;
-
-    // Enlace para la app Expo Go (deep linking)
-   // const enlaceApp = `exp://${ipLocal}:19000/resetear/${token}`;
-
-    // Email con ambos enlaces
     await transporter.sendMail({
       from: '"Reservas 🚌" <vyvreservas25@gmail.com>',
       to: usuario.email,
       subject: 'Restablecer contraseña',
-      html: `
-        <h3>¿Olvidaste tu contraseña?</h3>
-        <p>Podés restablecerla desde la web o la app:</p>
+      html:`
+      <h3></h3>
+      <p>Hacé clic en el botón para verificar tu cuenta:</p>
+      <a href="${link}" style="
+        display: inline-block;
+        padding: 10px 20px;
+        background-color: #007bff;
+        color: white;
+        text-decoration: none;
+        border-radius: 5px;
+      ">
+        restablecer contraseña
+      </a>
 
-    
-        <a href="${enlace}" style="padding: 10px 20px; background-color: #007bff; color: white; text-decoration: none; border-radius: 5px;">Restablecer desde la Web</a>
-        
-       
-        <p style="margin-top: 20px;">Este enlace expirará en 1 hora.</p>
-      `
+      <p>ignora este correo si no te corresponde</p>
+    `
     });
-
     return res.json({
       mensaje: 'Si el correo está registrado, recibirás un enlace para restablecer tu contraseña.',
     });
@@ -258,6 +244,8 @@ const resetearContrasenia = async (req, res) => {
   const { token } = req.params;
   const { nuevaContrasenia } = req.body;
 
+  console.log('llego al back el token:',token)
+
   try {
     const usuario = await Usuario.findOne({
       where: {
@@ -272,6 +260,7 @@ const resetearContrasenia = async (req, res) => {
 
     const hash = await bcrypt.hash(nuevaContrasenia, 10);
     usuario.contrasenia = hash;
+    console.log('el usuario ya tiene la nueva contraseña')
     usuario.recuperacionToken = null;
     usuario.recuperacionTokenExpira = null;
     await usuario.save();
@@ -279,25 +268,56 @@ const resetearContrasenia = async (req, res) => {
     res.json({ mensaje: 'Contraseña actualizada correctamente.' });
   } catch (error) {
     console.error('Error al restablecer contraseña:', error);
-    res.status(500).json({ mensaje: 'Error al actualizar contraseña.' });
+    res.status(500).json({ mensaje:'Error al actualizar contraseña.' });
   }
 };
 
-const redirigirReset = (req, res) => {
-  const { token } = req.params;
-  const userAgent = req.headers['user-agent'];
 
-  const esMobile = /Android|iPhone|iPad|iPod/i.test(userAgent);
-  const plataforma = esMobile ? 'mobile' : 'web';
+const abrirApp = (req, res) => {
+   try {
+    const { token } = req.params;
 
-  console.log('Redirección desde:', plataforma);
+    // Redirigimos según plataforma (app o web)
+    return res.send(`
+      <html>
+        <head>
+          <title>Recuperar contraseña...</title>
+          <script>
+            // Intenta abrir la app
+            const deepLink = 'minibus://resetear/${token}';
+            const fallbackWeb = 'https://reserva-minubus-m39k.onrender/resetear/${token}';
 
-  const url = plataforma === 'mobile'
-    ? `https://reserva-minubus-m39k.onrender.com/resetear/${token}`                     //  Cambiá esto según tu esquema de deep link
-    : `https://reserva-minubus-m39k.onrender.com/resetear/${token}`;      // Ruta frontend web
+            function isMobile() {
+              return /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
+            }
 
-  return res.redirect(url);
+            if (isMobile()) {
+              // Abrir app con deep link
+              window.location.href = deepLink;
+
+              // Por si falla (no está instalada), redirigimos a la web después de 2 segundos
+              setTimeout(() => {
+                window.location.href = fallbackWeb;
+              }, 2000);
+            } else {
+              // Usuario desde PC -> ir al login web
+              window.location.href = fallbackWeb;
+            }
+          </script>
+        </head>
+        <body>
+          <p>Redirigiendo...</p>
+        </body>
+      </html>
+    `);
+  } catch (error) {
+    console.error('Error al recuperar la contraseña cuenta:', error);
+    return res.status(500).send('Error al verificar la cuenta.');
+  }
 };
+
+
+
 
 
 module.exports = { 
@@ -307,7 +327,7 @@ module.exports = {
   verificarFinal,
   solicitarRecuperacion,
   resetearContrasenia,
-  redirigirReset 
+  abrirApp
 
 };
 
