@@ -25,7 +25,6 @@ module.exports = {
       // Departamento San Luis del Palmar
       { nombre: 'San Luis del Palmar', provincia_id: 7, createdAt: new Date(), updatedAt: new Date() },
       { nombre: 'San Cosme', provincia_id: 7, createdAt: new Date(), updatedAt: new Date() },
-      { nombre: 'Paso de la Patria', provincia_id: 7, createdAt: new Date(), updatedAt: new Date() },
       { nombre: 'Santa Ana', provincia_id: 7, createdAt: new Date(), updatedAt: new Date() },
       
       // Departamento Itatí
@@ -111,7 +110,6 @@ module.exports = {
       // Departamento San Cosme
       { nombre: 'San Cosme', provincia_id: 7, createdAt: new Date(), updatedAt: new Date() },
       { nombre: 'Santa Ana', provincia_id: 7, createdAt: new Date(), updatedAt: new Date() },
-      { nombre: 'Paso de la Patria', provincia_id: 7, createdAt: new Date(), updatedAt: new Date() },
       { nombre: 'Ramada Paso', provincia_id: 7, createdAt: new Date(), updatedAt: new Date() },
 
       // Municipios faltantes añadilos aquí...

@@ -20,7 +20,7 @@ module.exports = {
         cuit: 20345678902,
         telefono: 1122233344,
         email: 'info@vallejos.com',
-        localidad_id: 1, // Asegurate de que esta localidad exista
+        localidad_id: 2, // Asegurate de que esta localidad exista
         eliminado: 'no',
         createdAt: new Date(),
         updatedAt: new Date()
