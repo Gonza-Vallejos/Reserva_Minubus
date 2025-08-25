@@ -88,7 +88,7 @@ const verificarEmail = async (req, res) => {
           <script>
             // Intenta abrir la app
             const deepLink = 'minibus://login';
-            const fallbackWeb = 'https://reserva-minubus-m39k.onrender.com';
+            const fallbackWeb = 'https://front-reservas-app.onrender.com/login';
 
             function isMobile() {
               return /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
@@ -285,7 +285,7 @@ const abrirApp = (req, res) => {
           <script>
             // Intenta abrir la app
             const deepLink = 'minibus://resetear/${token}';
-            const fallbackWeb = 'https://reserva-minubus-m39k.onrender/resetear/${token}';
+            const fallbackWeb = 'https://front-reservas-app.onrender.com/resetear/${token}';
 
             function isMobile() {
               return /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
