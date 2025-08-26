@@ -276,6 +276,7 @@ const resetearContrasenia = async (req, res) => {
 const abrirApp = (req, res) => {
    try {
     const { token } = req.params;
+    console.log('***** desde solicitar recuperacion llego a abrir-app')
 
     // Redirigimos según plataforma (app o web)
     return res.send(`
@@ -285,7 +286,7 @@ const abrirApp = (req, res) => {
           <script>
             // Intenta abrir la app
             const deepLink = 'minibus://resetear/${token}';
-            const fallbackWeb = 'https://front-reservas-app.onrender.com/resetear/${token}';
+            const fallbackWeb = 'https://front-reservas-app.onrender.com/#/resetear/${token}';
 
             function isMobile() {
               return /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
