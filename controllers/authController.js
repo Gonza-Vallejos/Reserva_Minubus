@@ -206,7 +206,8 @@ const solicitarRecuperacion = async (req, res) => {
     usuario.recuperacionTokenExpira = expiracion;
     await usuario.save();
 
-    const link = `https://reserva-minubus-m39k.onrender.com/api/auth/abrir-app/${token}`;
+   // const link = `https://reserva-minubus-m39k.onrender.com/api/auth/abrir-app/${token}`;
+   const link =  `https://front-reservas-app.onrender.com/resetear/${token}`;
 
     await transporter.sendMail({
       from: '"Reservas 🚌" <vyvreservas25@gmail.com>',
