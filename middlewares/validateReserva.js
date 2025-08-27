@@ -1,35 +1,40 @@
-const { body, validationResult } = require('express-validator');
-const { Reserva, Usuario, Viajes } = require('../models');
+const { body, validationResult } = require("express-validator");
+const { Reserva, Usuario, Viajes } = require("../models");
 
 const validarReserva = [
- 
   // Validar usuarios_id
-  body('usuarios_id')
-    .notEmpty().withMessage('El ID del usuario es requerido.')
-    .isInt().withMessage('El ID del usuario debe ser un número entero.')
+  body("usuarios_id")
+    .notEmpty()
+    .withMessage("El ID del usuario es requerido.")
+    .isInt()
+    .withMessage("El ID del usuario debe ser un número entero.")
     .custom(async (usuarios_id, { req }) => {
       const usuario = await Usuario.findByPk(usuarios_id);
       if (!usuario) {
-        throw new Error('El usuario especificado no existe.');
+        throw new Error("El usuario especificado no existe.");
       }
 
       return true;
     }),
 
   // Validar viajes_id
-  body('viajes_id')
-    .notEmpty().withMessage('El ID del viaje es requerido.')
-    .isInt().withMessage('El ID del viaje debe ser un número entero.')
+  body("viajes_id")
+    .notEmpty()
+    .withMessage("El ID del viaje es requerido.")
+    .isInt()
+    .withMessage("El ID del viaje debe ser un número entero.")
     .custom(async (viajes_id, { req }) => {
       const viaje = await Viajes.findByPk(viajes_id);
       if (!viaje) {
-        throw new Error('El viaje especificado no existe.');
+        throw new Error("El viaje especificado no existe.");
       }
 
       // Validar unicidad del viaje para la reserva
-      const reservaExistente = await Reserva.findOne({ where: { viajes_id, id: { $ne: req.params.id } } });
+      const reservaExistente = await Reserva.findOne({
+        where: { viajes_id, id: { $ne: req.params.id } },
+      });
       if (reservaExistente) {
-        throw new Error('Este viaje ya tiene una reserva.');
+        throw new Error("Este viaje ya tiene una reserva.");
       }
 
       return true;
@@ -42,7 +47,7 @@ const validarReserva = [
       return res.status(400).json({ errores: error.array() });
     }
     next();
-  }
+  },
 ];
- 
+
 module.exports = validarReserva;

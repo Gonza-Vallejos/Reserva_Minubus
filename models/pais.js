@@ -1,32 +1,34 @@
-'use strict';
-const { Model } = require('sequelize');
+"use strict";
+const { Model } = require("sequelize");
 
 module.exports = (sequelize, DataTypes) => {
   class Pais extends Model {
-
     static associate(models) {
       // Definir asociaciones aquí
       Pais.hasMany(models.Provincia, {
-        foreignKey: 'pais_id'
+        foreignKey: "pais_id",
       });
     }
   }
 
-  Pais.init({
-    nombre: {
-      type: DataTypes.STRING,
-      allowNull: false
+  Pais.init(
+    {
+      nombre: {
+        type: DataTypes.STRING,
+        allowNull: false,
+      },
+      eliminado: {
+        type: DataTypes.STRING,
+        allowNull: false,
+        defaultValue: "no",
+      },
     },
-    eliminado: {
-      type: DataTypes.STRING,
-      allowNull: false,
-      defaultValue: 'no'
+    {
+      sequelize,
+      modelName: "Pais",
+      tableName: "Pais",
     }
-  }, {
-    sequelize,
-    modelName: 'Pais',
-    tableName: 'Pais'  
-  });
+  );
 
   return Pais;
 };

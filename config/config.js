@@ -1,28 +1,28 @@
-require('dotenv').config(); // para poder leer las variables desde .env
+require("dotenv").config(); // para poder leer las variables desde .env
 
-module.exports ={
+module.exports = {
   development: {
     username: "root",
     password: null,
     database: "database_minibus",
     host: "127.0.0.1",
-    dialect: "mysql"
+    dialect: "mysql",
   },
-  test:{
+  test: {
     username: "root",
     password: null,
     database: "database_minibus",
     host: "127.0.0.1",
-    dialect: "mysql"
+    dialect: "mysql",
   },
-  production:{
+  production: {
     username: process.env.DB_USER,
     password: process.env.DB_PASSWORD,
     database: process.env.DB_NAME,
     host: process.env.DB_HOST,
     port: process.env.DB_PORT,
     dialect: "mysql",
-     
-     use_env_variable: 'DATABASE_URL',
-  }
+
+    use_env_variable: "DATABASE_URL",
+  },
 };
