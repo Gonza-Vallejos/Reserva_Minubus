@@ -100,7 +100,7 @@ const verificarEmail = async (req, res) => {
           <script>
             // Intenta abrir la app
             const deepLink = 'minibus://login';
-            const fallbackWeb = 'https://front-reservas-app.onrender.com/login';
+            const fallbackWeb = 'https://vyvreservas.expo.app/login';
 
             function isMobile() {
               return /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
@@ -289,7 +289,7 @@ const abrirApp = (req, res) => {
           <script>
             // Intenta abrir la app
             const deepLink = 'minibus://resetear/${token}';
-            const fallbackWeb = 'https://vvreservas.expo.app/resetear/${token}';
+            const fallbackWeb = 'https://vyvreservas.expo.app/resetear/${token}';
 
             function isMobile() {
               return /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
