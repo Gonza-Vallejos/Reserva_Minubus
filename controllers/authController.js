@@ -22,9 +22,9 @@ const login = async (req, res) => {
     if (!usuarios) {
       return res.status(404).json({ mensaje: "Usuario no encontrado" });
     }
-    /*  if (!usuarios.verificado) {
+     if (!usuarios.verificado) {
     return res.status(401).json({ mensaje: 'Debes verificar tu email antes de iniciar sesión.' });
-     }*/
+     }
 
     const contraseniaValido = await bcrypt.compare(
       contrasenia,
@@ -219,7 +219,7 @@ const solicitarRecuperacion = async (req, res) => {
       subject: "Restablecer contraseña",
       html: `
       <h3></h3>
-      <p>Hacé clic en el botón para verificar tu cuenta:</p>
+      <p>Hacé clic en el botón para cambiar tu contraseña:</p>
       <a href="${link}" style="
         display: inline-block;
         padding: 10px 20px;
@@ -228,7 +228,7 @@ const solicitarRecuperacion = async (req, res) => {
         text-decoration: none;
         border-radius: 5px;
       ">
-        restablecer contraseña
+        Restablecer contraseña
       </a>
 
       <p>ignora este correo si no te corresponde</p>
