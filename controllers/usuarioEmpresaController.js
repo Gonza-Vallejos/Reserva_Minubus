@@ -152,9 +152,8 @@ exports.obtenerUsuariosPorEmpresa = async (req, res) => {
           ],
         },
       ],
-       distinct: true,
     });
-  console.log('ver usuario empresa: ', usuariosEmpresa)
+
     if (!usuariosEmpresa || usuariosEmpresa.length === 0) {
       return res
         .status(404)
@@ -162,7 +161,7 @@ exports.obtenerUsuariosPorEmpresa = async (req, res) => {
     }
 
     const usuariosFinales = usuariosEmpresa.map((registro) => registro.Usuario); // con mayúscula
- console.log('ver usuario finales: ', usuariosFinales)
+
     return res.status(200).json(usuariosFinales);
   } catch (error) {
     console.error("Error al obtener los usuarios de la empresa:", error);
