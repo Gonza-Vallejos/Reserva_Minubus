@@ -73,6 +73,7 @@ exports.obtenerReservasPorEmpresa = async (req, res) => {
           ],
         },
       ],
+       order: [["fechaReserva", "ASC"]],
     });
 
     res.status(200).json(reservas);
