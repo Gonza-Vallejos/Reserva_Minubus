@@ -109,6 +109,7 @@ exports.obtenerViajesPorEmpresa = async (req, res) => {
           ],
         },
       ],
+       order: [["fechaViaje", "ASC"]],
     });
     console.log("viajes de la empresa", viajes);
     res.status(200).json(viajes);
