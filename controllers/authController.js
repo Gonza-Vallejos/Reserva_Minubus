@@ -22,9 +22,9 @@ const login = async (req, res) => {
     if (!usuarios) {
       return res.status(404).json({ mensaje: "Usuario no encontrado" });
     }
-     if (!usuarios.verificado) {
+    /* if (!usuarios.verificado) {
     return res.status(401).json({ mensaje: 'Debes verificar tu email antes de iniciar sesión.' });
-     }
+     }*/
 
     const contraseniaValido = await bcrypt.compare(
       contrasenia,
