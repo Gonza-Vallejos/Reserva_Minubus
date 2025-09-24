@@ -18,7 +18,7 @@ router.get('/obtenerUsuarioId/:id',autenticarToken,permitirPerfiles('usuarioAdmi
 router.post('/crearUsuario',validateUsuario, usuarioController.crearUsuario);
 
 // Ruta para actualizar un usuario existente
-router.put('/actualizarUsuario/:id',autenticarToken,permitirPerfiles('usuarioAdministrador','usuarioMostrador','usuarioEmpresa','usuarioCliente'), validateUpdateUsuario, usuarioController.actualizarUsuario);
+router.put('/actualizarUsuario/:id',autenticarToken,permitirPerfiles('usuarioAdministrador','usuarioMostrador','usuarioEmpresa','usuarioCliente', 'usuarioChofer'), validateUpdateUsuario, usuarioController.actualizarUsuario);
 
 
 // Ruta para eliminar un usuario lógicamente
