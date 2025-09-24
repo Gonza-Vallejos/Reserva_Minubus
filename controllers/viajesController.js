@@ -168,7 +168,8 @@ exports.obtenerViajesPorChofer = async (req, res) => {
         sequelize.col("UsuarioEmpresa.id_empresa"),
         "=",
         sequelize.col("MedioTransporte.empresa_id")
-      ),
+      ), 
+       order: [["fechaViaje", "ASC"]],
     });
     if (viajes.length === 0) {
       return res
