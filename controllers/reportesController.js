@@ -364,6 +364,7 @@ exports.obtenerClientesConVentasConfirmadasPorEmpresa = async (req, res) => {
       ],
       order: [[Sequelize.literal("cantidadReservas"), "DESC"]],
       subQuery: false,
+      raw: true,
     });
 
     res.status(200).json({ topClientes });
