@@ -367,16 +367,16 @@ exports.obtenerClientesConVentasConfirmadasPorEmpresa = async (req, res) => {
       raw: true,
     });
 
-   res.status(200).json({
+  res.status(200).json({
   topClientes: topClientes.map(c => ({
     usuarios_id: c.usuarios_id,
-    cantidadReservas: c.get("cantidadReservas"),
+    cantidadReservas: c.cantidadReservas,
     Usuario: {
-      id: c.get("Usuario.id"),
-      nombre: c.get("Usuario.nombre"),
-      apellido: c.get("Usuario.apellido"),
-      email: c.get("Usuario.email"),
-      usuario: c.get("Usuario.usuario"),
+      id: c["Usuario.id"],
+      nombre: c["Usuario.nombre"],
+      apellido: c["Usuario.apellido"],
+      email: c["Usuario.email"],
+      usuario: c["Usuario.usuario"],
     },
   }))
 });
