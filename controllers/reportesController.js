@@ -367,7 +367,19 @@ exports.obtenerClientesConVentasConfirmadasPorEmpresa = async (req, res) => {
       raw: true,
     });
 
-    res.status(200).json({ topClientes });
+   res.status(200).json({
+  topClientes: topClientes.map(c => ({
+    usuarios_id: c.usuarios_id,
+    cantidadReservas: c.get("cantidadReservas"),
+    Usuario: {
+      id: c.get("Usuario.id"),
+      nombre: c.get("Usuario.nombre"),
+      apellido: c.get("Usuario.apellido"),
+      email: c.get("Usuario.email"),
+      usuario: c.get("Usuario.usuario"),
+    },
+  }))
+});
   } catch (error) {
     console.error("Error al obtener top de clientes con ventas confirmadas:");
     console.error("Mensaje:", error.message);
