@@ -576,8 +576,11 @@ exports.obtenerUsuariosConReservasSinVenta = async (req, res) => {
         },
         {
           model: Ventas,
-          required: false, // LEFT JOIN
+          required: true, // LEFT JOIN
           attributes: ["id"],
+         // where: {
+           // reserva_id : Reserva.id
+         // }
         },
         {
           model: Pasajeros,
