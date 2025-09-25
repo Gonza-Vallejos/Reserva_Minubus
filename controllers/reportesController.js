@@ -315,16 +315,13 @@ exports.obtenerClientesConMasReservasPorEmpresa = async (req, res) => {
   }
 };
 
-///ventas Reportes
+// ventas Reportes
 exports.obtenerClientesConVentasConfirmadasPorEmpresa = async (req, res) => {
   try {
     const topClientes = await Reserva.findAll({
       attributes: [
         "usuarios_id",
-        [
-          Sequelize.fn("COUNT", Sequelize.col("Reserva.id")),
-          "cantidadReservas",
-        ],
+        [Sequelize.fn("COUNT", Sequelize.col("Reserva.id")), "cantidadReservas"],
       ],
       include: [
         {
@@ -356,22 +353,32 @@ exports.obtenerClientesConVentasConfirmadasPorEmpresa = async (req, res) => {
           ],
         },
       ],
-      where: {
-        eliminado: "no",
-      },
-      group: ["Reserva.usuarios_id", "Usuario.id"],
+      where: { eliminado: "no" },
+      group: [
+        "Reserva.usuarios_id",
+        "Usuario.id",
+        "Usuario.nombre",
+        "Usuario.apellido",
+        "Usuario.email",
+        "Usuario.usuario",
+      ],
       order: [[Sequelize.literal("cantidadReservas"), "DESC"]],
       subQuery: false,
     });
 
     res.status(200).json({ topClientes });
   } catch (error) {
-    console.error(
-      "Error al obtener top de clientes con ventas confirmadas:",
-      error
-    );
+    console.error("Error al obtener top de clientes con ventas confirmadas:");
+    console.error("Mensaje:", error.message);
+
+    if (error.parent) {
+      console.error("SQL:", error.parent.sql);
+      console.error("SQL Error Code:", error.parent.code);
+    }
+
     res.status(500).json({
       error: "Error al obtener top de clientes con ventas confirmadas",
+      detalle: error.message,
     });
   }
 };
