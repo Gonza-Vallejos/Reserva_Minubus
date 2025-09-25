@@ -361,7 +361,7 @@ exports.obtenerClientesConVentasConfirmadasPorEmpresa = async (req, res) => {
       },
       group: ["Reserva.usuarios_id", "Usuario.id"],
       order: [[Sequelize.literal("cantidadReservas"), "DESC"]],
-    
+      subQuery: false,
     });
 
     res.status(200).json({ topClientes });
