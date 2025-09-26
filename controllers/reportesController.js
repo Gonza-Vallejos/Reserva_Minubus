@@ -576,11 +576,8 @@ exports.obtenerUsuariosConReservasSinVenta = async (req, res) => {
         },
         {
           model: Ventas,
-          required: true, // LEFT JOIN
+          required: false, // LEFT JOIN para incluir reservas aunque no tengan venta
           attributes: ["id"],
-          where: {
-           reserva_id : Reserva.id
-         }
         },
         {
           model: Pasajeros,
@@ -594,7 +591,7 @@ exports.obtenerUsuariosConReservasSinVenta = async (req, res) => {
     });
 
     // Filtrar reservas que NO tienen venta asociada
-    const sinVentaConfirmada = usuariosSinVenta.filter((r) => !r.Venta);
+    const sinVentaConfirmada = usuariosSinVenta.filter((r) => !r.Ventas || r.Ventas.length === 0);
 
     res.status(200).json({ usuariosSinVenta: sinVentaConfirmada });
   } catch (error) {
@@ -604,3 +601,4 @@ exports.obtenerUsuariosConReservasSinVenta = async (req, res) => {
       .json({ error: "Error al obtener usuarios con reservas sin venta" });
   }
 };
+
