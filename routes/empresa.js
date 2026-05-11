@@ -1,17 +1,49 @@
-const express = require('express');
+const express = require("express");
 const router = express.Router();
-const empresaController = require('../controllers/empresaController');
-const validateEmpresa = require('../middlewares/validateEmpresa');
-const validateUpdateEmpresa = require('../middlewares/validateUpdateEmpresa');
+const empresaController = require("../controllers/empresaController");
+const validateEmpresa = require("../middlewares/validateEmpresa");
+const validateUpdateEmpresa = require("../middlewares/validateUpdateEmpresa");
 
-router.get('/', empresaController.obtenerEmpresas);
+const {
+  autenticarToken,
+  permitirPerfiles,
+} = require("../middlewares/authMiddleware");
 
-router.get('/:id', empresaController.obtenerEmpresaPorId);
+router.get(
+  "/obtenerEmpresa",
+  autenticarToken,
+  permitirPerfiles("usuarioAdministrador"),
+  empresaController.obtenerEmpresas
+);
 
-router.post('/', validateEmpresa, empresaController.crearEmpresa);
+router.get(
+  "/obtenerEmpresaId/:id",
+  autenticarToken,
+  permitirPerfiles("usuarioAdministrador", "usuarioEmpresa"),
+  empresaController.obtenerEmpresaId
+);
 
-router.put('/:id', validateUpdateEmpresa, empresaController.actualizarEmpresa);
+router.post(
+  "/crearEmpresa",
+  autenticarToken,
+  permitirPerfiles("usuarioAdministrador"),
+  validateEmpresa,
+  empresaController.crearEmpresa
+);
 
-router.patch('/:id', empresaController.eliminarEmpresa);
+router.put(
+  "/actualizarEmpresa/:id",
+  autenticarToken,
+  permitirPerfiles("usuarioAdministrador", "usuarioEmpresa"),
+  validateUpdateEmpresa,
+  empresaController.actualizarEmpresa
+);
+
+router.put(
+  "/eliminarEmpresa/:id",
+  autenticarToken,
+  permitirPerfiles("usuarioAdministrador"),
+  empresaController.eliminarEmpresa
+);
 
 module.exports = router;

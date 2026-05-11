@@ -28,13 +28,6 @@ module.exports = {
           key: 'id'
         }
       },
-      reservas_id: {
-        type: Sequelize.INTEGER,
-        references:{
-          model: 'Reservas',
-          key: 'id'
-        }
-      },
       eliminado: {
         type: Sequelize.STRING,
         defaultValue: "no"

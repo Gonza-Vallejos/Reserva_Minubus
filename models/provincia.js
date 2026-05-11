@@ -1,32 +1,42 @@
-'use strict';
-const {
-  Model
-} = require('sequelize');
+"use strict";
+const { Model } = require("sequelize");
+
 module.exports = (sequelize, DataTypes) => {
   class Provincia extends Model {
-    /**
-     * Helper method for defining associations.
-     * This method is not a part of Sequelize lifecycle.
-     * The `models/index` file will call this method automatically.
-     */
     static associate(models) {
-      // define association here
+      // Definir asociaciones aquí
       Provincia.belongsTo(models.Pais, {
-        foreignKey: 'pais_id',
-        target_Key: 'id'
-      })
+        foreignKey: "pais_id",
+        targetKey: "id",
+      });
       Provincia.hasMany(models.Localidad, {
-        foreignKey: 'provincia_id'
-      })
+        foreignKey: "provincia_id",
+      });
     }
   }
-  Provincia.init({
-    nombre: DataTypes.STRING,
-    pais_id: DataTypes.INTEGER
-  }, {
-    sequelize,
-    modelName: 'Provincia',
-    tableName: 'Provincia'
-  });
+
+  Provincia.init(
+    {
+      nombre: {
+        type: DataTypes.STRING,
+        allowNull: false,
+      },
+      pais_id: {
+        type: DataTypes.INTEGER,
+        allowNull: false,
+      },
+      eliminado: {
+        type: DataTypes.STRING,
+        allowNull: false,
+        defaultValue: "no",
+      },
+    },
+    {
+      sequelize,
+      modelName: "Provincia",
+      tableName: "Provincia",
+    }
+  );
+
   return Provincia;
 };

@@ -3,24 +3,38 @@ const router = express.Router();
 const usuarioController = require('../controllers/usuarioController');
 const validateUsuario = require('../middlewares/validateUsuario');
 const validateUpdateUsuario = require('../middlewares/validateUpdateUsuario');
+const perfilController = require('../controllers/perfilesController');
+const validateUpdateContrasenia =  require('../middlewares//validateUdateContrasenia');
 
+const { autenticarToken, permitirPerfiles } = require('../middlewares/authMiddleware');
 
 // Ruta para obtener todos los usuarios
-router.get('/', usuarioController.obtenerUsuarios);
+router.get('/obtenerUsuario',autenticarToken,permitirPerfiles('usuarioAdministrador','usuarioMostrador','usuarioEmpresa'), usuarioController.obtenerUsuarios);
 
 // Ruta para obtener un usuario por ID 
-router.get('/:id', usuarioController.obtenerUsuarioPorId);
+router.get('/obtenerUsuarioId/:id',autenticarToken,permitirPerfiles('usuarioAdministrador','usuarioMostrador','usuarioEmpresa','usuarioCliente', 'usuarioChofer'), usuarioController.obtenerUsuarioPorId);
 
 // Ruta para crear un nuevo usuario
-router.post('/', validateUsuario, usuarioController.crearUsuario);
+router.post('/crearUsuario',validateUsuario, usuarioController.crearUsuario);
 
 // Ruta para actualizar un usuario existente
-router.put('/:id', validateUpdateUsuario, usuarioController.actualizarUsuario);
+router.put('/actualizarUsuario/:id',autenticarToken,permitirPerfiles('usuarioAdministrador','usuarioMostrador','usuarioEmpresa','usuarioCliente', 'usuarioChofer'), validateUpdateUsuario, usuarioController.actualizarUsuario);
 
 
 // Ruta para eliminar un usuario lógicamente
-router.patch('/:id', usuarioController.eliminarUsuario);
+router.put('/eliminarUsuario/:id',autenticarToken,permitirPerfiles('usuarioAdministrador','usuarioEmpresa'), usuarioController.eliminarUsuario);
 
+router.post('/crearPerfil',autenticarToken,permitirPerfiles('usuarioAdministrador'),  perfilController.crearPerfil);
 
+router.put('/actualizarPerfil/:id',  perfilController.actualizarPerfil);
+
+router.put( '/actualizarContrasenia/:id', autenticarToken,permitirPerfiles('usuarioAdministrador', 'usuarioMostrador', 'usuarioEmpresa', 'usuarioCliente','usuarioChofer'),validateUpdateContrasenia,usuarioController.actualizarContrasenia);
+ 
+
+// Ruta para obtener todos los usuarios choferes
+router.get('/obtenerUsuarioChoferAsociados',autenticarToken,permitirPerfiles('usuarioAdministrador','usuarioMostrador','usuarioEmpresa'), usuarioController.obtenerUsuariosChoferAsociados);
+
+// Ruta para obtener todos los usuarios choferes por empresa
+router.get('/obtenerUsuarioChoferPorEmpresa/:id',autenticarToken,permitirPerfiles('usuarioAdministrador','usuarioMostrador','usuarioEmpresa'), usuarioController.obtenerUsuariosChoferPorEmpresa);
 
 module.exports = router;

@@ -1,36 +1,55 @@
-'use strict';
-const {
-  Model
-} = require('sequelize');
+"use strict";
+const { Model } = require("sequelize");
+
 module.exports = (sequelize, DataTypes) => {
   class Medio_Transporte extends Model {
-    /**
-     * Helper method for defining associations.
-     * This method is not a part of Sequelize lifecycle.
-     * The `models/index` file will call this method automatically.
-     */
     static associate(models) {
-      // define association here
-      Medio_Transporte.belongsTo(models.Empresa,{
-        foreignKey: 'empresa_id',
-        target_Key: 'id'
-      })
+      // Definir asociaciones aquí
+      Medio_Transporte.belongsTo(models.Empresa, {
+        foreignKey: "empresa_id",
+        targetKey: "id",
+      });
       Medio_Transporte.hasMany(models.Viajes, {
-        foreignKey: 'medioTransporte_id'
-      })
+        foreignKey: "medioTransporte_id",
+      });
     }
   }
-  Medio_Transporte.init({
-    nombre: DataTypes.STRING,
-    patente: DataTypes.STRING,
-    marca: DataTypes.STRING,
-    cantLugares: DataTypes.INTEGER,
-    empresa_id: DataTypes.INTEGER,
-    eliminado:DataTypes.STRING, allowNull: false
-  }, {
-    sequelize,
-    modelName: 'MedioTransporte',
-    tableName: 'MedioTransporte',
-  });
+
+  Medio_Transporte.init(
+    {
+      nombre: {
+        type: DataTypes.STRING,
+        allowNull: false,
+      },
+      patente: {
+        type: DataTypes.STRING,
+        allowNull: false,
+        unique: true,
+      },
+      marca: {
+        type: DataTypes.STRING,
+        allowNull: false,
+      },
+      cantLugares: {
+        type: DataTypes.INTEGER,
+        allowNull: false,
+      },
+      empresa_id: {
+        type: DataTypes.INTEGER,
+        allowNull: false,
+      },
+      eliminado: {
+        type: DataTypes.STRING,
+        allowNull: false,
+        defaultValue: "no",
+      },
+    },
+    {
+      sequelize,
+      modelName: "MedioTransporte",
+      tableName: "MedioTransporte",
+    }
+  );
+
   return Medio_Transporte;
 };

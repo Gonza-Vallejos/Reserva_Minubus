@@ -4,13 +4,24 @@ const transporteController = require('../controllers/medio_transporteController'
 const validateMedioTransporte = require('../middlewares/validateMedio_Transporte');
 const validateUpdateTransporte= require('../middlewares/validateUpdateMedio_Transporte');
 
-router.get('/', transporteController.obtenerTransportes);
+const { autenticarToken, permitirPerfiles } = require('../middlewares/authMiddleware');
 
-router.post('/', validateMedioTransporte ,transporteController.crearTransporte);
+router.get('/obtenerTransporte',autenticarToken,permitirPerfiles('usuarioAdministrador', 'usuarioEmpresa','usuarioMostrador'), transporteController.obtenerTransportes);
 
-router.patch('/:id', transporteController.eliminarTransporte);
+router.get('/obtenerTransportePorEmpresa/:id',autenticarToken,permitirPerfiles('usuarioAdministrador', 'usuarioEmpresa','usuarioMostrador'), transporteController.obtenerTransportesPorEmpresa);
 
-router.get('/:id',transporteController.obtenerTransportePorId);
+router.post('/crearTransporte',autenticarToken,permitirPerfiles('usuarioAdministrador', 'usuarioMostrador'), validateMedioTransporte ,transporteController.crearTransporte);
 
-router.put('/:id', validateUpdateTransporte ,transporteController.actualizarTransporte);
+
+router.get('/obtenerTransporteId/:id',autenticarToken,permitirPerfiles('usuarioAdministrador', 'usuarioEmpresa', 'usuarioMostrador'),transporteController.obtenerTransportePorId);
+
+router.put('/actualizarTransporte/:id', autenticarToken,permitirPerfiles('usuarioAdministrador', 'usuarioMostrador'),validateUpdateTransporte ,transporteController.actualizarTransporte);
+
+router.put('/eliminarTransporte/:id',autenticarToken,permitirPerfiles('usuarioAdministrador', 'usuarioMostrador'), transporteController.eliminarTransporte);
+
+router.get('/obtenerViajesPorTransporte/:id',autenticarToken,permitirPerfiles('usuarioAdministrador', 'usuarioMostrador'), transporteController.obtenerViajesPorTransporte);
+
+
+router.get('/verificarTransporteSinReservas/:id',autenticarToken,permitirPerfiles('usuarioAdministrador', 'usuarioMostrador'), transporteController.verificarTransporteSinReservas);
+
 module.exports = router;

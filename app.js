@@ -2,6 +2,11 @@ var express = require('express');
 var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
+const cors = require('cors');
+
+
+
+
 
 var indexRouter = require('./routes/index');
 var usuariosRouter = require('./routes/usuario');  
@@ -10,8 +15,34 @@ var medioTransporteRouter = require('./routes/medioTransporte');
 var reservaRouter = require('./routes/reserva');
 var ventasRouter = require('./routes/ventas');
 var viajesRouter = require('./routes/viajes');
+var detalleVentaRouter = require('./routes/detalleVenta');
+var ubicacionRouter = require('./routes/ubicacion');
+var usuarioEmpresaRouter = require('./routes/usuarioEmpresa');
+var reportesRouter = require('./routes/reportes');
 
 var app = express();
+//--------------
+require('dotenv').config();
+//nuevo 
+// Conexión con Sequelize-------------------------------------------------------
+const db = require('./models');
+
+db.sequelize.authenticate()
+  .then(() => {
+    console.log('✅ Conexión a la base de datos exitosa');
+  })
+  .catch((error) => {
+    console.error('❌ Error al conectar con la base de datos:', error);
+  });
+//--------------------------------------------------------------
+
+app.use(express.json());
+app.use(cors());
+
+
+const authRoutes = require('./routes/auth');
+app.use('/api/auth', authRoutes); // URL: /api/auth/login
+
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
@@ -30,8 +61,13 @@ app.use('/medioTransporte', medioTransporteRouter);
 app.use('/reserva', reservaRouter);
 app.use('/ventas', ventasRouter);
 app.use('/viajes', viajesRouter);
+app.use('/detalleVenta', detalleVentaRouter);
+app.use('/ubicacion', ubicacionRouter);
+app.use('/usuarioEmpresa', usuarioEmpresaRouter);
+app.use('/reportes', reportesRouter);
 
-// catch 404 and forward to error handler
+
+
 app.use(function(req, res, next) {
   next(createError(404));
 });

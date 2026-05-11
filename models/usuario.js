@@ -1,72 +1,104 @@
-'use strict';
-const { Model } = require('sequelize');
+"use strict";
+const { Model } = require("sequelize");
 
 module.exports = (sequelize, DataTypes) => {
   class Usuario extends Model {
     static associate(models) {
       Usuario.belongsTo(models.Perfil, {
-        foreignKey: 'perfil_id',
-        targetKey: 'id'
+        foreignKey: "perfil_id",
+        targetKey: "id",
       });
       Usuario.hasMany(models.Reserva, {
-        foreignKey: 'usuario_id'
+        foreignKey: "usuarios_id",
+      });
+
+      Usuario.belongsToMany(models.Empresa, {
+        through: "usuarioEmpresa",
+        foreignKey: "id_usuario",
+        otherKey: "id_empresa",
+      });
+
+      Usuario.hasMany(models.UsuarioEmpresa, {
+        foreignKey: "id_usuario",
       });
     }
   }
 
-  Usuario.init({
-    nombre: {
-      type: DataTypes.STRING,
-      allowNull: false
+  Usuario.init(
+    {
+      nombre: {
+        type: DataTypes.STRING,
+        allowNull: false,
+      },
+      apellido: {
+        type: DataTypes.STRING,
+        allowNull: false,
+      },
+      dni: {
+        type: DataTypes.INTEGER,
+        allowNull: false,
+        unique: true,
+      },
+      telefono: {
+        type: DataTypes.STRING,
+        allowNull: false,
+        unique: true,
+      },
+
+      email: {
+        type: DataTypes.STRING,
+        allowNull: false,
+        unique: true,
+      },
+      usuario: {
+        type: DataTypes.STRING,
+        allowNull: false,
+        unique: true,
+        validate: {
+          len: [4, 25],
+        },
+      },
+      contrasenia: {
+        type: DataTypes.STRING,
+        allowNull: false,
+      },
+      perfil_id: {
+        type: DataTypes.INTEGER,
+        allowNull: false,
+      },
+      verificado: {
+        type: DataTypes.BOOLEAN,
+        allowNull: false,
+        defaultValue: false,
+      },
+      tokenVerificacion: {
+        type: DataTypes.STRING,
+        allowNull: true,
+      },
+      fechaVerificacion: {
+        type: DataTypes.DATE,
+        allowNull: true,
+      },
+      recuperacionToken: {
+        type: DataTypes.STRING,
+        allowNull: true,
+      },
+      recuperacionTokenExpira: {
+        type: DataTypes.DATE,
+        allowNull: true,
+      },
+      eliminado: {
+        type: DataTypes.STRING,
+        allowNull: false,
+        defaultValue: "no",
+      },
     },
-    apellido: {
-      type: DataTypes.STRING,
-      allowNull: false
-    },
-    dni: {
-      type: DataTypes.INTEGER,
-      allowNull: false,
-      unique: true
-    },
-    telefono: {
-      type: DataTypes.INTEGER,
-      allowNull: false,
-      unique: true
-    },
-    email: {
-      type: DataTypes.STRING,
-      allowNull: false,
-      unique: true,
-      validate: {
-        isEmail: true
-      }
-    },
-    usuario: {
-      type: DataTypes.STRING,
-      allowNull: false,
-      unique: true,
-      validate: {
-        len: [4, Infinity]
-      }
-    },
-    contrasenia: {
-      type: DataTypes.STRING,
-      allowNull: false,
-    },
-    perfil_id: {
-      type: DataTypes.INTEGER,
-      allowNull: false
-    },
-    eliminado: {
-      type: DataTypes.STRING,
-      allowNull: false,
-      defaultValue: 'no'
+    {
+      sequelize,
+      modelName: "Usuario",
+      tableName: "Usuarios",
     }
-  }, {
-    sequelize,
-    modelName: 'Usuario',
-    tableName: 'Usuarios'
-  });
+  );
 
   return Usuario;
 };

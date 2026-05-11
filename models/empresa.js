@@ -1,37 +1,68 @@
-'use strict';
-const {
-  Model
-} = require('sequelize');
+"use strict";
+const { Model } = require("sequelize");
+
 module.exports = (sequelize, DataTypes) => {
   class Empresa extends Model {
-    /**
-     * Helper method for defining associations.
-     * This method is not a part of Sequelize lifecycle.
-     * The `models/index` file will call this method automatically.
-     */
     static associate(models) {
-      // define association here
+      // Definir asociaciones aquí
       Empresa.belongsTo(models.Localidad, {
-        foreignKey: 'localidad_id',
-        target_Key: 'id'
-      })
-      Empresa.hasMany(models.MedioTransporte,{
-        foreignKey: 'empresa_id'
-      })
+        foreignKey: "localidad_id",
+        targetKey: "id",
+      });
+      Empresa.hasMany(models.MedioTransporte, {
+        foreignKey: "empresa_id",
+      });
+
+      Empresa.belongsToMany(models.Usuario, {
+        through: "usuarioEmpresa",
+        foreignKey: "id_empresa",
+        otherKey: "id_usuario",
+      });
     }
   }
-  Empresa.init({
-    nombre: DataTypes.STRING,
-    direccion: DataTypes.STRING,
-    cuit: DataTypes.INTEGER,
-    telefono: DataTypes.INTEGER,
-    email: DataTypes.STRING,
-    localidad_id: DataTypes.INTEGER,
-    eliminado:DataTypes.STRING, allowNull: false
-  }, {
-    sequelize,
-    modelName: 'Empresa',
-    tableName: 'Empresa'
-  });
+
+  Empresa.init(
+    {
+      nombre: {
+        type: DataTypes.STRING,
+        allowNull: false,
+      },
+      direccion: {
+        type: DataTypes.STRING,
+        allowNull: false,
+      },
+      cuit: {
+        type: DataTypes.STRING, // <== CAMBIO
+        allowNull: false,
+        unique: true,
+      },
+      telefono: {
+        type: DataTypes.STRING, // <== CAMBIO
+        allowNull: false,
+        unique: true,
+      },
+
+      email: {
+        type: DataTypes.STRING,
+        allowNull: false,
+        unique: true,
+      },
+      localidad_id: {
+        type: DataTypes.INTEGER,
+        allowNull: false,
+      },
+      eliminado: {
+        type: DataTypes.STRING,
+        allowNull: false,
+        defaultValue: "no",
+      },
+    },
+    {
+      sequelize,
+      modelName: "Empresa",
+      tableName: "Empresa",
+    }
+  );
+
   return Empresa;
 };
